@@ -13,7 +13,7 @@ LMYSQL=$$(mysql_config --libs)
 CMYSQL=$$(mysql_config --include)
 
 # BOOST
-LBOOST=-L$(DIR_BOOST)/libs
+LBOOST=-L$(DIR_BOOST)/libs L$(DIR_BOOST)/stage/lib
 CBOOST=-I$(DIR_BOOST)
 
 CC=g++
