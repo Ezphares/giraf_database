@@ -12,6 +12,7 @@
 #include <netinet/in.h>
 #include <cstring>
 #include <unistd.h>
+#include <cstdlib>
 
 class Connection {
 public:
@@ -20,10 +21,11 @@ public:
 	virtual ~Connection();
 
 public:
-	int connect();
-	int send();
+	int connect_to_host(const char *hostname, unsigned int port);
+	int send(const char *message);
 	const char *receive();
-	void close();
+	void disconnect();
+	bool is_connected();
 
 private:
 	int _connection_fd;
