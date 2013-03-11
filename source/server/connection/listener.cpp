@@ -5,14 +5,16 @@
  */
 
 #include "listener.h"
-#include <errno.h>
 
-Listener::Listener() {
+Listener::Listener() :
+	_stop(false)
+{
 	// TODO Auto-generated constructor stub
 
 }
 
-Listener::~Listener() {
+Listener::~Listener()
+{
 	this->stop();
 }
 
@@ -48,7 +50,6 @@ Connection *Listener::accept_client()
 	int connection_fd = accept(_socket_fd, (struct sockaddr *)&client_address, &client_length);
 	if (connection_fd < 0)
 	{
-		fprintf(stderr, "ERROR: Failure while accepting socket\n");
 		return NULL; // Error
 	}
 

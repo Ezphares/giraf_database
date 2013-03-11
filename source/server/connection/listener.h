@@ -21,5 +21,6 @@ public:
 private:
 	int _socket_fd;
 	struct sockaddr_in _server_address;
+	bool _stop;
 };
 
