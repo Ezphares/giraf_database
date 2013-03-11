@@ -46,5 +46,5 @@ struct ClientInfo
 };
 
 ServerInfo *run_server(unsigned int port, connection_callback callback);
-bool has_errors(ServerInfo *server);
+bool server_has_errors(ServerInfo *server);
 void stop_server(ServerInfo *server);

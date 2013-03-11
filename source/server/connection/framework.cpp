@@ -31,7 +31,7 @@ void *server_runner(void *param)
 	// Unlock calling thread now that the error code is ready
 	pthread_mutex_unlock(&(info->_lock));
 
-	if (has_errors(info))
+	if (server_has_errors(info))
 		pthread_exit(NULL);
 
 	// Accept clients until the server is stopped
@@ -90,7 +90,7 @@ ServerInfo *run_server(unsigned int port, connection_callback callback)
 	return param;
 }
 
-bool has_errors(ServerInfo *server)
+bool server_has_errors(ServerInfo *server)
 {
 	return (server->_startcode != 0);
 }
@@ -98,7 +98,7 @@ bool has_errors(ServerInfo *server)
 void stop_server(ServerInfo *server)
 {
 	server->_stop = true;
-	if (!has_errors(server))
+	if (!server_has_errors(server))
 	{
 		// Force a dummy connection to close socket
 		Connection dummy;
