@@ -1,7 +1,7 @@
 /*
  * connection.cpp
  *
- * TODO This file contains...
+ * This file contains the implementation of the Connection class
  */
 
 #include "connection.h"
@@ -10,8 +10,6 @@
 #include <cstring>
 #include <sstream>
 #include <poll.h>
-
-#define BUFFER_SIZE 5
 
 Connection::Connection() :
 		_connected(false)
@@ -35,13 +33,15 @@ Connection::~Connection()
 
 int Connection::connect_to_host(const char *ip, unsigned int port)
 {
+	// Create and initialize the address structure
 	struct sockaddr_in address;
 
 	memset((char *)&address, 0, sizeof(address));
 	address.sin_family = AF_INET;
-	inet_pton(AF_INET, ip, (void *)&address.sin_addr);
+	inet_pton(AF_INET, ip, (void *)&address.sin_addr); // Convert string IP to number
 	address.sin_port = htons(port);
 
+	// Open the socket
 	_connection_fd = socket(AF_INET, SOCK_STREAM, 0);
 
 	if (connect(_connection_fd, (sockaddr *)&address, sizeof(address)) < 0)
@@ -80,22 +80,24 @@ const char *Connection::receive()
 		return NULL;
 	}
 
+	// Set up poll structure to listen for IN-data on stream
 	pollfd p;
 	p.fd = _connection_fd;
 	p.events = POLLIN;
 
 	poll(&p, 1, -1); // Wait for data
 
-	char *buffer =(char *)malloc(BUFFER_SIZE);
-
-	std::stringstream msg;
+	char *buffer = (char *)malloc(BUFFER_SIZE); // Chunk buffer
+	std::stringstream msg; // Message buffer
 
 	do
 	{
 		memset((void *)buffer, 0, BUFFER_SIZE);
 		read(_connection_fd, buffer, BUFFER_SIZE - 1);
 		msg << buffer;
-		poll(&p, 1, 100); // See if more data is available
+		// See if more data is available, with 100ms timeout,
+		// this is necessary for stream (TCP) sockets.
+		poll(&p, 1, 100);
 	}
 	while (p.revents & POLLIN);
 

@@ -1,7 +1,8 @@
 /*
  * connection.h
  *
- * TODO This file contains...
+ * This file contains the interface of the Connection class,
+ * as well as certain #defines.
  */
 
 #pragma once
@@ -14,6 +15,9 @@
 #include <unistd.h>
 #include <cstdlib>
 
+// Size of the chunk buffer. MUST be at least 2, to keep a character and a NULL terminator.
+#define BUFFER_SIZE 256
+
 class Connection {
 public:
 	Connection();
@@ -23,7 +27,7 @@ public:
 public:
 	int connect_to_host(const char *hostname, unsigned int port);
 	int send(const char *message);
-	const char *receive();
+	const char *receive(); // This is a blocking call.
 	void disconnect();
 	bool is_connected();
 

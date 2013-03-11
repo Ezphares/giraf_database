@@ -1,7 +1,7 @@
 /*
  * Listener.h
  *
- * TODO This file contains...
+ * This file contains the interface for the listener class
  */
 
 #pragma once
@@ -15,7 +15,7 @@ public:
 
 public:
 	int start(unsigned int port);
-	Connection *accept_client();
+	Connection *accept_client(); // This is a blocking call.
 	void stop();
 
 private:
