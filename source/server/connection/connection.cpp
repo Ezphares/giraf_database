@@ -58,7 +58,7 @@ int Connection::send(const char *message)
 {
 	if (!this->is_connected())
 	{
-		fprintf(stderr, "ERROR: Attempt to write to socket with no connection");
+		fprintf(stderr, "ERROR: Attempt to write to socket with no connection\n");
 		return 1;
 	}
 
@@ -66,7 +66,7 @@ int Connection::send(const char *message)
 	n = write(_connection_fd, message, l);
 	if (n < 0)
 	{
-		fprintf(stderr, "ERROR: Writing to socket");
+		fprintf(stderr, "ERROR: Writing to socket\n");
 		return 1;
 	}
 	return 0;
@@ -76,7 +76,7 @@ const char *Connection::receive()
 {
 	if (!this->is_connected())
 	{
-		fprintf(stderr, "ERROR: Attempt to read from socket with no connection");
+		fprintf(stderr, "ERROR: Attempt to read from socket with no connection\n");
 		return NULL;
 	}
 
@@ -93,7 +93,12 @@ const char *Connection::receive()
 	do
 	{
 		memset((void *)buffer, 0, BUFFER_SIZE);
-		read(_connection_fd, buffer, BUFFER_SIZE - 1);
+		int n = read(_connection_fd, buffer, BUFFER_SIZE - 1);
+		if (n < 0)
+		{
+			fprintf(stderr, "ERROR: Failed reading from socket.\n");
+			break;
+		}
 		msg << buffer;
 		// See if more data is available, with 100ms timeout,
 		// this is necessary for stream (TCP) sockets.

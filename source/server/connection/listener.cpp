@@ -9,8 +9,6 @@
 Listener::Listener() :
 	_stop(false)
 {
-	// TODO Auto-generated constructor stub
-
 }
 
 Listener::~Listener()

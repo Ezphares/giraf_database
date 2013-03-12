@@ -14,7 +14,9 @@ BOOST_AUTO_TEST_CASE( classes )
 {
 	Connection c;
 	BOOST_CHECK_EQUAL( c.is_connected(), false ); // Initialization
+	fprintf(stderr, "Unit test: Expecting logged error.\n  ");
 	BOOST_CHECK_EQUAL( c.connect_to_host("127.0.0.1", 1238), 1); // Connection should fail
+	fprintf(stderr, "Unit test: Expecting logged error.\n  ");
 	BOOST_CHECK_EQUAL( c.send("Hello World!"), 1); // Sending should fail, error should be printed
 	Listener l;
 	BOOST_CHECK_EQUAL( l.start(1238), 0 ); // Listening should succeed
