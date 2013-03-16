@@ -9,25 +9,43 @@ OUTPUT=serverapp
 # END SETTINGS
 
 # MYSQL
-LMYSQL=$$(mysql_config --libs)
-CMYSQL=$$(mysql_config --include)
+LMYSQL=`mysql_config --libs`
+CMYSQL=`mysql_config --include`
 
 # BOOST
 LBOOST=-L$(DIR_BOOST)/libs -L$(DIR_BOOST)/stage/lib
 CBOOST=-I$(DIR_BOOST)
 
 CC=g++
-CFLAGS=-c -Wall $(CMYSQL) $(CBOOST)
+CFLAGS=-c -O0 -g3 -Wall $(CMYSQL) $(CBOOST)
 LDFLAGS=-lpthread $(LBOOST) $(LMYSQL)
+
+CONNECTION_OBJECTS=connection.o listener.o framework.o
+CONNECTION_SOURCES=connection/connection.cpp \
+                   connection/listener.cpp \
+                   connection/framework.cpp
+DATABASE_OBJECTS=queryresult.o database.o
+DATABASE_SOURCES=database/queryresult.cpp \
+                 database/database.cpp
+
+MODULES=program.o m_database m_connection
+
+OBJECTS=program.o $(CONNECTION_OBJECTS) $(DATABASE_OBJECTS)
 
 all : server
 
-server : program.o
-	$(CC) $(LDFLAGS) program.o -o $(OUTPUT)
+server : $(MODULES) 
+	$(CC) $(LDFLAGS) $(OBJECTS) -o $(OUTPUT)
 
 program.o : program.cpp
 	$(CC) $(CFLAGS) program.cpp
 
+m_connection : $(CONNECTION_SOURCES)
+	$(CC) $(CFLAGS) $(CONNECTION_SOURCES)
+
+m_database : $(DATABASE_SOURCES)
+	$(CC) $(CFLAGS) $(DATABASE_SOURCES)
+
 clean :
-	rm -f *.o $(OUTPUT)
+	rm -f *.o
 
