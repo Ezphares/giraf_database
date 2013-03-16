@@ -19,17 +19,17 @@ To build the program, make sure boost and MySQL Connector/C is installed and set
 If non-standard settings are used for these, modify the settings section in Makefile
 
 Building the program:<br />
-cd to 'source/server'<br />
-run 'make all'<br />
-run './serverapp'<br />
+cd to `source/server`<br />
+run `make all`<br />
+run `./serverapp`<br />
 At the moment this should just exit gracefully.
 
 Running the unit tests:<br />
-cd to 'source/server'<br />
-run 'make test'<br />
-run './test_connection' or './test_database'<br />
-Database unit test requires a database called `giraf` accessible by user `giraf`@`localhost` identified by '123456'.<br />
-Connection unit test requires right to open listening sockets and ports 1238 and 1237 to be free.
+cd to `source/server`<br />
+run `make test`<br />
+run `./test_connection` or `./test_database`<br />
+Database unit test requires a database called `giraf` accessible by user `giraf`@`localhost` identified by `123456`.<br />
+Connection unit test requires right to open listening sockets and ports `1238` and `1237` to be free.
 
 License
 ==========
