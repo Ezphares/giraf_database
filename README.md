@@ -6,7 +6,7 @@ AAU GIRAF project, database server and synchronization
 Group: SW603F13 <br />
 Office: 5.1.16
 
-Authors:
+Authors:<br />
 [Barbara Albertine Flindt](https://github.com/DorkMatter)<br />
 [Simon Jensen](https://github.com/sjens)<br />
 [Hilmar Laksa Magnussen](https://github.com/Hilmar10)<br />
@@ -18,17 +18,17 @@ Build instructions
 To build the program, make sure boost and MySQL Connector/C is installed and setup correctly.
 If non-standard settings are used for these, modify the settings section in Makefile
 
-Building the program:
-cd to 'source/server'
-run 'make all'
-run './serverapp'
+Building the program:<br />
+cd to 'source/server'<br />
+run 'make all'<br />
+run './serverapp'<br />
 At the moment this should just exit gracefully.
 
-Running the unit tests:
-cd to 'source/server'
-run 'make test'
-run './test_connection' or './test_database'
-Database unit test requires a database called `giraf` accessible by user `giraf`@`localhost` identified by '123456'.
+Running the unit tests:<br />
+cd to 'source/server'<br />
+run 'make test'<br />
+run './test_connection' or './test_database'<br />
+Database unit test requires a database called `giraf` accessible by user `giraf`@`localhost` identified by '123456'.<br />
 Connection unit test requires right to open listening sockets and ports 1238 and 1237 to be free.
 
 License
