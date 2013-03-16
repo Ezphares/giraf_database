@@ -18,7 +18,7 @@ CBOOST=-I$(DIR_BOOST)
 
 CC=g++
 CFLAGS=-c -O0 -g3 -Wall $(CMYSQL) $(CBOOST)
-LDFLAGS=-lpthread $(LBOOST) $(LMYSQL)
+LDFLAGS=$(LMYSQL) $(LBOOST) -lpthread
 
 CONNECTION_OBJECTS=connection.o listener.o framework.o
 CONNECTION_SOURCES=connection/connection.cpp \
@@ -29,13 +29,14 @@ DATABASE_SOURCES=database/queryresult.cpp \
                  database/database.cpp
 
 MODULES=program.o m_database m_connection
+TESTS=t_connection t_database
 
 OBJECTS=program.o $(CONNECTION_OBJECTS) $(DATABASE_OBJECTS)
 
 all : server
 
 server : $(MODULES) 
-	$(CC) $(LDFLAGS) $(OBJECTS) -o $(OUTPUT)
+	$(CC) $(OBJECTS) $(LDFLAGS) -o $(OUTPUT)
 
 program.o : program.cpp
 	$(CC) $(CFLAGS) program.cpp
@@ -48,4 +49,12 @@ m_database : $(DATABASE_SOURCES)
 
 clean :
 	rm -f *.o
+
+test: $(TESTS)
+
+t_connection :
+	$(CC) $(CONNECTION_SOURCES) connection/test.cpp $(LDFLAGS) -o test_connection
+
+t_database :
+	$(CC) $(DATABASE_SOURCES) database/test.cpp $(LDFLAGS) -o test_database
 
