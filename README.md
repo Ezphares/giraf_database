@@ -29,7 +29,7 @@ cd to `source/server`<br />
 run `make test`<br />
 run `./test_connection` or `./test_database`<br />
 Database unit test requires a database called `giraf` accessible by user `giraf`@`localhost` identified by `123456`.<br />
-Connection unit test requires right to open listening sockets and ports `1238` and `1237` to be free.
+Connection unit test requires right to open listening sockets and ports `1238` and `1239` to be free.
 
 License
 ==========
