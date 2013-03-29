@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>Wasteland API Documentation</title>
+		<style>
+		*
+		{
+			margin: 0;
+			padding: 0;
+		}
+		html
+		{
+			background-color: #c0c0c0;
+		}
+		ul
+		{
+			margin-left: 20px;
+		}
+		.code
+		{
+			font-family: Consolas, monospace;
+			background-color: #ffff80;
+			border-width: 1px;
+			border-color: black;
+			border-style: solid;
+			margin: 5px;
+			padding: 5px;
+			display: inline-block;
+		}
+		.content_wrapper
+		{
+			background-color: #f8f8f8;
+			width: 960px;
+			margin: 25px auto;
+			border-radius: 10px;
+		}
+		.content
+		{
+			margin: 15px;
+			display: inline-block;
+		}
+		.clear
+		{
+			clear: both;
+		}
+		h3
+		{
+			margin-top: 25px;
+			margin-bottom: 5px;
+		}
+		</style>
+	</head>
+	<body>
+		<div class="content_wrapper"/>
+			<div class="content">
+				<h1 id="top">Wasteland API Documentation</h1>
+	
+				<h2>API Request</h2>
+				<p>Any requests to the Wasteland server should be a single JSON object in the following format:</p>
+			
+				<div class="code">
+				{ <br />
+				&nbsp;&nbsp;"auth": <a href="#request_auth">request_auth</a> <br />
+				&nbsp;&nbsp;"action": <a href="#request_action">request_action</a> <br />
+				&nbsp;&nbsp;"data": <a href="#request_data">request_data</a> <br />
+				}
+				</div>
+				
+				<h3 id="request_auth">Request Authentication</h3>
+				<p><span class="code">request_auth</span> is a JSON object containing authentication information of the requester. Depending on the method of request, the content will vary.</p>
+				<p>Authentication as an administrator:</p>
+				<div class="code">
+				{ <br />
+				&nbsp;&nbsp;"username": STRING, <br />
+				&nbsp;&nbsp;"password": STRING <br />
+				}
+				</div>
+				<p>Authentication using a QR ID-card:</p>
+				<div class="code">
+				{ <br />
+				&nbsp;&nbsp;"certificate": STRING <br />
+				}
+				</div>
+				<p>Authentication using a session code:</p>
+				<div class="code">
+				{ <br />
+				&nbsp;&nbsp;"session": STRING <br />
+				}
+				</div>
+
+				<h3 id="request_action">Request Action</h3>
+				<p><span class="code">request_action</span>is a string describing what the request wants to accomplish. Possible values are:</p>
+				<div class="code">
+				"create" OR "read" OR "update" OR "delete" OR null
+				</div>
+				<p>A null value signifies that the request does not want to access the database, but only check if authentication was successful (eg. to get a session code).</p>
+				<div class="clear"/>
+
+				<h3 id="request_data">Request Data</h3>
+				<p><span class="code">request_data</span>is an object describing the specifics of the request. The possible contents of this varies depending on the value of <span class="code"><a href="#request_action">request_action</a></span></p>
+
+				<h4>Create</h4>
+				<div class="code">
+				{ <br />
+				&nbsp;&nbsp;"type": <a href="#data_type">data_type</a>, <br />
+				&nbsp;&nbsp;"values": [<a href="#data_type">value_object</a>, ...]<br />
+				}
+				</div>
+
+				<h4>Read</h4>
+				<div class="code">
+				{ <br />
+				&nbsp;&nbsp;"type": <a href="#data_type">data_type</a>, <br />
+				&nbsp;&nbsp;"view": "list" OR "details", <br />
+				&nbsp;&nbsp;"ids": [INT, ...] OR null <br />
+				}
+				</div>
+				<p>The "view" value determines what should be read. A list of accessible objects to the requesting user, or details about specific objects</p>
+				<p>"ids" should be null if "view" is "list". If view is "details" it should be an array of integer ids of the objects required.</p> 
+
+				<h4>Update</h4>
+				<div class="code">
+				{ <br />
+				&nbsp;&nbsp;"type": <a href="#data_type">data_type</a> <br />
+				&nbsp;&nbsp;"values": <br />
+				&nbsp;&nbsp;[ <br />
+				&nbsp;&nbsp;&nbsp;&nbsp;{ <br />
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"id": INT, <br />
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"value": <a href="#data_type">value_object</a> <br />
+				&nbsp;&nbsp;&nbsp;&nbsp;}, <br />
+				&nbsp;&nbsp;&nbsp;&nbsp;... <br />
+				&nbsp;&nbsp;] <br />
+				}
+				</div>
+
+				<h4>Delete</h4>
+				<div class="code">
+				{ <br />
+				&nbsp;&nbsp;"type": <a href="#data_type">data_type</a>, <br />
+				&nbsp;&nbsp;"ids": [INT, ...] OR null <br />
+				}
+				</div>
+
+				<h2>API Response</h2>
+				<p>The Wasteland server responds to any request with a single JSON object.</p>
+
+				<div class="code">
+				{ <br />
+				&nbsp;&nbsp;"status": <a href="#response_status">status_code</a> <br />
+				&nbsp;&nbsp;"errors": [STRING, ...] <br />
+				&nbsp;&nbsp;"data": <a href="#response_data">response_data</a> <br />
+				}
+				</div>
+
+				<h3 id="response_status">Status code</h3>
+				<p><span class="code">status_code</span> is a string telling how the request went. If unnsuccessful, more details will be written in the <span class="code">errors</span> array. Possible values are:</p>
+				<p><span class="code">"OK"</span> Everything went fine.</p>
+				<p><span class="code">"SYNTAXERROR"</span> The request did not conform to the json syntax</p>
+				<p><span class="code">"BADREQUEST"</span> Keys or types in the request was wrong.</p>
+				<p><span class="code">"AUTHFAILED"</span> The authentification details were wrong.</p>
+				<p><span class="code">"ACCESSDENIED"</span> The user did not have access to the action or ids requested, or requested ids were not found.</p> <!-- The reason for "not found" to be "access denied" as well is to hide if an ID exists -->
+
+				<h3 id="response_data">Response Data</h3>
+				<p>The type and value of <span class="code">data</span> depends on the <span class="code"><a href="#request_action">request_action</a></span> of the request, and whether any errors were found.</p>
+				<h4>Errors were found</h4>
+				<p><span class="code">null</span></p>
+				<h4>Actions delete and update</h4>
+				<p><span class="code">null</span></p>
+				<h4>Action create</h4>
+				<p><span class="code">[INT, ...]</span> A list of ids of the objects created.</p>
+				<h4>Action read</h4>
+				<ul>
+					<li>If view is details: <span class="code">[<a href="#data_type">value_object</a>, ...]</span></li>
+					<li>If view is list: <span class="code">[<a href="#data_type">light_value_object</a>, ...]</span></li>
+				</ul>
+
+			</div>
+		</div>
+	</body>
+</html>
