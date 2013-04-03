@@ -61,8 +61,8 @@
 			
 				<div class="code">
 				{ <br />
-				&nbsp;&nbsp;"auth": <a href="#request_auth">request_auth</a> <br />
-				&nbsp;&nbsp;"action": <a href="#request_action">request_action</a> <br />
+				&nbsp;&nbsp;"auth": <a href="#request_auth">request_auth</a>, <br />
+				&nbsp;&nbsp;"action": <a href="#request_action">request_action</a>,<br />
 				&nbsp;&nbsp;"data": <a href="#request_data">request_data</a> <br />
 				}
 				</div>
@@ -138,7 +138,7 @@
 				<div class="code">
 				{ <br />
 				&nbsp;&nbsp;"type": <a href="#data_type">data_type</a>, <br />
-				&nbsp;&nbsp;"ids": [INT, ...] OR null <br />
+				&nbsp;&nbsp;"ids": [INT, ...] <br />
 				}
 				</div>
 
@@ -173,6 +173,145 @@
 				<ul>
 					<li>If view is details: <span class="code">[<a href="#data_type">value_object</a>, ...]</span></li>
 					<li>If view is list: <span class="code">[<a href="#data_type">light_value_object</a>, ...]</span></li>
+				</ul>
+
+				<h2 id="data_type">Data Types</h2>
+				<p>Depending on what is being accessed, different parameters are available.</p>
+				<p>Updating some fields might have different access rights. (TODO: describe clearly)</p>
+				<p><span class="code">OPTIONAL</span> means that create calls does not need to provide this value</p>
+				<p><span class="code">RESPONSE ONLY</span> means that create and update calls should not provide this value, but read calls will return it</p>
+				<p><span class="code">REQUEST ONLY</span> means the value can be updated and created, but never read.</p>
+				<p><span class="code">"light_value_object"</span> is always response only, in list views</p>
+
+				<h3>Users</h3>
+				<div class="code">"type": "user"</div>
+				<p></p>
+				<div class="code">
+				"value_object":
+				{ <br />
+				&nbsp;&nbsp;"id": RESPONSE ONLY INT, <br />
+				&nbsp;&nbsp;"username": STRING, <br />
+				&nbsp;&nbsp;"password": REQUEST ONLY OPTIONAL STRING, <br />
+				&nbsp;&nbsp;"certificate": REQUEST ONLY OPTIONAL STRING <br />
+				}
+				</div>
+				<p>Note: At least one of password or certificate must be defined.</p>
+				<div class="code">
+				"light_value_object":
+				{ <br />
+				&nbsp;&nbsp;"id": INT, <br />
+				&nbsp;&nbsp;"username": STRING <br />
+				}
+				</div>
+
+
+				<h3>Profiles</h3>
+				<div class="code">"type": "profile"</div>
+				<p></p>
+				<div class="code">
+				"value_object":
+				{ <br />
+				&nbsp;&nbsp;"id": RESPONSE ONLY INT, <br />
+				&nbsp;&nbsp;"name": STRING, <br />
+				&nbsp;&nbsp;"email": STRING, <br />
+				&nbsp;&nbsp;"department": INT, <br />
+				&nbsp;&nbsp;"role": INT, <br />
+				&nbsp;&nbsp;"address": OPTIONAL STRING, <br />
+				&nbsp;&nbsp;"phone": OPTIONAL STRING, <br />
+				&nbsp;&nbsp;"picture": OPTIONAL STRING, <br />
+				&nbsp;&nbsp;"settings": OPTIONAL STRING <br />
+				}
+				</div>
+				<p></p>
+				<div class="code">
+				"light_value_object":
+				{ <br />
+				&nbsp;&nbsp;"id": INT, <br />
+				&nbsp;&nbsp;"name": STRING, <br />
+				&nbsp;&nbsp;"role": INT <br />
+				}
+				</div>
+
+				<h3>Departments</h3>
+				<div class="code">"type": "department"</div>
+				<p></p>
+				<div class="code">
+				"value_object":
+				{ <br />
+				&nbsp;&nbsp;"id": RESPONSE ONLY INT, <br />
+				&nbsp;&nbsp;"name": STRING, <br />
+				&nbsp;&nbsp;"address": STRING, <br />
+				&nbsp;&nbsp;"phone": STRING, <br />
+				&nbsp;&nbsp;"email": STRING, <br />
+				&nbsp;&nbsp;"subdepartments": OPTIONAL RESPONSE ONLY [INT, ...], <br />
+				&nbsp;&nbsp;"topdepartment": OPTIONAL INT <br />
+				}
+				</div>
+				<p></p>
+				<div class="code">
+				"light_value_object":
+				{ <br />
+				&nbsp;&nbsp;"id": INT, <br />
+				&nbsp;&nbsp;"name": STRING <br />
+				}
+				</div>
+
+				<h3>Pictograms</h3>
+				<div class="code">"type": "pictogram"</div>
+				<p></p>
+				<div class="code">
+				"value_object":
+				{ <br />
+				&nbsp;&nbsp;"id": RESPONSE ONLY INT, <br />
+				&nbsp;&nbsp;"name": STRING, <br />
+				&nbsp;&nbsp;"public": BOOL, <br />
+				&nbsp;&nbsp;"image": OPTIONAL STRING, <br />
+				&nbsp;&nbsp;"sound": OPTIONAL STRING, <br />
+				&nbsp;&nbsp;"text": OPTIONAL STRING, <br />
+				&nbsp;&nbsp;"categories": OPTIONAL [STRING, ...], <br />
+				&nbsp;&nbsp;"tags": OPTIONAL [STRING, ...] <br />
+				}
+				</div>
+				<p></p>
+				<div class="code">
+				"light_value_object":
+				{ <br />
+				&nbsp;&nbsp;"id": INT, <br />
+				&nbsp;&nbsp;"name": STRING, <br />
+				&nbsp;&nbsp;"categories": [STRING, ...], <br />
+				&nbsp;&nbsp;"tags": [STRING, ...] <br />
+				}
+				</div>
+
+				<h3>Applications</h3>
+				<div class="code">"type": "application"</div>
+				<p></p>
+				<div class="code">
+				"value_object":
+				{ <br />
+				&nbsp;&nbsp;"id": RESPONSE ONLY INT, <br />
+				&nbsp;&nbsp;"name": STRING, <br />
+				&nbsp;&nbsp;"version": FLOAT, <br />
+				&nbsp;&nbsp;"icon": STRING, <br />
+				&nbsp;&nbsp;"package": STRING, <br />
+				&nbsp;&nbsp;"activity": STRING, <br />
+				&nbsp;&nbsp;"settings": OPTIONAL STRING, <br />
+				&nbsp;&nbsp;"description": OPTIONAL STRING <br />
+				}
+				</div>
+				<p></p>
+				<div class="code">
+				"light_value_object":
+				{ <br />
+				&nbsp;&nbsp;"id": INT, <br />
+				&nbsp;&nbsp;"name": STRING <br />
+				}
+				</div>
+
+				<h2 id="todos">TODOs</h2>
+				<ul>
+					<li>A special view for pictogram by category</li>
+					<li>A command for creating department links (CREATE from department only login?)</li>
 				</ul>
 
 			</div>
