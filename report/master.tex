@@ -1,0 +1,33 @@
+\input{preamble}
+
+\begin{document}
+%\input{tex/acronyms}
+
+\pagestyle{empty}
+
+\input{tex/frontpage}
+\cleardoublepage
+
+\input{tex/titlepage}
+\cleardoublepage
+
+\input{tex/preface} 
+
+\cleardoublepage
+\pdfbookmark{Table of Contents}{toc}
+\tableofcontents
+\cleardoublepage
+\pagestyle{plain}
+
+%input main content here
+\input{tex/introduction/chapter}
+
+\bookmarksetup{startatroot}% dette skulle stoppe part, så conclusion får indryk. Problemet i skrivende øjeblik er at chapters har samme indryk uafhængigt af parts
+\addtocontents{toc}{\bigskip}%laver ekstra mellemrum
+
+\cleardoublepage
+\pdfbookmark{Bibliography}{bib}
+\bibliographystyle{plain}
+\bibliography{bib/bibliography}
+
+\end{document}
