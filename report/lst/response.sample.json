@@ -1,0 +1,21 @@
+{
+	"status": "OK",
+	"errors": [],
+	"data": [
+		{
+			"id": 521,
+			"name": "John",
+			"role": 1
+		},
+		{
+			"id": 643,
+			"name": "Mike",
+			"role": 0
+		},
+		{
+			"id": 1035,
+			"name": "Joe",
+			"role": 0
+		}
+	]
+}
