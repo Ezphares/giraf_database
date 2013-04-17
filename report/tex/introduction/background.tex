@@ -1,13 +1,13 @@
 \section{Background}
-The objective for this semester's project was to continue the work on the Giraf project that has been handed over by last year's bachelor students.
+The objective for this semester's project was to continue the work on the Giraf project that has been handed over by last year's bachelor students. 
 
-As mentioned in the \todo{insert reference to common chapter}common chapter the Giraf project is broken up into several subprojects. 
+As mentioned in the \todo{insert reference to common chapter}common chapter the Giraf project is \todo{make sure that the common chapter includes a clear description}broken up into several subprojects. 
 
-We chose to work on the database part. Initially the task was to enable synchronization between the centralized database and the local databases on the individual tablets.
+We chose to work on the database part. Initially the task was to enable synchronization between the central database and the local databases on the individual tablets.
 
-The old server was written in Java. Which unfortunately meant that our project that originally was entitled ``Database Synchronization'' could just as well been called ``Database Creation'', because the central database itself was missing! There was no usable code of any kind. So we had to start from scratch.
+But unfortunately the latest version of the last years database project seemed to be missing, because the only version that we could find was incomplete. This meant that our workload had increased substantially as we now had to implement our own central and local database as well as handle the synchronization between the two.
 
-There were of course some positives to take from the initial set back. We started by reevaluating the database schema using the old schema as a mock-up and editing where necessary. This saved us some time as a lot of the schema could be reused.
+There were of course some positives to take from the initial set back. We now had the chance to model both databases to our liking, giving us full control. We started by reevaluating the database schema, using the last years groups schema as a mock-up and editing where necessary. This saved us some time as a lot of the schema could be reused.
 
-The old server was written in Java and the argumentation was that the students had a lot of experience using Java.
-We on the other hand have had introductory courses in C and C\# and have little to none experience using Java. Another argument is that a server has to be able to handle a large amount of requests. The fact that we are writing a server side application and the fact that C performs better than Java we feel more comfortable writing our server in C instead of Java.
+Last year's server was written in Java and the argumentation was that the students had a lot of experience using Java.
+We on the other hand have had introductory courses in C and C\# and have little to none experience using Java. Another argument was that a server has to be able to handle a large amount of requests. The fact that we are writing a server side application and the fact that C performs better than Java, we feel more comfortable writing our server in C instead of Java.
