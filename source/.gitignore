@@ -4,4 +4,5 @@ Debug
 .cproject
 *.o
 serverapp
-
+bin
+Testapp
