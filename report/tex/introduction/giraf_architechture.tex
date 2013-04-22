@@ -1,0 +1,28 @@
+\input{preamble}
+\begin{document}
+\section{Giraf Architecture}
+In this section the overall architecture of the entire Giraf application will be presented. First the top level architecture will be described subsequently the architecture on the tablet will be presented.
+
+As mentioned in the common chapter \todo{insert reference to common chapter} the Giraf project is divided into several subprojects. Each subproject is responsible for a specific part of Giraf. The itemized list below is a reminder of what the various projects are responsible for.
+
+\begin{itemize}
+	\item Admin - Administration interface for the entire Giraf project
+	\item Cars - Game developed for sound
+	\item Croc - Creation of pictograms
+	\item Parrot - Child to guardian interaction
+	\item Tortoise - Create a life story for the child
+	\item Train - Game without sound
+	\item Wasteland - Database synchronization
+	\item Zebra - Sequence of pictograms
+\end{itemize}
+
+The top level architecture for Giraf is depicted in \autoref{fig:top_level}. The Admin groups desktop interface is connected via Internet to the central database. This enables guardians to manage the various children in the database. The Local database is installed on the tablet along with the various applications. The applications save their settings on the local database, this enables efficient use of the tablet without an Internet connection. If the tablet has a wireless Internet connection it is able to synchronize the local database with the central database thus saving the settings across the entire Giraf application. 
+
+\begin{figure}[htpb]
+\includegraphics[width=\textwidth]{top_level.pdf}
+\label{fig:top_level}
+\caption{Top level view of Giraf}
+\end{figure}
+
+The applications installed on the tablet are divided into two categories namely games and tools, respectively. The tools provide Giraf with core functionality such as allowing guardians to take pictures with the tablet's onboard camera and add the new picture to one or several children's personal image galleries. They also provide the ability to use pictograms across all applications on the tablet. The games provide some fun learning aids e.g. where the children can learn to control their voice within a game. 
+
