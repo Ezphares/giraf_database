@@ -18,9 +18,13 @@ CREATE TABLE `department` (
 	`phone`					INT(11)			NOT NULL,	
 	`email`					VARCHAR(64)		NOT NULL,
 	`super_department_id`	INT(11)		NULL,
+	`author`				INT(11)		NULL,
 	PRIMARY KEY (`id`),
 	FOREIGN KEY (`super_department_id`)
 		REFERENCES `department` (`id`)
+		ON DELETE SET NULL,
+	FOREIGN KEY (`author`)
+		REFERENCES `user` (`id`)
 		ON DELETE SET NULL
 );
 
@@ -51,7 +55,11 @@ CREATE TABLE `pictogram` (
 	`image_data`	BLOB			NULL,
 	`sound_data`	BLOB			NULL,
 	`inline_text`	VARCHAR(64)		NULL,
-	PRIMARY KEY (`id`)
+	`author`		INT(11)		NULL,
+	PRIMARY KEY (`id`),
+	FOREIGN KEY (`author`)
+		REFERENCES `user` (`id`)
+		ON DELETE SET NULL
 );
 
 CREATE TABLE `tag` (
@@ -80,7 +88,11 @@ CREATE TABLE `application` (
 	`package`		VARCHAR(256)	NOT NULL,
 	`activity`		VARCHAR(64)		NOT NULL,
 	`description`	VARCHAR(1024)	NOT NULL,
-	PRIMARY KEY (`id`)
+	`author`		INT(11)			NULL,
+	PRIMARY KEY (`id`),
+	FOREIGN KEY (`author`)
+		REFERENCES `user` (`id`)
+		ON DELETE SET NULL
 );
 
 CREATE TABLE `admin_of`(
