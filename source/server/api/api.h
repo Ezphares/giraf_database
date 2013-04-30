@@ -10,6 +10,7 @@ enum rights_v : char {NONE = 0, EMULATE = 1, TRUE = 3};
 #include <json/value.h>
 #include <vector>
 #include <map>
+#include <cstring>
 
 class API
 {
@@ -33,6 +34,10 @@ private:
 
 
 	int validate_top(Json::Value &request, Json::Value &errors);
+	int validate_read(Json::Value &data, Json::Value &errors);
+	int validate_write(Json::Value &data, Json::Value &errors);
+	int validate_update(Json::Value &data, Json::Value &errors);
+	int validate_delete(Json::Value &data, Json::Value &errors);
 
 
 
