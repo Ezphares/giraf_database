@@ -32,12 +32,12 @@ const char *API::handle_request(const char *json)
 
 	response["errors"] = errors;
 	response["data"] = Json::Value(Json::nullValue);
-	response["status"] = Json::Value("OK");
+	response["status"] = Json::Value(STATUS_OK);
 
 	if (!reader.parse(json, root))
 	{
 		// Parsing failed
-		response["status"] = Json::Value("SYNTAXERROR");
+		response["status"] = Json::Value(STATUS_SYNTAX);
 		errors.append(Json::Value("Request was not valid JSON"));
 
 		goto done;
@@ -45,7 +45,7 @@ const char *API::handle_request(const char *json)
 
 	if (validate_top(root, errors) < 0)
 	{
-		response["status"] = Json::Value("BADREQUEST");
+		response["status"] = Json::Value(STATUS_STRUCTURE);
 
 		goto done;
 	}
@@ -63,7 +63,7 @@ const char *API::handle_request(const char *json)
 		}
 		else if (strcmp(action, "read") == 0)
 		{
-			api_read(root["data"], response, errors);
+			api_read(root, response, errors);
 		}
 		else if (strcmp(action, "update") == 0)
 		{
@@ -76,7 +76,7 @@ const char *API::handle_request(const char *json)
 		else
 		{
 			errors.append("\"action\" was not null or a CRUD action");
-			response["status"] = "BADREQUEST";
+			response["status"] = Json::Value(STATUS_STRUCTURE);
 
 			goto done;
 		}
@@ -87,6 +87,10 @@ const char *API::handle_request(const char *json)
 	return writer.write(response).c_str();
 }
 
+int API::authenticate(Json::Value &auth)
+{
+	return 1; // TODO
+}
 
 int API::validate_top(Json::Value &request, Json::Value &errors)
 {

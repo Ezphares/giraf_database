@@ -4,6 +4,12 @@
 
 #pragma once
 
+#define STATUS_OK "OK"
+#define STATUS_SYNTAX "SYNTAXERROR"
+#define STATUS_STRUCTURE "BADREQUEST"
+#define STATUS_AUTH "AUTHFAILED"
+#define STATUS_ACCESS "ACCESSDENIED"
+
 enum rights_t : char {CREATE = 0, READ = 1, UPDATE = 2, DELETE = 3};
 enum rights_v : char {NONE = 0, EMULATE = 1, TRUE = 3};
 
