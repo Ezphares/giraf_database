@@ -96,3 +96,14 @@ int API::api_read(Json::Value &request, Json::Value &response, Json::Value &erro
 	return 0;
 }
 
+Json::Value read_profile_list(Json::Value &data, int user, Json::Value &errors)
+{
+	QueryResult result;
+	char *query;
+
+	sprintf(query, "SELECT `child_id` "
+						"FROM `guardian_of` "
+						"WHERE `guardian_id`=%d;", user);
+
+	_database->send_query(query);
+}
