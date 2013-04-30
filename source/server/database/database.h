@@ -22,6 +22,7 @@ public:
 	//validate();
 	void disconnect_database();
 	int connect_database();
+	void escape(char *buffer, const char *input);
 
 private:
 	const char *_address;
