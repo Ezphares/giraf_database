@@ -183,3 +183,14 @@ CREATE TABLE `profile_category` (
 		REFERENCES `category` (`id`)
 		ON DELETE CASCADE
 );
+
+CREATE TABLE `guardian_of` (
+	`guardian_id`		INT(11)		NOT NULL,
+	`child_id`		INT(11)		NOT NULL,
+	FOREIGN KEY (`guardian_id`)
+		REFERENCES `profile` (`id`)
+		ON DELETE CASCADE
+	FOREIGN KEY (`child_id`)
+		REFERENCES `profile` (`id`)
+		ON DELETE CASCADE
+);
