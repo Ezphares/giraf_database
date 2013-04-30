@@ -63,7 +63,7 @@ const char *API::handle_request(const char *json)
 		}
 		else if (strcmp(action, "read") == 0)
 		{
-			//TODO
+			api_read(root["data"], response, errors);
 		}
 		else if (strcmp(action, "update") == 0)
 		{
