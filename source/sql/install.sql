@@ -185,11 +185,11 @@ CREATE TABLE `profile_category` (
 );
 
 CREATE TABLE `guardian_of` (
-	`guardian_id`		INT(11)		NOT NULL,
+	`guardian_id`	INT(11)		NOT NULL,
 	`child_id`		INT(11)		NOT NULL,
 	FOREIGN KEY (`guardian_id`)
 		REFERENCES `profile` (`id`)
-		ON DELETE CASCADE
+		ON DELETE CASCADE,
 	FOREIGN KEY (`child_id`)
 		REFERENCES `profile` (`id`)
 		ON DELETE CASCADE
