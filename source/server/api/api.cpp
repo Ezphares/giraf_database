@@ -7,7 +7,9 @@
 #include <json/writer.h>
 
 
-API::API() {
+API::API()
+{
+	_database = new Database("127.0.0.1", 3306, "giraf", "giraf", "123456"); // TODO: Database
 	// TODO Auto-generated constructor stub
 
 }
@@ -43,12 +45,14 @@ const char *API::handle_request(const char *json)
 		goto done;
 	}
 
-	if (validate_top(root, errors) < 0)
+	if (validate_top(root, errors) < 0 || validate_auth(root["auth"], errors) < 0)
 	{
 		response["status"] = Json::Value(STATUS_STRUCTURE);
 
 		goto done;
 	}
+
+	_database->connect_database();
 
 	if (root["action"].isNull())
 	{
@@ -83,13 +87,45 @@ const char *API::handle_request(const char *json)
 	}
 
 	done:
+
+	_database->disconnect_database();
 	response["errors"] = errors;
 	return writer.write(response).c_str();
 }
 
 int API::authenticate(Json::Value &auth)
 {
-	return 1; // TODO
+	char buffer [BUFFER_SIZE];
+
+	if (auth.isMember("username"))
+	{
+		char username [strlen(auth["username"].asCString()) * 2 + 1];
+		char password [strlen(auth["password"].asCString()) * 2 + 1];
+
+		_database->escape(username, auth["username"].asCString());
+		_database->escape(password, auth["password"].asCString());
+
+		sprintf(buffer, "SELECT `id` "
+							"FROM `user` "
+							"WHERE `username`='%s' AND `password`='%s';",
+							username, password);
+	}
+	else if (auth.isMember("certificate"))
+	{
+		char cert [strlen(auth["certifiecate"].asCString()) * 2 + 1];
+
+		_database->escape(cert, auth["certificate"].asCString());
+
+		sprintf(buffer, "SELECT `id` "
+							"FROM `user` "
+							"WHERE `certificate`='%s';",
+							cert);
+	}
+
+	QueryResult *result = _database->send_query(buffer);
+	result->next_row();
+
+	return -1;
 }
 
 int API::validate_top(Json::Value &request, Json::Value &errors)
@@ -134,6 +170,27 @@ int API::validate_top(Json::Value &request, Json::Value &errors)
 			errors.append(Json::Value("\"data\" was not an object"));
 		}
 	}
+
+	if (errors.empty()) return 0;
+	else return -1;
+}
+
+int API::validate_auth(Json::Value &auth, Json::Value &errors)
+{
+	if (auth.isMember("username") && auth.isMember("password"))
+	{
+		if (!auth["username"].isString()) errors.append(Json::Value("\"auth\":\"username\" is not a string"));
+		if (!auth["password"].isString()) errors.append(Json::Value("\"auth\":\"password\" is not a string"));
+	}
+	else if (auth.isMember("certificate"))
+	{
+		if (!auth["certificate"].isString()) errors.append(Json::Value("\"auth\":\"certificate\" is not a string"));
+	}
+	/*else if (auth.isMember("session"))
+	{
+		if (!auth["session"].isString()) errors.append(Json::Value("\"auth\":\"session\" is not a string"));
+	}*/
+	else errors.append(Json::Value("\"auth\" object invalid"));
 
 	if (errors.empty()) return 0;
 	else return -1;

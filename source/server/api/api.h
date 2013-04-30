@@ -10,6 +10,8 @@
 #define STATUS_AUTH "AUTHFAILED"
 #define STATUS_ACCESS "ACCESSDENIED"
 
+const unsigned int BUFFER_SIZE = 4096;
+
 enum rights_t : char {CREATE = 0, READ = 1, UPDATE = 2, DELETE = 3};
 enum rights_v : char {NONE = 0, EMULATE = 1, TRUE = 3};
 
@@ -32,7 +34,6 @@ private:
 	// RETURN:
 	// >0: User ID
 	// -1: Not authenticated
-	// -2: Missing key/wrong value-type
 	int authenticate(Json::Value &auth);
 
 	int authenticate_user_pass(Json::Value &username, Json::Value &password);
@@ -41,6 +42,7 @@ private:
 
 
 	int validate_top(Json::Value &request, Json::Value &errors);
+	int validate_auth(Json::Value &auth, Json::Value &errors);
 	int validate_read(Json::Value &data, Json::Value &errors);
 	int validate_write(Json::Value &data, Json::Value &errors);
 	int validate_update(Json::Value &data, Json::Value &errors);
@@ -65,6 +67,8 @@ private:
 	// ETC, ETC
 
 
+private:
+	Database *_database;
 
 };
 
