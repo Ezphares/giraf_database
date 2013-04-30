@@ -5,7 +5,7 @@
 #include "api.h"
 #include <json/reader.h>
 #include <json/writer.h>
-#include <cstring>
+
 
 API::API() {
 	// TODO Auto-generated constructor stub
@@ -134,6 +134,3 @@ int API::validate_top(Json::Value &request, Json::Value &errors)
 	if (errors.empty()) return 0;
 	else return -1;
 }
-
-
-
