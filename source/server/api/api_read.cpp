@@ -85,23 +85,24 @@ int API::api_read(Json::Value &request, Json::Value &response, Json::Value &erro
 		return -1;
 	}
 
+	Json::Value data;
+
 	// TODO: Read calls here
 	if (strcmp(request["data"]["view"].asCString(), "list") == 0)
 	{
 		if (strcmp(request["data"]["type"].asCString(), "profile") == 0)
 		{
 			// TODO: Implement
-			Json::Value data/* = read_profile_list(request["data"], user, errors)*/;
-
-			if (!errors.empty())
-			{
-				response["status"] = Json::Value(STATUS_ACCESS);
-			}
-
-			response["data"] = data;
+			data = read_profile_list(request["data"], user, errors);
 		}
 	}
 
+	if (!errors.empty())
+	{
+		response["status"] = Json::Value(STATUS_ACCESS);
+		return -1;
+	}
+	response["data"] = data;
 
 	return 0;
 }
