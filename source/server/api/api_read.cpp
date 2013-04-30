@@ -105,5 +105,4 @@ Json::Value read_profile_list(Json::Value &data, int user, Json::Value &errors)
 						"FROM `guardian_of` "
 						"WHERE `guardian_id`=%d;", user);
 
-	_database->send_query(query);
 }
