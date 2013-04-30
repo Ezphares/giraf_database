@@ -53,7 +53,7 @@ int API::validate_read(Json::Value &data, Json::Value &errors)
 		}
 		else
 		{
-			errors.append(Json::Value("\"data\":\"list\" had an invalid value"));
+			errors.append(Json::Value("\"data\":\"view\" had an invalid value"));
 		}
 	}
 
