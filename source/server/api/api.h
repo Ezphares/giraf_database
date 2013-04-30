@@ -48,8 +48,10 @@ private:
 	 * ALL API CALLS GO HERE:
 	 */
 
+	int api_read(Json::Value &request, Json::Value &response, Json::Value &errors);
 	Json::Value read_profile_list(Json::Value &request_data);
 	Json::Value read_profile_details(Json::Value &request_data);
+
 	Json::Value update_profile(Json::Value &request_data);
 	Json::Value create_profile(Json::Value &request_data);
 	Json::Value delete_profile(Json::Value &request_data);

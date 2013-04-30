@@ -61,4 +61,42 @@ int API::validate_read(Json::Value &data, Json::Value &errors)
 	else return -1;
 }
 
+int API::api_read(Json::Value &request, Json::Value &response, Json::Value &errors)
+{
+	if (validate_read(request["data"], errors) == -1)
+	{
+		response["status"] = Json::Value("BADREQUEST");
+		return -1;
+	}
+
+	int user = authenticate(request["auth"]);
+
+	if (user == -1)
+	{
+		response["status"] = Json::Value("AUTHFAILED");
+		errors.append(Json::Value("Authentication failed"));
+		return -1;
+	}
+
+	if (user == -2)
+	{
+		response["status"] = Json::Value("BADREQUEST");
+		errors.append(Json::Value("Error in authentication keys."));
+		return -1;
+	}
+
+	// TODO: Read calls here
+	if (strcmp(request["data"]["view"].asCString(), "list") == 0)
+	{
+		if (strcmp(request["data"]["type"].asCString(), "profile") == 0)
+		{
+			Json::Value data = read_profile_list(request["data"], user, errors);
+			// TODO: CHeck for errors
+			response["data"] = data;
+		}
+	}
+
+
+	return 0;
+}
 
