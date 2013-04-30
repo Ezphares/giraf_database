@@ -17,6 +17,7 @@ enum rights_v : char {NONE = 0, EMULATE = 1, TRUE = 3};
 #include <vector>
 #include <map>
 #include <cstring>
+#include "../database/database.h"
 
 class API
 {
@@ -55,12 +56,12 @@ private:
 	 */
 
 	int api_read(Json::Value &request, Json::Value &response, Json::Value &errors);
-	Json::Value read_profile_list(Json::Value &request_data);
-	Json::Value read_profile_details(Json::Value &request_data);
+	Json::Value read_profile_list(Json::Value &data, int user, Json::Value &errors);
+	Json::Value read_profile_details(Json::Value &data, int user, Json::Value &errors);
 
-	Json::Value update_profile(Json::Value &request_data);
-	Json::Value create_profile(Json::Value &request_data);
-	Json::Value delete_profile(Json::Value &request_data);
+	Json::Value update_profile(Json::Value &data, int user, Json::Value &errors);
+	Json::Value create_profile(Json::Value &data, int user, Json::Value &errors);
+	Json::Value delete_profile(Json::Value &data, int user, Json::Value &errors);
 	// ETC, ETC
 
 
