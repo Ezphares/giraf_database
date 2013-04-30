@@ -65,7 +65,7 @@ int API::api_read(Json::Value &request, Json::Value &response, Json::Value &erro
 {
 	if (validate_read(request["data"], errors) == -1)
 	{
-		response["status"] = Json::Value("BADREQUEST");
+		response["status"] = Json::Value(STATUS_STRUCTURE);
 		return -1;
 	}
 
@@ -73,14 +73,14 @@ int API::api_read(Json::Value &request, Json::Value &response, Json::Value &erro
 
 	if (user == -1)
 	{
-		response["status"] = Json::Value("AUTHFAILED");
+		response["status"] = Json::Value(STATUS_AUTH);
 		errors.append(Json::Value("Authentication failed"));
 		return -1;
 	}
 
 	if (user == -2)
 	{
-		response["status"] = Json::Value("BADREQUEST");
+		response["status"] = Json::Value(STATUS_STRUCTURE);
 		errors.append(Json::Value("Error in authentication keys."));
 		return -1;
 	}
@@ -90,8 +90,14 @@ int API::api_read(Json::Value &request, Json::Value &response, Json::Value &erro
 	{
 		if (strcmp(request["data"]["type"].asCString(), "profile") == 0)
 		{
-			Json::Value data = read_profile_list(request["data"], user, errors);
-			// TODO: CHeck for errors
+			// TODO: Implement
+			Json::Value data/* = read_profile_list(request["data"], user, errors)*/;
+
+			if (!errors.empty())
+			{
+				response["status"] = Json::Value(STATUS_ACCESS);
+			}
+
 			response["data"] = data;
 		}
 	}
