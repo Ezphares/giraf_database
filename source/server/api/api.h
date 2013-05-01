@@ -19,6 +19,8 @@
 #include <cstring>
 #include "../database/database.h"
 #include "../file/fileio.h"
+#include <sstream>
+#include <cstdlib>
 
 class API
 {

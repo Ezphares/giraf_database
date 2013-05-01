@@ -107,13 +107,13 @@ Json::Value API::read_profile_list(Json::Value &data, int user, Json::Value &err
 	char query[BUFFER_SIZE];
 	row_t r;
 
-	char *temp = read_file("../api/sql/profile_read_list.sql");
+	char *temp = read_file("api/sql/profile_read_list.sql");
 	sprintf(query, temp, user, user, user);
 	result = _database->send_query(query);
 
 	r = result->next_row();
 	Json::Value call_data(Json::arrayValue);
-
+	std::cout << r["phone"] << std::endl;
 	while (!r.empty())
 	{
 		Json::Value o(Json::objectValue);
@@ -125,7 +125,76 @@ Json::Value API::read_profile_list(Json::Value &data, int user, Json::Value &err
 		r = result->next_row();
 	}
 
+	delete result;
+	free(temp);
 
 	return call_data;
 
+}
+
+Json::Value API::read_profile_details(Json::Value &data, int user, Json::Value &errors)
+{
+	QueryResult *result;
+	char query[BUFFER_SIZE];
+	row_t r;
+
+	char *temp = read_file("api/sql/profile_read_list.sql");
+	sprintf(query, temp, user, user, user);
+	result = _database->send_query(query);
+
+	r = result->next_row();
+	Json::Value call_data(Json::arrayValue);
+
+	std::vector<int> accesible;
+
+	while (!r.empty())
+	{
+		accesible.push_back(atoi(r["id"].c_str()));
+		r = result->next_row();
+	}
+	std::stringstream l;
+
+	delete result;
+	free(temp);
+
+	for (unsigned int i = 0; i < data["ids"].size(); i++)
+	{
+		bool found = false;
+		int id = data["ids"][i].asInt();
+		for(std::vector<int>::iterator it = accesible.begin(); it != accesible.end(); it++)
+		{
+			if(id == *it) found = true;
+		}
+		if(found == false)
+		{
+			errors.append(Json::Value("Invalid ID access"));
+			return Json::Value(Json::nullValue);
+		}
+
+		if (i != 0) l << ", ";
+		l << id;
+	}
+
+	sprintf(query, "SELECT * FROM `profile` WHERE `id` IN (%s);", l.str().c_str());
+	result = _database->send_query(query);
+
+	r = result->next_row();
+	while (!r.empty())
+		{
+			Json::Value o(Json::objectValue);
+			o["id"] = Json::Value(atoi(r["id"].c_str()));
+			o["name"] = Json::Value(r["name"].c_str());
+			o["email"] = Json::Value(r["email"].c_str());
+			o["department"] = Json::Value(atoi(r["department"].c_str()));
+			o["role"] = Json::Value(atoi(r["role"].c_str()));
+			if(strcmp(r["address"].c_str(), "") != 0) o["address"] = Json::Value(r["address"].c_str());
+			if(strcmp(r["phone"].c_str(), "") != 0) o["phone"] = Json::Value(r["phone"].c_str());
+			if(strcmp(r["picture"].c_str(), "") != 0) o["picture"] = Json::Value(r["picture"].c_str());
+			if(strcmp(r["settings"].c_str(), "") != 0) o["settings"] = Json::Value(r["settings"].c_str());
+
+			call_data.append(o);
+			r = result->next_row();
+		}
+
+	return call_data;
 }
