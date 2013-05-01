@@ -4,6 +4,7 @@
 
 #include "builders.h"
 #include <iostream>
+#include <sstream>
 
 void fix_rename(Json::Value &object, const char *key, const char *new_key)
 {
@@ -61,4 +62,28 @@ Json::Value build_simple_array_from_query(QueryResult *query, const char *key, v
 	}
 
 	return a;
+}
+
+std::string build_in_string(Json::Value &array)
+{
+	std::stringstream str;
+	for (unsigned int i = 0; i < array.size(); i++)
+	{
+		if (i > 0) str << ",";
+		str << array[i].asInt();
+	}
+	return str.str();
+}
+
+bool validate_array_vector(Json::Value &array, std::vector<int> &vec)
+{
+	for (unsigned int i = 0; i < array.size(); i++)
+	{
+		bool found = false;
+		int id = array[i].asInt();
+		for(std::vector<int>::iterator it = vec.begin(); it != vec.end(); it++)	if(id == *it) found = true;
+
+		if(found == false) return false;
+	}
+	return true;
 }

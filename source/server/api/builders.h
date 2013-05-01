@@ -4,7 +4,6 @@
 
 #include <json/value.h>
 #include "../database/database.h"
-#include <iostream>
 
 #pragma once
 
@@ -20,6 +19,8 @@ Json::Value build_object_from_row(row_t& row, fixture fix = NULL);
 Json::Value build_array_from_query(QueryResult *query, fixture fix = NULL);
 Json::Value build_simple_array_from_query(QueryResult *query, const char *key, value_type type = V_STRING );
 
+std::string build_in_string(Json::Value &array);
+bool validate_array_vector(Json::Value &array, std::vector<int> &vector);
 
 inline std::vector<int> build_simple_int_vector_from_query(QueryResult *query, const char *key)
 {
