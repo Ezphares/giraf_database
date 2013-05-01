@@ -87,7 +87,10 @@ int API::api_read(Json::Value &request, Json::Value &response, Json::Value &erro
 	if (strcmp(request["data"]["view"].asCString(), "list") == 0)
 	{
 		if (strcmp(request["data"]["type"].asCString(), "profile") == 0) call_data = read_profile_list(request["data"], user, errors);
-		std::cout << response.isObject() << std::endl;
+	}
+	else
+	{
+		if (strcmp(request["data"]["type"].asCString(), "profile") == 0) call_data = read_profile_details(request["data"], user, errors);
 	}
 
 	if (!errors.empty())
