@@ -61,7 +61,7 @@
 			
 				<div class="code">
 				{ <br />
-				&nbsp;&nbsp;"auth": <a href="#request_auth">request_auth</a>, <br />
+				&nbsp;&nbsp;"auth": <a href="#request_auth">request_auth</a>,<br />
 				&nbsp;&nbsp;"action": <a href="#request_action">request_action</a>,<br />
 				&nbsp;&nbsp;"data": <a href="#request_data">request_data</a> <br />
 				}
@@ -147,9 +147,10 @@
 
 				<div class="code">
 				{ <br />
-				&nbsp;&nbsp;"status": <a href="#response_status">status_code</a> <br />
-				&nbsp;&nbsp;"errors": [STRING, ...] <br />
-				&nbsp;&nbsp;"data": <a href="#response_data">response_data</a> <br />
+				&nbsp;&nbsp;"status": <a href="#response_status">status_code</a>, <br />
+				&nbsp;&nbsp;"errors": [STRING, ...], <br />
+				&nbsp;&nbsp;"data": <a href="#response_data">response_data</a>, <br />
+				&nbsp;&nbsp;"session": <a href="#response_session">session_info</a> <br />
 				}
 				</div>
 
@@ -174,6 +175,16 @@
 					<li>If view is details: <span class="code">[<a href="#data_type">value_object</a>, ...]</span></li>
 					<li>If view is list: <span class="code">[<a href="#data_type">light_value_object</a>, ...]</span></li>
 				</ul>
+				
+				<h3 id="response_session">Session Info</h3>
+				<p><span class="code">session_info</span> is an object containing information about the currently authenticated user and session. It looks like this:</p>
+				<div class="code">
+				{ <br />
+				&nbsp;&nbsp;"user": INT, <br />
+				&nbsp;&nbsp;"profile": INT OR null, <br />
+				&nbsp;&nbsp;"session": STRING (NOT YET IMPLEMENTED) <br />
+				}
+				</div>
 
 				<h2 id="data_type">Data Types</h2>
 				<p>Depending on what is being accessed, different parameters are available.</p>
