@@ -30,7 +30,7 @@ public:
 	virtual ~API();
 
 public:
-	const char *handle_request(const char *json);
+	std::string handle_request(const char *json);
 
 private:
 	// RETURN:
@@ -66,9 +66,9 @@ private:
 
 	Json::Value read_user_list(Json::Value &data, int user, Json::Value &errors);
 
-	Json::Value read_application_list(Json::Value &data, int user, Json::Value &errors)
+	Json::Value read_application_list(Json::Value &data, int user, Json::Value &errors);
 
-	Json::Value read_pictogram_list(Json::Value &data, int user, Json::Value &errors)
+	Json::Value read_pictogram_list(Json::Value &data, int user, Json::Value &errors);
 	// ETC, ETC
 
 
