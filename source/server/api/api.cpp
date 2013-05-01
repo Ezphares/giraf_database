@@ -15,7 +15,7 @@ API::API()
 }
 
 API::~API() {
-	// TODO Auto-generated destructor stub
+	delete _database;
 }
 
 
@@ -32,9 +32,9 @@ const char *API::handle_request(const char *json)
 	Json::Reader reader;
 	Json::FastWriter writer;
 
-	response["errors"] = errors;
 	response["data"] = Json::Value(Json::nullValue);
 	response["status"] = Json::Value(STATUS_OK);
+	response["session"] = Json::Value(Json::nullValue);
 
 	if (!reader.parse(json, root))
 	{
@@ -56,7 +56,8 @@ const char *API::handle_request(const char *json)
 
 	if (root["action"].isNull())
 	{
-		// TODO
+		int user = authenticate(root["auth"]);
+		create_session(response, user);
 	}
 	else
 	{
@@ -88,9 +89,33 @@ const char *API::handle_request(const char *json)
 
 	done:
 
-	_database->disconnect_database();
+	//_database->disconnect_database();
 	response["errors"] = errors;
 	return writer.write(response).c_str();
+}
+
+void API::create_session(Json::Value &response, int user)
+{
+	Json::Value session(Json::objectValue);
+	session["user"] = Json::Value(user);
+	session["session"] = Json::Value("");
+
+	char buffer [BUFFER_SIZE];
+
+	sprintf(buffer, "SELECT `id` "
+						"FROM `profile` "
+						"WHERE `user_id`=%d;",
+			user);
+
+	QueryResult *result = _database->send_query(buffer);
+	row_t r = result->next_row();
+
+	if (r.empty()) session["profile"] = Json::Value(Json::nullValue);
+	else session["profile"] = Json::Value(atoi(r["id"].c_str()));
+
+	response["session"] = session;
+
+	return;
 }
 
 int API::authenticate(Json::Value &auth)
@@ -112,7 +137,7 @@ int API::authenticate(Json::Value &auth)
 	}
 	else if (auth.isMember("certificate"))
 	{
-		char cert [strlen(auth["certifiecate"].asCString()) * 2 + 1];
+		char cert [strlen(auth["certificate"].asCString()) * 2 + 1];
 
 		_database->escape(cert, auth["certificate"].asCString());
 
@@ -123,8 +148,10 @@ int API::authenticate(Json::Value &auth)
 	}
 
 	QueryResult *result = _database->send_query(buffer);
-	result->next_row();
+	row_t row = result->next_row();
+	delete result;
 
+	if (!row.empty()) return atoi(row["id"].c_str());
 	return -1;
 }
 
@@ -165,7 +192,7 @@ int API::validate_top(Json::Value &request, Json::Value &errors)
 	}
 	else
 	{
-		if (!request["data"].isObject())
+		if (!request["data"].isObject() && !request["action"].isNull())
 		{
 			errors.append(Json::Value("\"data\" was not an object"));
 		}

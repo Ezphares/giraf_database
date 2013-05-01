@@ -19,16 +19,16 @@ int handle_api(Connection *connection)
 
 int main (int argc, char *argv[])
 {
-	char api[1024];
+	char *api = "e";
+
 
 	while (api[0] != 's')
 	{
-		std::cin.getline(api, 1023);
-		std::cout << API().handle_request(api) << std::endl;
+		//std::cin.getline(api, 1023);
+		char const *out = API().handle_request("{\"data\":{}, \"action\":null, \"auth\":{\"username\":\"john\", \"password\":\"123456\"}}");
+		std::cout << out  << std::endl;
+		break;
 	}
-
-
-
 
 	/*
 	ServerInfo *server = run_server(666, handle_api);

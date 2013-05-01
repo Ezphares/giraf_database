@@ -5,6 +5,7 @@
  */
 
 #include "api.h"
+#include <iostream>
 
 int API::validate_read(Json::Value &data, Json::Value &errors)
 {
@@ -63,6 +64,7 @@ int API::validate_read(Json::Value &data, Json::Value &errors)
 
 int API::api_read(Json::Value &request, Json::Value &response, Json::Value &errors)
 {
+
 	if (validate_read(request["data"], errors) < 0)
 	{
 		response["status"] = Json::Value(STATUS_STRUCTURE);
@@ -73,17 +75,18 @@ int API::api_read(Json::Value &request, Json::Value &response, Json::Value &erro
 
 	if (user == -1)
 	{
-		response["status"] = Json::Value(STATUS_AUTH);
+		response["status"] = STATUS_AUTH;
 		errors.append(Json::Value("Authentication failed"));
 		return -1;
 	}
 
-	Json::Value data;
+	Json::Value call_data;
 
 	// TODO: Read calls here
 	if (strcmp(request["data"]["view"].asCString(), "list") == 0)
 	{
-		if (strcmp(request["data"]["type"].asCString(), "profile") == 0) data = read_profile_list(request["data"], user, errors);
+		if (strcmp(request["data"]["type"].asCString(), "profile") == 0) call_data = read_profile_list(request["data"], user, errors);
+		std::cout << response.isObject() << std::endl;
 	}
 
 	if (!errors.empty())
@@ -91,18 +94,21 @@ int API::api_read(Json::Value &request, Json::Value &response, Json::Value &erro
 		response["status"] = Json::Value(STATUS_ACCESS);
 		return -1;
 	}
-	response["data"] = data;
+
+	response["data"] = call_data;
 
 	return 0;
 }
 
-Json::Value read_profile_list(Json::Value &data, int user, Json::Value &errors)
+Json::Value API::read_profile_list(Json::Value &data, int user, Json::Value &errors)
 {
-	QueryResult result;
-	char *query;
+	QueryResult *result;
+	char query[BUFFER_SIZE];
 
 	sprintf(query, "SELECT `child_id` "
 						"FROM `guardian_of` "
 						"WHERE `guardian_id`=%d;", user);
+
+	return Json::Value(Json::objectValue);
 
 }
