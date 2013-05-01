@@ -105,11 +105,27 @@ Json::Value API::read_profile_list(Json::Value &data, int user, Json::Value &err
 {
 	QueryResult *result;
 	char query[BUFFER_SIZE];
+	row_t r;
 
-	sprintf(query, "SELECT `child_id` "
-						"FROM `guardian_of` "
-						"WHERE `guardian_id`=%d;", user);
+	char *temp = read_file("../api/sql/profile_read_list.sql");
+	sprintf(query, temp, user, user, user);
+	result = _database->send_query(query);
 
-	return Json::Value(Json::objectValue);
+	r = result->next_row();
+	Json::Value call_data(Json::arrayValue);
+
+	while (!r.empty())
+	{
+		Json::Value o(Json::objectValue);
+		o["id"] = Json::Value(atoi(r["id"].c_str()));
+		o["name"] = Json::Value(r["name"].c_str());
+		o["role"] = Json::Value(atoi(r["role"].c_str()));
+
+		call_data.append(o);
+		r = result->next_row();
+	}
+
+
+	return call_data;
 
 }
