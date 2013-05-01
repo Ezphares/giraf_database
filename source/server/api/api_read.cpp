@@ -180,6 +180,7 @@ Json::Value API::read_profile_details(Json::Value &data, int user, Json::Value &
 	result = _database->send_query(query);
 
 	r = result->next_row();
+	build_object_from_row(r);
 	while (!r.empty())
 	{
 		Json::Value o(Json::objectValue);
