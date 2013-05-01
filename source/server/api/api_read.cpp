@@ -86,11 +86,29 @@ int API::api_read(Json::Value &request, Json::Value &response, Json::Value &erro
 	// TODO: Read calls here
 	if (strcmp(request["data"]["view"].asCString(), "list") == 0)
 	{
-		if (strcmp(request["data"]["type"].asCString(), "profile") == 0) call_data = read_profile_list(request["data"], user, errors);
+		if (strcmp(request["data"]["type"].asCString(), "profile") == 0) 			call_data = read_profile_list(request["data"], user, errors);
+		else if (strcmp(request["data"]["type"].asCString(), "department") == 0) 	call_data = read_department_list(request["data"], user, errors);
+		else if (strcmp(request["data"]["type"].asCString(), "user") == 0) 			call_data = read_user_list(request["data"], user, errors);
+		else if (strcmp(request["data"]["type"].asCString(), "pictogram") == 0) 	call_data = read_pictogram_list(request["data"], user, errors);
+		else if (strcmp(request["data"]["type"].asCString(), "application") == 0) 	call_data = read_application_list(request["data"], user, errors);
+		else
+		{
+			response["status"] = STATUS_STRUCTURE;
+			errors.append(Json::Value("Invalid data type requested"));
+		}
 	}
 	else
 	{
-		if (strcmp(request["data"]["type"].asCString(), "profile") == 0) call_data = read_profile_details(request["data"], user, errors);
+		if (strcmp(request["data"]["type"].asCString(), "profile") == 0) 			call_data = read_profile_details(request["data"], user, errors);
+		else if (strcmp(request["data"]["type"].asCString(), "department") == 0) 	call_data = read_department_details(request["data"], user, errors);
+		else if (strcmp(request["data"]["type"].asCString(), "user") == 0) 			call_data;//TODO = read_user_details(request["data"], user, errors);
+		else if (strcmp(request["data"]["type"].asCString(), "pictogram") == 0) 	call_data;//TODO = read_pictogram_details(request["data"], user, errors);
+		else if (strcmp(request["data"]["type"].asCString(), "application") == 0) 	call_data;//TODO = read_application_details(request["data"], user, errors);
+		else
+		{
+			response["status"] = STATUS_STRUCTURE;
+			errors.append(Json::Value("Invalid data type requested"));
+		}
 	}
 
 	if (!errors.empty())
@@ -139,27 +157,16 @@ Json::Value API::read_profile_details(Json::Value &data, int user, Json::Value &
 	snprintf(query, API_BUFFER_SIZE, "SELECT DISTINCT `id` FROM `profile_list` WHERE `user_id`=%d;", user);
 	QueryResult *result = _database->send_query(query);
 
-	std::vector<int> accesible = build_simple_int_vector_from_query(result, "id");
+	std::vector<int> accessible = build_simple_int_vector_from_query(result, "id");
 
 	delete result;
 
-	std::stringstream l;
-	for (unsigned int i = 0; i < data["ids"].size(); i++)
+	if(validate_array_vector(data["ids"], accessible) == false)
 	{
-		bool found = false;
-		int id = data["ids"][i].asInt();
-		for(std::vector<int>::iterator it = accesible.begin(); it != accesible.end(); it++)	if(id == *it) found = true;
-
-		if(found == false)
-		{
 			errors.append(Json::Value("Invalid ID access"));
 			return Json::Value(Json::nullValue);
-		}
-
-		if (i != 0) l << ", ";
-		l << id;
 	}
-	const std::string &st = l.str();
+	const std::string &st = build_in_string(data["ids"]);
 	snprintf(query, API_BUFFER_SIZE, "SELECT DISTINCT * FROM `profile` WHERE `id` IN (%s);", st.c_str());
 
 	result = _database->send_query(query);
@@ -191,6 +198,48 @@ Json::Value API::read_department_list(Json::Value &data, int user, Json::Value &
 	Json::Value call_data = build_array_from_query(result, fix_generic_list);
 
 	delete result;
+	return call_data;
+}
+
+void fix_department_details(Json::Value &o)
+{
+	fix_rename(o, "super_department_id", "topdepartment");
+	fix_remove(o, "author");
+	fix_type(o, "id", V_INT);
+	fix_type(o, "topdepartment", V_INT);
+}
+
+Json::Value API::read_department_details(Json::Value &data, int user, Json::Value &errors)
+{
+	char query[API_BUFFER_SIZE];
+
+	snprintf(query, API_BUFFER_SIZE, "SELECT DISTINCT `id` FROM `department_list` WHERE `user_id`=%d;", user);
+	QueryResult *result = _database->send_query(query);
+
+	std::vector<int> accessible = build_simple_int_vector_from_query(result, "id");
+
+	delete result;
+
+	if(validate_array_vector(data["ids"], accessible) == false)
+	{
+			errors.append(Json::Value("Invalid ID access"));
+			return Json::Value(Json::nullValue);
+	}
+	const std::string &st = build_in_string(data["ids"]);
+	snprintf(query, API_BUFFER_SIZE, "SELECT DISTINCT * FROM `department` WHERE `id` IN (%s);", st.c_str());
+
+	result = _database->send_query(query);
+	Json::Value call_data = build_array_from_query(result, fix_department_details);
+	delete result;
+
+	for (unsigned int i = 0; i < call_data.size(); i++)
+	{
+		snprintf(query, API_BUFFER_SIZE, "SELECT DISTINCT `id` FROM `department` WHERE `super_department_id`=%d;", call_data[i]["id"].asInt());
+		result = _database->send_query(query);
+		call_data[i]["subdepartments"] = build_simple_array_from_query(result, "id", V_INT);
+		delete result;
+	}
+
 	return call_data;
 }
 

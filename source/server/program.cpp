@@ -27,7 +27,7 @@ int main (int argc, char *argv[])
 	while (api[0] != 's')
 	{
 		//std::cin.getline(api, 1023);
-		std::string out = API().handle_request("{\"data\":{\"type\":\"profile\", \"view\":\"details\", \"ids\":[1,3]}, \"action\":\"read\", \"auth\":{\"username\":\"john\", \"password\":\"123456\"}}");
+		std::string out = API().handle_request("{\"data\":{\"type\":\"department\", \"view\":\"details\", \"ids\":[1]}, \"action\":\"read\", \"auth\":{\"username\":\"john\", \"password\":\"123456\"}}");
 		std::cout << out  << std::endl;
 		break;
 	}
