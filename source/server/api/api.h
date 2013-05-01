@@ -60,6 +60,14 @@ private:
 	Json::Value update_profile(Json::Value &data, int user, Json::Value &errors);
 	Json::Value create_profile(Json::Value &data, int user, Json::Value &errors);
 	Json::Value delete_profile(Json::Value &data, int user, Json::Value &errors);
+
+	Json::Value read_department_list(Json::Value &data, int user, Json::Value &errors);
+
+	Json::Value read_user_list(Json::Value &data, int user, Json::Value &errors);
+
+	Json::Value read_application_list(Json::Value &data, int user, Json::Value &errors)
+
+	Json::Value read_pictogram_list(Json::Value &data, int user, Json::Value &errors)
 	// ETC, ETC
 
 

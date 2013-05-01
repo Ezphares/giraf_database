@@ -11,9 +11,9 @@ SELECT DISTINCT `user`.`id`, `user`.`username`
 		ON `admin_of`.`department_id`=`department`.`id`)
 		JOIN
 		`profile`
-		ON `department`.`id`=`profile`.`department`.`id`)
+		ON `department`.`id`=`profile`.`department_id`)
 		JOIN
 		`user`
-		ON `profile`.`user_id`=`user`.id`
+		ON `profile`.`user_id`=`user`.`id`
 	WHERE `admin_of`.`user_id`=@user;
 
