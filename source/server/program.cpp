@@ -22,6 +22,8 @@ int main (int argc, char *argv[])
 	char *api = "e";
 
 
+
+
 	while (api[0] != 's')
 	{
 		//std::cin.getline(api, 1023);
