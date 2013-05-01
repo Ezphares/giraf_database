@@ -19,13 +19,6 @@ API::~API() {
 }
 
 
-/*
- * NOTE ON GOTO:
- * While GOTO is normally a bad idea, in this particular case it is the only sensible way to avoid
- * the code becoming a mess. We know and acknowledge that you should be VERY careful with gotos,
- * and all other options were considered.
- */
-
 const char *API::handle_request(const char *json)
 {
 	Json::Value root, response(Json::objectValue), errors(Json::arrayValue);
@@ -36,58 +29,60 @@ const char *API::handle_request(const char *json)
 	response["status"] = Json::Value(STATUS_OK);
 	response["session"] = Json::Value(Json::nullValue);
 
-	if (!reader.parse(json, root))
+	do
 	{
-		// Parsing failed
-		response["status"] = Json::Value(STATUS_SYNTAX);
-		errors.append(Json::Value("Request was not valid JSON"));
-
-		goto done;
-	}
-
-	if (validate_top(root, errors) < 0 || validate_auth(root["auth"], errors) < 0)
-	{
-		response["status"] = Json::Value(STATUS_STRUCTURE);
-
-		goto done;
-	}
-
-	_database->connect_database();
-
-	if (root["action"].isNull())
-	{
-		int user = authenticate(root["auth"]);
-		create_session(response, user);
-	}
-	else
-	{
-		const char* action = root["action"].asCString();
-		if (strcmp(action, "create") == 0)
+		if (!reader.parse(json, root))
 		{
-			//TODO
+			// Parsing failed
+			response["status"] = Json::Value(STATUS_SYNTAX);
+			errors.append(Json::Value("Request was not valid JSON"));
+
+			break;
 		}
-		else if (strcmp(action, "read") == 0)
+
+		if (validate_top(root, errors) < 0 || validate_auth(root["auth"], errors) < 0)
 		{
-			api_read(root, response, errors);
+			response["status"] = Json::Value(STATUS_STRUCTURE);
+
+			break;
 		}
-		else if (strcmp(action, "update") == 0)
+
+		_database->connect_database();
+
+		if (root["action"].isNull())
 		{
-			//TODO
-		}
-		else if (strcmp(action, "delete") == 0)
-		{
-			//TODO
+			int user = authenticate(root["auth"]);
+			if (user) create_session(response, user);
 		}
 		else
 		{
-			errors.append("\"action\" was not null or a CRUD action");
-			response["status"] = Json::Value(STATUS_STRUCTURE);
+			const char* action = root["action"].asCString();
+			if (strcmp(action, "create") == 0)
+			{
+				//TODO
+			}
+			else if (strcmp(action, "read") == 0)
+			{
+				api_read(root, response, errors);
+			}
+			else if (strcmp(action, "update") == 0)
+			{
+				//TODO
+			}
+			else if (strcmp(action, "delete") == 0)
+			{
+				//TODO
+			}
+			else
+			{
+				errors.append("\"action\" was not null or a CRUD action");
+				response["status"] = Json::Value(STATUS_STRUCTURE);
 
-			goto done;
+				break;
+			}
 		}
 	}
-
-	done:
+	while (0); /* break abuse */
 
 	//_database->disconnect_database();
 	response["errors"] = errors;
