@@ -19,7 +19,7 @@ API::~API() {
 }
 
 
-const char *API::handle_request(const char *json)
+std::string API::handle_request(const char *json)
 {
 	Json::Value root, response(Json::objectValue), errors(Json::arrayValue);
 	Json::Reader reader;
@@ -85,10 +85,10 @@ const char *API::handle_request(const char *json)
 	while (0); /* break abuse */
 
 	_database->disconnect_database();
-
 	response["errors"] = errors;
 	std::string a = writer.write(response).c_str(); // Pointer hack. JsonCPP does weird stuff.
-	return a.c_str();
+
+	return a;
 }
 
 void API::create_session(Json::Value &response, int user)

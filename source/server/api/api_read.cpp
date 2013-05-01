@@ -104,32 +104,32 @@ int API::api_read(Json::Value &request, Json::Value &response, Json::Value &erro
 	return 0;
 }
 
+
+void fix_profile_list(Json::Value &o)
+{
+	fix_type(o, "id", V_INT);
+	fix_type(o, "role", V_INT);
+}
+
 Json::Value API::read_profile_list(Json::Value &data, int user, Json::Value &errors)
 {
 	char query[API_BUFFER_SIZE];
-
-	//TODO: Add support for department managers to see all profiles in their departments
 	snprintf(query, API_BUFFER_SIZE, "SELECT DISTINCT `id`, `name`, `role` FROM `profile_list` WHERE `user_id`=%d;", user);
 	QueryResult *result = _database->send_query(query);
 
-	row_t r = result->next_row();
-	Json::Value call_data(Json::arrayValue);
-	std::cout << r["phone"] << std::endl;
-	while (!r.empty())
-	{
-		Json::Value o(Json::objectValue);
-		o["id"] = Json::Value(atoi(r["id"].c_str()));
-		o["name"] = Json::Value(r["name"].c_str());
-		o["role"] = Json::Value(atoi(r["role"].c_str()));
-
-		call_data.append(o);
-		r = result->next_row();
-	}
+	Json::Value call_data = build_array_from_query(result, fix_profile_list);
 
 	delete result;
-
 	return call_data;
+}
 
+void fix_profile_details(Json::Value &o)
+{
+	fix_rename(o, "department_id", "department");
+	fix_remove(o, "user_id");
+	fix_type(o, "id", V_INT);
+	fix_type(o, "role", V_INT);
+	fix_type(o, "department", V_INT);
 }
 
 Json::Value API::read_profile_details(Json::Value &data, int user, Json::Value &errors)
@@ -139,28 +139,17 @@ Json::Value API::read_profile_details(Json::Value &data, int user, Json::Value &
 	snprintf(query, API_BUFFER_SIZE, "SELECT DISTINCT `id` FROM `profile_list` WHERE `user_id`=%d;", user);
 	QueryResult *result = _database->send_query(query);
 
-	row_t r = result->next_row();
-	Json::Value call_data(Json::arrayValue);
-
-	std::vector<int> accesible;
-
-	while (!r.empty())
-	{
-		accesible.push_back(atoi(r["id"].c_str()));
-		r = result->next_row();
-	}
-	std::stringstream l;
+	std::vector<int> accesible = build_simple_int_vector_from_query(result, "id");
 
 	delete result;
 
+	std::stringstream l;
 	for (unsigned int i = 0; i < data["ids"].size(); i++)
 	{
 		bool found = false;
 		int id = data["ids"][i].asInt();
-		for(std::vector<int>::iterator it = accesible.begin(); it != accesible.end(); it++)
-		{
-			if(id == *it) found = true;
-		}
+		for(std::vector<int>::iterator it = accesible.begin(); it != accesible.end(); it++)	if(id == *it) found = true;
+
 		if(found == false)
 		{
 			errors.append(Json::Value("Invalid ID access"));
@@ -174,139 +163,82 @@ Json::Value API::read_profile_details(Json::Value &data, int user, Json::Value &
 	snprintf(query, API_BUFFER_SIZE, "SELECT DISTINCT * FROM `profile` WHERE `id` IN (%s);", st.c_str());
 
 	result = _database->send_query(query);
+	Json::Value call_data = build_array_from_query(result, fix_profile_details);
+	delete result;
 
-	r = result->next_row();
-	build_object_from_row(r);
-	while (!r.empty())
+	for (unsigned int i = 0; i < call_data.size(); i++)
 	{
-		Json::Value o(Json::objectValue);
-		o["id"] = Json::Value(atoi(r["id"].c_str()));
-		o["name"] = Json::Value(Json::Value(r["name"].c_str()));
-		o["department"] = Json::Value(atoi(r["department_id"].c_str()));
-		o["role"] = Json::Value(atoi(r["role"].c_str()));
-		o["address"] = Json::Value(r["address"].c_str());
-		if(strcmp(r["email"].c_str(), "") != 0) o["email"] = Json::Value(r["email"].c_str());
-		if(strcmp(r["phone"].c_str(), "") != 0) o["phone"] = Json::Value(r["phone"].c_str());
-		if(strcmp(r["picture"].c_str(), "") != 0) o["picture"] = Json::Value(r["picture"].c_str());
-		if(strcmp(r["settings"].c_str(), "") != 0) o["settings"] = Json::Value(r["settings"].c_str());
-		Json::Value children(Json::arrayValue);
-
-		snprintf(query, API_BUFFER_SIZE, "SELECT `child_id` FROM `guardian_of` WHERE `guardian_id`=%s;", r["id"].c_str());
-		QueryResult *subresult = _database->send_query(query);
-
-		row_t sr = subresult->next_row();
-		while (!sr.empty())
-		{
-			children.append(Json::Value(atoi(sr["child_id"].c_str())));
-			sr = subresult->next_row();
-		}
-		o["guardian_of"] = children;
-
-		call_data.append(o);
-		r = result->next_row();
+		snprintf(query, API_BUFFER_SIZE, "SELECT DISTINCT `child_id` FROM `guardian_of` WHERE `guardian_id`=%d;", call_data[i]["id"].asInt());
+		result = _database->send_query(query);
+		call_data[i]["guardian_of"] = build_simple_array_from_query(result, "child_id", V_INT);
+		delete result;
 	}
 
-	delete result;
 	return call_data;
+}
+
+void fix_generic_list(Json::Value &o)
+{
+	fix_type(o, "id", V_INT);
 }
 
 Json::Value API::read_department_list(Json::Value &data, int user, Json::Value &errors)
 {
 	char query[API_BUFFER_SIZE];
-
 	snprintf(query, API_BUFFER_SIZE, "SELECT DISTINCT `id`, `name` FROM `department_list` WHERE `user_id`=%d;", user);
 	QueryResult *result = _database->send_query(query);
 
-	row_t r = result->next_row();
-	Json::Value call_data(Json::arrayValue);
-
-	while (!r.empty())
-	{
-		Json::Value o(Json::objectValue);
-		o["id"] = Json::Value(atoi(r["id"].c_str()));
-		o["name"] = Json::Value(r["name"].c_str());
-
-		call_data.append(o);
-		r = result->next_row();
-	}
+	Json::Value call_data = build_array_from_query(result, fix_generic_list);
 
 	delete result;
-
 	return call_data;
-
 }
 
 Json::Value API::read_user_list(Json::Value &data, int user, Json::Value &errors)
 {
 	char query[API_BUFFER_SIZE];
-
 	snprintf(query, API_BUFFER_SIZE, "SELECT DISTINCT `id`, `name` FROM `user_list` WHERE `user_id`=%d;", user);
 	QueryResult *result = _database->send_query(query);
 
-	row_t r = result->next_row();
-	Json::Value call_data(Json::arrayValue);
-
-	while (!r.empty())
-	{
-		Json::Value o(Json::objectValue);
-		o["id"] = Json::Value(atoi(r["id"].c_str()));
-		o["name"] = Json::Value(r["name"].c_str());
-
-		call_data.append(o);
-		r = result->next_row();
-	}
+	Json::Value call_data = build_array_from_query(result, fix_generic_list);
 
 	delete result;
-
 	return call_data;
 }
 
 Json::Value API::read_application_list(Json::Value &data, int user, Json::Value &errors)
 {
 	char query[API_BUFFER_SIZE];
-
 	snprintf(query, API_BUFFER_SIZE, "SELECT DISTINCT `id`, `name` FROM `application_list` WHERE `user_id`=%d;", user);
 	QueryResult *result = _database->send_query(query);
 
-	row_t r = result->next_row();
-	Json::Value call_data(Json::arrayValue);
-
-	while (!r.empty())
-	{
-		Json::Value o(Json::objectValue);
-		o["id"] = Json::Value(atoi(r["id"].c_str()));
-		o["name"] = Json::Value(r["name"].c_str());
-
-		call_data.append(o);
-		r = result->next_row();
-	}
+	Json::Value call_data = build_array_from_query(result, fix_generic_list);
 
 	delete result;
-
 	return call_data;
 }
 
 Json::Value API::read_pictogram_list(Json::Value &data, int user, Json::Value &errors)
 {
 	char query[API_BUFFER_SIZE];
-
 	snprintf(query, API_BUFFER_SIZE, "SELECT DISTINCT `id`, `name`, `categories`, `tags` FROM `pictogram_list` WHERE `user_id`=%d;", user);
 	QueryResult *result = _database->send_query(query);
 
-	row_t r = result->next_row();
-	Json::Value call_data(Json::arrayValue);
+	Json::Value call_data = build_array_from_query(result, fix_generic_list);
 
-	while (!r.empty())
+	for (unsigned int i = 0; i < call_data.size(); i++)
 	{
-		Json::Value o(Json::objectValue);
-		o["id"] = Json::Value(atoi(r["id"].c_str()));
-		o["name"] = Json::Value(r["name"].c_str());
+		snprintf(query, API_BUFFER_SIZE, "SELECT DISTINCT `extra` FROM `pictogram_extras` WHERE `id`=%d AND `is_category`=1;", call_data[i]["id"].asInt());
+		result = _database->send_query(query);
+		call_data[i]["categories"] = build_simple_array_from_query(result, "extra", V_STRING);
+		delete result;
 
-		call_data.append(o);
-		r = result->next_row();
+		snprintf(query, API_BUFFER_SIZE, "SELECT DISTINCT `extra` FROM `pictogram_extras` WHERE `id`=%d AND `is_category`=0;", call_data[i]["id"].asInt());
+		result = _database->send_query(query);
+		call_data[i]["tags"] = build_simple_array_from_query(result, "extra", V_STRING);
+		delete result;
 	}
 
 	delete result;
-
 	return call_data;
 }

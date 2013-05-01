@@ -33,13 +33,15 @@ Json::Value build_object_from_row(row_t& row, fixture fix)
 	return o;
 }
 
-Json::Value build_arry_from_query(QueryResult *query, fixture fix)
+Json::Value build_array_from_query(QueryResult *query, fixture fix)
 {
 	Json::Value a(Json::arrayValue);
 	row_t r = query->next_row();
 	while (!r.empty())
 	{
 		a.append(build_object_from_row(r, fix));
+
+		r = query->next_row();
 	}
 
 	return a;
@@ -54,6 +56,8 @@ Json::Value build_simple_array_from_query(QueryResult *query, const char *key, v
 		if (type == V_STRING) a.append(Json::Value(r[key]));
 		else if (type == V_INT) a.append(Json::Value(atoi(r[key].c_str())));
 		else if (type == V_BOOL) a.append(Json::Value((bool)!!atoi(r[key].c_str())));
+
+		r = query->next_row();
 	}
 
 	return a;

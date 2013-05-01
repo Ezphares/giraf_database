@@ -8,8 +8,8 @@
 int handle_api(Connection *connection)
 {
 	const char *request = connection->receive();
-	const char *response = (new API())->handle_request(request);
-	connection->send(response);
+	std::string response = (new API())->handle_request(request);
+	connection->send(response.c_str());
 	return 0;
 }
 
@@ -27,7 +27,7 @@ int main (int argc, char *argv[])
 	while (api[0] != 's')
 	{
 		//std::cin.getline(api, 1023);
-		char const *out = API().handle_request("{\"data\":{\"type\":\"profile\", \"view\":\"details\", \"ids\":[1,3]}, \"action\":\"read\", \"auth\":{\"username\":\"john\", \"password\":\"123456\"}}");
+		std::string out = API().handle_request("{\"data\":{\"type\":\"profile\", \"view\":\"details\", \"ids\":[1,3]}, \"action\":\"read\", \"auth\":{\"username\":\"john\", \"password\":\"123456\"}}");
 		std::cout << out  << std::endl;
 		break;
 	}
