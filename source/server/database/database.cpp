@@ -43,7 +43,6 @@ void Database::disconnect_database()
 int Database::connect_database()
 {
 	_conn = mysql_init(NULL);
-
 	if(_conn == NULL)
 	{
 		fprintf(stderr, "Error %u: %s\n", mysql_errno(_conn), mysql_error(_conn));

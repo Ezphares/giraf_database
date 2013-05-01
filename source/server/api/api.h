@@ -10,11 +10,9 @@
 #define STATUS_AUTH "AUTHFAILED"
 #define STATUS_ACCESS "ACCESSDENIED"
 
-const unsigned int BUFFER_SIZE = 4096;
+#define BUFFER_SIZE 4096
 
-enum rights_t : char {CREATE = 0, READ = 1, UPDATE = 2, DELETE = 3};
-enum rights_v : char {NONE = 0, EMULATE = 1, TRUE = 3};
-
+#include <json/config.h>
 #include <json/value.h>
 #include <vector>
 #include <map>
@@ -39,7 +37,7 @@ private:
 	int authenticate_user_pass(Json::Value &username, Json::Value &password);
 	int authenticate_certificate(Json::Value &certificate);
 	// int authenticate_session(Json::Value session_key); // TODO Future work
-
+	void create_session(Json::Value &response, int user);
 
 	int validate_top(Json::Value &request, Json::Value &errors);
 	int validate_auth(Json::Value &auth, Json::Value &errors);
@@ -47,11 +45,6 @@ private:
 	int validate_write(Json::Value &data, Json::Value &errors);
 	int validate_update(Json::Value &data, Json::Value &errors);
 	int validate_delete(Json::Value &data, Json::Value &errors);
-
-
-
-
-	std::map<int, rights_v> get_rights(int user_id, const char *data_type, std::vector<int> ids, rights_t rights);
 
 	/*
 	 * ALL API CALLS GO HERE:
