@@ -20,7 +20,7 @@ SELECT DISTINCT `department`.`id`, `department`.`name`
 		(`department` AS `d_top`
 		JOIN
 		`admin_of`
-		ON `department`.`id`=`admin_of`.`department_id`)
+		ON `d_top`.`id`=`admin_of`.`department_id`)
 		JOIN
 		`department`
 		ON `department`.`super_department_id`=`d_top`.`id`

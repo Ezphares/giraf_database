@@ -109,8 +109,7 @@ Json::Value API::read_profile_list(Json::Value &data, int user, Json::Value &err
 	char query[API_BUFFER_SIZE];
 
 	//TODO: Add support for department managers to see all profiles in their departments
-	char *temp = read_file("api/sql/profile_read_list.sql");
-	snprintf(query, API_BUFFER_SIZE, temp, user, user, user);
+	snprintf(query, API_BUFFER_SIZE, "SELECT DISTINCT `id`, `name`, `role` FROM `profile_list` WHERE `user_id`=%d;", user);
 	QueryResult *result = _database->send_query(query);
 
 	row_t r = result->next_row();
@@ -128,7 +127,6 @@ Json::Value API::read_profile_list(Json::Value &data, int user, Json::Value &err
 	}
 
 	delete result;
-	free(temp);
 
 	return call_data;
 
@@ -138,8 +136,7 @@ Json::Value API::read_profile_details(Json::Value &data, int user, Json::Value &
 {
 	char query[API_BUFFER_SIZE];
 
-	char *temp = read_file("api/sql/profile_read_list.sql");
-	snprintf(query, API_BUFFER_SIZE, temp, user, user, user);
+	snprintf(query, API_BUFFER_SIZE, "SELECT DISTINCT `id` FROM `profile_list` WHERE `user_id`=%d;", user);
 	QueryResult *result = _database->send_query(query);
 
 	row_t r = result->next_row();
@@ -155,7 +152,6 @@ Json::Value API::read_profile_details(Json::Value &data, int user, Json::Value &
 	std::stringstream l;
 
 	delete result;
-	free(temp);
 
 	for (unsigned int i = 0; i < data["ids"].size(); i++)
 	{
@@ -175,7 +171,7 @@ Json::Value API::read_profile_details(Json::Value &data, int user, Json::Value &
 		l << id;
 	}
 	const std::string &st = l.str();
-	snprintf(query, API_BUFFER_SIZE, "SELECT * FROM `profile` WHERE `id` IN (%s);", st.c_str());
+	snprintf(query, API_BUFFER_SIZE, "SELECT DISTINCT * FROM `profile` WHERE `id` IN (%s);", st.c_str());
 
 	result = _database->send_query(query);
 
@@ -214,7 +210,103 @@ Json::Value API::read_profile_details(Json::Value &data, int user, Json::Value &
 	return call_data;
 }
 
-Json::Value API::update_profile(Json::Value &data, int user, Json::Value &errors)
+Json::Value API::read_department_list(Json::Value &data, int user, Json::Value &errors)
 {
 	char query[API_BUFFER_SIZE];
+
+	snprintf(query, API_BUFFER_SIZE, "SELECT DISTINCT `id`, `name` FROM `department_list` WHERE `user_id`=%d;", user);
+	QueryResult *result = _database->send_query(query);
+
+	row_t r = result->next_row();
+	Json::Value call_data(Json::arrayValue);
+
+	while (!r.empty())
+	{
+		Json::Value o(Json::objectValue);
+		o["id"] = Json::Value(atoi(r["id"].c_str()));
+		o["name"] = Json::Value(r["name"].c_str());
+
+		call_data.append(o);
+		r = result->next_row();
+	}
+
+	delete result;
+
+	return call_data;
+
+}
+
+Json::Value API::read_user_list(Json::Value &data, int user, Json::Value &errors)
+{
+	char query[API_BUFFER_SIZE];
+
+	snprintf(query, API_BUFFER_SIZE, "SELECT DISTINCT `id`, `name` FROM `user_list` WHERE `user_id`=%d;", user);
+	QueryResult *result = _database->send_query(query);
+
+	row_t r = result->next_row();
+	Json::Value call_data(Json::arrayValue);
+
+	while (!r.empty())
+	{
+		Json::Value o(Json::objectValue);
+		o["id"] = Json::Value(atoi(r["id"].c_str()));
+		o["name"] = Json::Value(r["name"].c_str());
+
+		call_data.append(o);
+		r = result->next_row();
+	}
+
+	delete result;
+
+	return call_data;
+}
+
+Json::Value API::read_application_list(Json::Value &data, int user, Json::Value &errors)
+{
+	char query[API_BUFFER_SIZE];
+
+	snprintf(query, API_BUFFER_SIZE, "SELECT DISTINCT `id`, `name` FROM `application_list` WHERE `user_id`=%d;", user);
+	QueryResult *result = _database->send_query(query);
+
+	row_t r = result->next_row();
+	Json::Value call_data(Json::arrayValue);
+
+	while (!r.empty())
+	{
+		Json::Value o(Json::objectValue);
+		o["id"] = Json::Value(atoi(r["id"].c_str()));
+		o["name"] = Json::Value(r["name"].c_str());
+
+		call_data.append(o);
+		r = result->next_row();
+	}
+
+	delete result;
+
+	return call_data;
+}
+
+Json::Value API::read_pictogram_list(Json::Value &data, int user, Json::Value &errors)
+{
+	char query[API_BUFFER_SIZE];
+
+	snprintf(query, API_BUFFER_SIZE, "SELECT DISTINCT `id`, `name`, `categories`, `tags` FROM `pictogram_list` WHERE `user_id`=%d;", user);
+	QueryResult *result = _database->send_query(query);
+
+	row_t r = result->next_row();
+	Json::Value call_data(Json::arrayValue);
+
+	while (!r.empty())
+	{
+		Json::Value o(Json::objectValue);
+		o["id"] = Json::Value(atoi(r["id"].c_str()));
+		o["name"] = Json::Value(r["name"].c_str());
+
+		call_data.append(o);
+		r = result->next_row();
+	}
+
+	delete result;
+
+	return call_data;
 }
