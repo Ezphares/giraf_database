@@ -79,6 +79,7 @@ int API::api_read(Json::Value &request, Json::Value &response, Json::Value &erro
 		errors.append(Json::Value("Authentication failed"));
 		return -1;
 	}
+	create_session(response, user);
 
 	Json::Value call_data;
 
