@@ -84,9 +84,11 @@ const char *API::handle_request(const char *json)
 	}
 	while (0); /* break abuse */
 
-	//_database->disconnect_database();
+	_database->disconnect_database();
+
 	response["errors"] = errors;
-	return writer.write(response).c_str();
+	std::string a = writer.write(response).c_str(); // Pointer hack. JsonCPP does weird stuff.
+	return a.c_str();
 }
 
 void API::create_session(Json::Value &response, int user)
@@ -95,7 +97,7 @@ void API::create_session(Json::Value &response, int user)
 	session["user"] = Json::Value(user);
 	session["session"] = Json::Value("");
 
-	char buffer [BUFFER_SIZE];
+	char buffer [API_BUFFER_SIZE];
 
 	sprintf(buffer, "SELECT `id` "
 						"FROM `profile` "
@@ -115,7 +117,7 @@ void API::create_session(Json::Value &response, int user)
 
 int API::authenticate(Json::Value &auth)
 {
-	char buffer [BUFFER_SIZE];
+	char buffer [API_BUFFER_SIZE];
 
 	if (auth.isMember("username"))
 	{

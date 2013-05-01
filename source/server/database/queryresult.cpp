@@ -30,7 +30,10 @@ row_t QueryResult::next_row()
 
 	for(int i = 0; i < num_fields; i++)
 	{
-		r.insert(std::pair<std::string, std::string>(fields[i].name, row[i]));
+		std::string str = "";
+		if (row[i] != NULL) str = std::string(row[i]);
+
+		r.insert(std::pair<std::string, std::string>(fields[i].name, str));
 	}
 
 	return r;

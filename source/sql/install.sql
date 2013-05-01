@@ -31,7 +31,7 @@ CREATE TABLE `department` (
 CREATE TABLE `profile` (
 	`id`				INT(11)			NOT NULL	AUTO_INCREMENT,
 	`name`				VARCHAR(64)		NOT NULL,
-	`phone`				VARCHAR(11)			NULL,
+	`phone`				VARCHAR(11)		NULL,
 	`picture`			BLOB			NULL,
 	`email`				VARCHAR(64)		NULL,
 	`role`				SMALLINT		NOT NULL,
