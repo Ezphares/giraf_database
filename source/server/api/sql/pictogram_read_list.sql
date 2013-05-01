@@ -12,7 +12,7 @@ SELECT DISTINCT `department_pictogram`.`pictogram_id` AS `id`
 		(`profile`
 		JOIN
 		`department`
-		ON `profile`.`department_id`=`department`id)
+		ON `profile`.`department_id`=`department`.`id`)
 		JOIN
 		`department_pictogram`
 		ON `department`.`id`=`department_pictogram`.`department_id`
