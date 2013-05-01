@@ -10,7 +10,7 @@
 #define STATUS_AUTH "AUTHFAILED"
 #define STATUS_ACCESS "ACCESSDENIED"
 
-#define BUFFER_SIZE 4096
+#define API_BUFFER_SIZE 4096
 
 #include <json/config.h>
 #include <json/value.h>
@@ -19,6 +19,8 @@
 #include <cstring>
 #include "../database/database.h"
 #include "../file/fileio.h"
+#include <sstream>
+#include <cstdlib>
 
 class API
 {
