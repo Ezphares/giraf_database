@@ -21,6 +21,7 @@
 #include "../file/fileio.h"
 #include <sstream>
 #include <cstdlib>
+#include "builders.h"
 
 class API
 {
