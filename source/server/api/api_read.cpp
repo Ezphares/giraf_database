@@ -106,15 +106,14 @@ int API::api_read(Json::Value &request, Json::Value &response, Json::Value &erro
 
 Json::Value API::read_profile_list(Json::Value &data, int user, Json::Value &errors)
 {
-	QueryResult *result;
-	char query[BUFFER_SIZE];
-	row_t r;
+	char query[API_BUFFER_SIZE];
 
+	//TODO: Add support for department managers to see all profiles in their departments
 	char *temp = read_file("api/sql/profile_read_list.sql");
-	sprintf(query, temp, user, user, user);
-	result = _database->send_query(query);
+	snprintf(query, API_BUFFER_SIZE, temp, user, user, user);
+	QueryResult *result = _database->send_query(query);
 
-	r = result->next_row();
+	row_t r = result->next_row();
 	Json::Value call_data(Json::arrayValue);
 	std::cout << r["phone"] << std::endl;
 	while (!r.empty())
@@ -137,15 +136,13 @@ Json::Value API::read_profile_list(Json::Value &data, int user, Json::Value &err
 
 Json::Value API::read_profile_details(Json::Value &data, int user, Json::Value &errors)
 {
-	QueryResult *result;
-	char query[BUFFER_SIZE];
-	row_t r;
+	char query[API_BUFFER_SIZE];
 
 	char *temp = read_file("api/sql/profile_read_list.sql");
-	sprintf(query, temp, user, user, user);
-	result = _database->send_query(query);
+	snprintf(query, API_BUFFER_SIZE, temp, user, user, user);
+	QueryResult *result = _database->send_query(query);
 
-	r = result->next_row();
+	row_t r = result->next_row();
 	Json::Value call_data(Json::arrayValue);
 
 	std::vector<int> accesible;
@@ -177,27 +174,46 @@ Json::Value API::read_profile_details(Json::Value &data, int user, Json::Value &
 		if (i != 0) l << ", ";
 		l << id;
 	}
+	const std::string &st = l.str();
+	snprintf(query, API_BUFFER_SIZE, "SELECT * FROM `profile` WHERE `id` IN (%s);", st.c_str());
 
-	sprintf(query, "SELECT * FROM `profile` WHERE `id` IN (%s);", l.str().c_str());
 	result = _database->send_query(query);
 
 	r = result->next_row();
 	while (!r.empty())
+	{
+		Json::Value o(Json::objectValue);
+		o["id"] = Json::Value(atoi(r["id"].c_str()));
+		o["name"] = Json::Value(Json::Value(r["name"].c_str()));
+		o["department"] = Json::Value(atoi(r["department_id"].c_str()));
+		o["role"] = Json::Value(atoi(r["role"].c_str()));
+		o["address"] = Json::Value(r["address"].c_str());
+		if(strcmp(r["email"].c_str(), "") != 0) o["email"] = Json::Value(r["email"].c_str());
+		if(strcmp(r["phone"].c_str(), "") != 0) o["phone"] = Json::Value(r["phone"].c_str());
+		if(strcmp(r["picture"].c_str(), "") != 0) o["picture"] = Json::Value(r["picture"].c_str());
+		if(strcmp(r["settings"].c_str(), "") != 0) o["settings"] = Json::Value(r["settings"].c_str());
+		Json::Value children(Json::arrayValue);
+
+		snprintf(query, API_BUFFER_SIZE, "SELECT `child_id` FROM `guardian_of` WHERE `guardian_id`=%s;", r["id"].c_str());
+		QueryResult *subresult = _database->send_query(query);
+
+		row_t sr = subresult->next_row();
+		while (!sr.empty())
 		{
-			Json::Value o(Json::objectValue);
-			o["id"] = Json::Value(atoi(r["id"].c_str()));
-			o["name"] = Json::Value(r["name"].c_str());
-			o["email"] = Json::Value(r["email"].c_str());
-			o["department"] = Json::Value(atoi(r["department"].c_str()));
-			o["role"] = Json::Value(atoi(r["role"].c_str()));
-			if(strcmp(r["address"].c_str(), "") != 0) o["address"] = Json::Value(r["address"].c_str());
-			if(strcmp(r["phone"].c_str(), "") != 0) o["phone"] = Json::Value(r["phone"].c_str());
-			if(strcmp(r["picture"].c_str(), "") != 0) o["picture"] = Json::Value(r["picture"].c_str());
-			if(strcmp(r["settings"].c_str(), "") != 0) o["settings"] = Json::Value(r["settings"].c_str());
-
-			call_data.append(o);
-			r = result->next_row();
+			children.append(Json::Value(atoi(sr["child_id"].c_str())));
+			sr = subresult->next_row();
 		}
+		o["guardian_of"] = children;
 
+		call_data.append(o);
+		r = result->next_row();
+	}
+
+	delete result;
 	return call_data;
+}
+
+Json::Value API::update_profile(Json::Value &data, int user, Json::Value &errors)
+{
+	char query[API_BUFFER_SIZE];
 }
