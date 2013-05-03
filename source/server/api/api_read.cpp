@@ -102,8 +102,8 @@ int API::api_read(Json::Value &request, Json::Value &response, Json::Value &erro
 		if (strcmp(request["data"]["type"].asCString(), "profile") == 0) 			call_data = read_profile_details(request["data"], user, errors);
 		else if (strcmp(request["data"]["type"].asCString(), "department") == 0) 	call_data = read_department_details(request["data"], user, errors);
 		else if (strcmp(request["data"]["type"].asCString(), "user") == 0) 			call_data = read_user_details(request["data"], user, errors);
-		else if (strcmp(request["data"]["type"].asCString(), "pictogram") == 0) 	call_data;//TODO = read_pictogram_details(request["data"], user, errors);
-		else if (strcmp(request["data"]["type"].asCString(), "application") == 0) 	call_data;//TODO = read_application_details(request["data"], user, errors);
+		else if (strcmp(request["data"]["type"].asCString(), "pictogram") == 0) 	call_data = read_pictogram_details(request["data"], user, errors);
+		else if (strcmp(request["data"]["type"].asCString(), "application") == 0) 	call_data = read_application_details(request["data"], user, errors);
 		else
 		{
 			response["status"] = STATUS_STRUCTURE;
@@ -293,13 +293,47 @@ Json::Value API::read_application_list(Json::Value &data, int user, Json::Value 
 	return call_data;
 }
 
+void fix_application_details(Json::Value &o)
+{
+	fix_type(o, "id", V_INT);
+	fix_remove(o, "user_id");
+}
+
+
+Json::Value API::read_application_details(Json::Value &data, int user, Json::Value &errors)
+{
+	char query[API_BUFFER_SIZE];
+
+	snprintf(query, API_BUFFER_SIZE, "SELECT DISTINCT `id` FROM `application_list` WHERE `user_id`=%d;", user);
+	QueryResult *result = _database->send_query(query);
+
+	std::vector<int> accessible = build_simple_int_vector_from_query(result, "id");
+	delete result;
+
+	if(validate_array_vector(data["ids"], accessible) == false)
+	{
+			errors.append(Json::Value("Invalid ID access"));
+			return Json::Value(Json::nullValue);
+	}
+
+	const std::string &st = build_in_string(data["ids"]);
+	snprintf(query, API_BUFFER_SIZE, "SELECT DISTINCT * FROM `application_details` WHERE `id` IN (%s);", st.c_str());
+
+	result = _database->send_query(query);
+	Json::Value call_data = build_array_from_query(result, fix_application_details);
+	delete result;
+
+	return call_data;
+}
+
 Json::Value API::read_pictogram_list(Json::Value &data, int user, Json::Value &errors)
 {
 	char query[API_BUFFER_SIZE];
-	snprintf(query, API_BUFFER_SIZE, "SELECT DISTINCT `id`, `name`, `categories`, `tags` FROM `pictogram_list` WHERE `user_id`=%d;", user);
+	snprintf(query, API_BUFFER_SIZE, "SELECT DISTINCT `id`, `name` FROM `pictogram_list` WHERE `user_id`=%d;", user);
 	QueryResult *result = _database->send_query(query);
 
 	Json::Value call_data = build_array_from_query(result, fix_generic_list);
+	delete result;
 
 	for (unsigned int i = 0; i < call_data.size(); i++)
 	{
@@ -314,6 +348,54 @@ Json::Value API::read_pictogram_list(Json::Value &data, int user, Json::Value &e
 		delete result;
 	}
 
+	return call_data;
+}
+
+void fix_pictogram_details(Json::Value &o)
+{
+	fix_type(o, "id", V_INT);
+	fix_type(o, "public", V_BOOL);
+	fix_remove(o, "author");
+	fix_rename(o, "inline_text", "text");
+	fix_rename(o, "sound_data", "sound");
+	fix_rename(o, "image_data", "image");
+}
+
+Json::Value API::read_pictogram_details(Json::Value &data, int user, Json::Value &errors)
+{
+	char query[API_BUFFER_SIZE];
+
+	snprintf(query, API_BUFFER_SIZE, "SELECT DISTINCT `id` FROM `pictogram_list` WHERE `user_id`=%d;", user);
+	QueryResult *result = _database->send_query(query);
+
+	std::vector<int> accessible = build_simple_int_vector_from_query(result, "id");
 	delete result;
+
+	if(validate_array_vector(data["ids"], accessible) == false)
+	{
+			errors.append(Json::Value("Invalid ID access"));
+			return Json::Value(Json::nullValue);
+	}
+
+	const std::string &st = build_in_string(data["ids"]);
+	snprintf(query, API_BUFFER_SIZE, "SELECT DISTINCT * FROM `pictogram` WHERE `id` IN (%s);", st.c_str());
+
+	result = _database->send_query(query);
+	Json::Value call_data = build_array_from_query(result, fix_pictogram_details);
+	delete result;
+
+	for (unsigned int i = 0; i < call_data.size(); i++)
+	{
+		snprintf(query, API_BUFFER_SIZE, "SELECT DISTINCT `extra` FROM `pictogram_extras` WHERE `id`=%d AND `is_category`=1;", call_data[i]["id"].asInt());
+		result = _database->send_query(query);
+		call_data[i]["categories"] = build_simple_array_from_query(result, "extra", V_STRING);
+		delete result;
+
+		snprintf(query, API_BUFFER_SIZE, "SELECT DISTINCT `extra` FROM `pictogram_extras` WHERE `id`=%d AND `is_category`=0;", call_data[i]["id"].asInt());
+		result = _database->send_query(query);
+		call_data[i]["tags"] = build_simple_array_from_query(result, "extra", V_STRING);
+		delete result;
+	}
+
 	return call_data;
 }
