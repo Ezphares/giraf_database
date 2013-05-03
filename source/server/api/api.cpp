@@ -10,8 +10,6 @@
 API::API()
 {
 	_database = new Database("127.0.0.1", 3306, "giraf", "giraf", "123456"); // TODO: Database
-	// TODO Auto-generated constructor stub
-
 }
 
 API::~API() {
@@ -71,7 +69,7 @@ std::string API::handle_request(const char *json)
 			}
 			else if (strcmp(action, "delete") == 0)
 			{
-				//TODO
+				api_delete(root, response, errors);
 			}
 			else
 			{
