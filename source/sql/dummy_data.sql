@@ -22,3 +22,7 @@ INSERT INTO `guardian_of` (`guardian_id`, `child_id`)
                (2, 4),
                (3, 4),
                (2, 5);
+
+INSERT INTO `pictogram` (`name`, `public`) VALUES ('bil', false), ('hus', true);
+
+INSERT INTO profile_pictogram (profile_id, pictogram_id) values (1, 1), (1, 2);

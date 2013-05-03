@@ -20,7 +20,7 @@ void fix_remove(Json::Value &object, const char *key)
 void fix_type(Json::Value &object, const char *key, value_type type)
 {
 	if (type == V_INT) object[key] = Json::Value(atoi(object[key].asCString()));
-	if (type == V_BOOL) return; //TODO: Not yet implemented
+	if (type == V_BOOL) object[key] = Json::Value((bool)!!atoi(object[key].asCString()));
 }
 
 Json::Value build_object_from_row(row_t& row, fixture fix)
