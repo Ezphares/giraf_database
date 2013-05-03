@@ -46,7 +46,7 @@ private:
 	int validate_top(Json::Value &request, Json::Value &errors);
 	int validate_auth(Json::Value &auth, Json::Value &errors);
 	int validate_read(Json::Value &data, Json::Value &errors);
-	int validate_write(Json::Value &data, Json::Value &errors);
+	int validate_create(Json::Value &data, Json::Value &errors);
 	int validate_update(Json::Value &data, Json::Value &errors);
 	int validate_delete(Json::Value &data, Json::Value &errors);
 
