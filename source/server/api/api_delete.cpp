@@ -7,13 +7,74 @@
 
 int API::validate_delete(Json::Value &data, Json::Value &errors)
 {
-	return 0;
+
+	if (!data.isMember("type"))
+	{
+		errors.append(Json::Value("\"data\":\"type\" key missing"));
+	}
+	else
+	{
+		if (!data["type"].isString())
+		{
+			errors.append(Json::Value("\"data\":\"type\" was not a string"));
+		}
+	}
+
+	if (!data.isMember("ids"))
+	{
+		errors.append(Json::Value("\"data\":\"ids\" key missing"));
+		if (!data["ids"].isArray())
+		{
+			errors.append(Json::Value("\"data\":\"ids\" was not an array"));
+		}
+	}
+
+	if (errors.empty()) return 0;
+	else return -1;
 }
 
 int API::api_delete(Json::Value &request, Json::Value &response, Json::Value &errors)
 {
+	if (validate_delete(request["data"], errors) < 0)
+	{
+		response["status"] = Json::Value(STATUS_STRUCTURE);
+		return -1;
+	}
+
+	int user = authenticate(request["auth"]);
+
+	if (user == -1)
+	{
+		response["status"] = STATUS_AUTH;
+		errors.append(Json::Value("Authentication failed"));
+		return -1;
+	}
+	create_session(response, user);
+
+	Json::Value call_data;
+
+	if (strcmp(request["data"]["type"].asCString(), "profile") == 0) 			call_data = delete_profile(request["data"], user, errors);
+	else if (strcmp(request["data"]["type"].asCString(), "department") == 0) 	call_data = delete_department(request["data"], user, errors);
+	else if (strcmp(request["data"]["type"].asCString(), "user") == 0) 			call_data = delete_user(request["data"], user, errors);
+	else if (strcmp(request["data"]["type"].asCString(), "pictogram") == 0) 	call_data;//TODO = delete_pictogram(request["data"], user, errors);
+	else if (strcmp(request["data"]["type"].asCString(), "application") == 0) 	call_data;//TODO = delete_application(request["data"], user, errors);
+	else
+	{
+		response["status"] = STATUS_STRUCTURE;
+		errors.append(Json::Value("Invalid data type requested"));
+	}
+
+	if (!errors.empty())
+	{
+		response["status"] = Json::Value(STATUS_ACCESS);
+		return -1;
+	}
+
+	response["data"] = call_data;
+
 	return 0;
 }
+
 
 Json::Value API::delete_profile(Json::Value &data, int user, Json::Value &errors)
 {
