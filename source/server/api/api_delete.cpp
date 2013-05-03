@@ -69,23 +69,44 @@ Json::Value API::delete_user(Json::Value &data, int user, Json::Value &errors)
 {
 	char query[API_BUFFER_SIZE];
 
-		snprintf(query, API_BUFFER_SIZE, "SELECT DISTINCT `id` FROM `user_list` WHERE `user_id`=%d AND `delete`=1;", user);
-		QueryResult *result = _database->send_query(query);
+	snprintf(query, API_BUFFER_SIZE, "SELECT DISTINCT `id` FROM `user_list` WHERE `user_id`=%d AND `delete`=1;", user);
+	QueryResult *result = _database->send_query(query);
 
-		std::vector<int> accessible = build_simple_int_vector_from_query(result, "id");
-		delete result;
+	std::vector<int> accessible = build_simple_int_vector_from_query(result, "id");
+	delete result;
 
-		if(validate_array_vector(data["ids"], accessible) == false)
-		{
-				errors.append(Json::Value("Invalid ID access"));
-				return Json::Value(Json::nullValue);
-		}
+	if(validate_array_vector(data["ids"], accessible) == false)
+	{
+			errors.append(Json::Value("Invalid ID access"));
+			return Json::Value(Json::nullValue);
+	}
 
-		const std::string &st = build_in_string(data["ids"]);
-		snprintf(query, API_BUFFER_SIZE, "DELETE FROM `user` WHERE `id` IN (%s);", st.c_str());
+	const std::string &st = build_in_string(data["ids"]);
+	snprintf(query, API_BUFFER_SIZE, "DELETE FROM `user` WHERE `id` IN (%s);", st.c_str());
 
-		result = _database->send_query(query);
-		delete result;
+	result = _database->send_query(query);
+	delete result;
+
+	return Json::Value(Json::nullValue);
+}
+
+Json::Value API::delete_application(Json::Value &data, int user, Json::Value &errors)
+{
+	char query[API_BUFFER_SIZE];
+
+	snprintf(query, API_BUFFER_SIZE, "SELECT DISTINCT `id` FROM `application_list` WHERE `user_id`=%d;", user);
+	QueryResult *result = _database->send_query(query);
+
+	std::vector<int> accessible = build_simple_int_vector_from_query(result, "id");
+	delete result;
+
+	if(validate_array_vector(data["ids"], accessible) == false)
+	{
+			errors.append(Json::Value("Invalid ID access"));
+			return Json::Value(Json::nullValue);
+	}
+
+
 
 	return Json::Value(Json::nullValue);
 }
