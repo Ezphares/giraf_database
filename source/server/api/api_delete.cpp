@@ -57,7 +57,7 @@ int API::api_delete(Json::Value &request, Json::Value &response, Json::Value &er
 	else if (strcmp(request["data"]["type"].asCString(), "department") == 0) 	call_data = delete_department(request["data"], user, errors);
 	else if (strcmp(request["data"]["type"].asCString(), "user") == 0) 			call_data = delete_user(request["data"], user, errors);
 	else if (strcmp(request["data"]["type"].asCString(), "pictogram") == 0) 	call_data;//TODO = delete_pictogram(request["data"], user, errors);
-	else if (strcmp(request["data"]["type"].asCString(), "application") == 0) 	call_data;//TODO = delete_application(request["data"], user, errors);
+	else if (strcmp(request["data"]["type"].asCString(), "application") == 0) 	call_data = delete_application(request["data"], user, errors);
 	else
 	{
 		response["status"] = STATUS_STRUCTURE;
@@ -155,10 +155,23 @@ Json::Value API::delete_application(Json::Value &data, int user, Json::Value &er
 {
 	char query[API_BUFFER_SIZE];
 
-	snprintf(query, API_BUFFER_SIZE, "SELECT DISTINCT `id` FROM `application_list` WHERE `user_id`=%d;", user);
+	snprintf(query, API_BUFFER_SIZE, "SELECT DISTINCT `id`, MAX(`direct`) FROM `application_list` WHERE `user_id`=%d GROUP BY `id`;", user);
 	QueryResult *result = _database->send_query(query);
 
 	std::vector<int> accessible = build_simple_int_vector_from_query(result, "id");
+
+	std::map link = build_simple_int_map_from_query(result, "id", "direct");
+
+	//TODO this function should be changed
+	/*for (unsigned int i = 0; i < data["ids"].size(); i++)
+	{
+		int id = data["ids"][i].asInt();
+		if (link[id] == 1)
+		{
+			snprintf(query, API_BUFFER_SIZE, "DELETE FROM `application_profile` WHERE `application_id`=%d AND `profile_id`=(SELECT `id` FROM `profile` WHERE `user_id`=%d);", id, user);
+		}
+	}
+*/
 	delete result;
 
 	if(validate_array_vector(data["ids"], accessible) == false)
@@ -171,3 +184,5 @@ Json::Value API::delete_application(Json::Value &data, int user, Json::Value &er
 
 	return Json::Value(Json::nullValue);
 }
+
+
