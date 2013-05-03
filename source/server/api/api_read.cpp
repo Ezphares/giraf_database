@@ -1,7 +1,7 @@
 /*
  * api_read.h
  *
- * TODO This file contains...
+ * This file contains implementation of all read calls (list and details) for all data types in the API.
  */
 
 #include "api.h"
