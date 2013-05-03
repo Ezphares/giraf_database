@@ -19,8 +19,6 @@ int API::validate_read(Json::Value &data, Json::Value &errors)
 		{
 			errors.append(Json::Value("\"data\":\"type\" was not a string"));
 		}
-
-		// TODO: Check if correct type
 	}
 
 	if (!data.isMember("ids"))
@@ -83,7 +81,6 @@ int API::api_read(Json::Value &request, Json::Value &response, Json::Value &erro
 
 	Json::Value call_data;
 
-	// TODO: Read calls here
 	if (strcmp(request["data"]["view"].asCString(), "list") == 0)
 	{
 		if (strcmp(request["data"]["type"].asCString(), "profile") == 0) 			call_data = read_profile_list(request["data"], user, errors);
