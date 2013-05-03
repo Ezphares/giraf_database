@@ -55,6 +55,9 @@ private:
 	 */
 
 	int api_read(Json::Value &request, Json::Value &response, Json::Value &errors);
+	int api_delete(Json::Value &request, Json::Value &response, Json::Value &errors);
+	int api_update(Json::Value &request, Json::Value &response, Json::Value &errors);
+	int api_create(Json::Value &request, Json::Value &response, Json::Value &errors);
 
 	Json::Value read_profile_list(Json::Value &data, int user, Json::Value &errors);
 	Json::Value read_profile_details(Json::Value &data, int user, Json::Value &errors);
@@ -64,9 +67,11 @@ private:
 
 	Json::Value read_department_list(Json::Value &data, int user, Json::Value &errors);
 	Json::Value read_department_details(Json::Value &data, int user, Json::Value &errors);
+	Json::Value delete_department(Json::Value &data, int user, Json::Value &errors);
 
 	Json::Value read_user_list(Json::Value &data, int user, Json::Value &errors);
 	Json::Value read_user_details(Json::Value &data, int user, Json::Value &errors);
+	Json::Value delete_user(Json::Value &data, int user, Json::Value &errors);
 
 	Json::Value read_pictogram_list(Json::Value &data, int user, Json::Value &errors);
 	Json::Value read_pictogram_details(Json::Value &data, int user, Json::Value &errors);
