@@ -134,7 +134,7 @@ CREATE VIEW `application_list` AS
         `application` ON `department_application`.`application_id`=`application`.`id`;
 
 CREATE VIEW `application_details` AS
-    SELECT `user`.`id` AS `user_id`, `application`.*, `profile_application`.`settings` FROM
+    SELECT `user`.`id` AS `user_id`, `application`.*, `profile_application`.`settings`, (1) `direct` FROM
         `user`
         JOIN
         `profile` ON `user`.`id`=`profile`.`user_id`
@@ -144,7 +144,7 @@ CREATE VIEW `application_details` AS
         `application` ON `profile_application`.`application_id`=`application`.`id`
     UNION
     /* DEPARTMENT */
-    SELECT `user`.`id` AS `user_id`, `application`.*, ("") `settings` FROM
+    SELECT `user`.`id` AS `user_id`, `application`.*, ("") `settings`, (0) `direct` FROM
         `user`
         JOIN
         `profile` ON `user`.`id`=`profile`.`user_id`
