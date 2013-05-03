@@ -78,6 +78,7 @@ private:
 
 	Json::Value read_application_list(Json::Value &data, int user, Json::Value &errors);
 	Json::Value read_application_details(Json::Value &data, int user, Json::Value &errors);
+	Json::Value delete_application(Json::Value &data, int user, Json::Value &errors);
 	// ETC, ETC
 
 
