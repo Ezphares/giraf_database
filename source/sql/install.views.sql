@@ -40,7 +40,7 @@ CREATE VIEW `giraf`.`profile_list` AS
         `department` ON `admin_of`.`department_id`=`department`.`id`
         JOIN
         `profile` ON `department`.`id`=`profile`.`department_id`
-        WHERE `profile`.`user_id`!=`user`.`id`;
+        WHERE (`profile`.`user_id`!=`user`.`id` OR `user`.`id` IS NULL);
 
 CREATE VIEW `giraf`.`user_list` AS
     /* SELF */
@@ -134,7 +134,7 @@ CREATE VIEW `application_list` AS
         `application` ON `department_application`.`application_id`=`application`.`id`;
 
 CREATE VIEW `application_details` AS
-    SELECT `user`.`id` AS `user_id`, `application`.*, `profile_application`.`settings` FROM
+    SELECT `user`.`id` AS `user_id`, `application`.*, `profile_application`.`settings`, (1) `direct` FROM
         `user`
         JOIN
         `profile` ON `user`.`id`=`profile`.`user_id`
@@ -144,7 +144,7 @@ CREATE VIEW `application_details` AS
         `application` ON `profile_application`.`application_id`=`application`.`id`
     UNION
     /* DEPARTMENT */
-    SELECT `user`.`id` AS `user_id`, `application`.*, ("") `settings` FROM
+    SELECT `user`.`id` AS `user_id`, `application`.*, ("") `settings`, (0) `direct` FROM
         `user`
         JOIN
         `profile` ON `user`.`id`=`profile`.`user_id`

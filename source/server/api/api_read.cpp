@@ -297,6 +297,8 @@ void fix_application_details(Json::Value &o)
 {
 	fix_type(o, "id", V_INT);
 	fix_remove(o, "user_id");
+	fix_remove(o, "max");
+	fix_remove(o, "direct");
 }
 
 
@@ -317,7 +319,7 @@ Json::Value API::read_application_details(Json::Value &data, int user, Json::Val
 	}
 
 	const std::string &st = build_in_string(data["ids"]);
-	snprintf(query, API_BUFFER_SIZE, "SELECT DISTINCT * FROM `application_details` WHERE `id` IN (%s);", st.c_str());
+	snprintf(query, API_BUFFER_SIZE, "SELECT DISTINCT *, MAX(`direct`) AS `max` FROM `application_details` WHERE `id` IN (%s) GROUP BY `id`;", st.c_str());
 
 	result = _database->send_query(query);
 	Json::Value call_data = build_array_from_query(result, fix_application_details);
