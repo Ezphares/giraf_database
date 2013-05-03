@@ -40,7 +40,7 @@ CREATE VIEW `giraf`.`profile_list` AS
         `department` ON `admin_of`.`department_id`=`department`.`id`
         JOIN
         `profile` ON `department`.`id`=`profile`.`department_id`
-        WHERE `profile`.`user_id`!=`user`.`id`;
+        WHERE (`profile`.`user_id`!=`user`.`id` OR `user`.`id` IS NULL);
 
 CREATE VIEW `giraf`.`user_list` AS
     /* SELF */
