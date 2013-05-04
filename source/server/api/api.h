@@ -67,6 +67,7 @@ private:
 
 	Json::Value read_department_list(Json::Value &data, int user, Json::Value &errors);
 	Json::Value read_department_details(Json::Value &data, int user, Json::Value &errors);
+	Json::Value API::create_department(Json::Value &data, int user, Json::Value &errors);
 	Json::Value delete_department(Json::Value &data, int user, Json::Value &errors);
 
 	Json::Value read_user_list(Json::Value &data, int user, Json::Value &errors);

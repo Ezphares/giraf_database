@@ -62,3 +62,9 @@ void Database::escape(char *buffer, const char *input)
 {
 	mysql_real_escape_string(_conn, buffer, input, strlen(input));
 }
+
+unsigned int Database::insert_id()
+{
+	unsigned int id = mysql_insert_id(_conn);
+	return id;
+}
