@@ -160,7 +160,7 @@ Json::Value API::delete_application(Json::Value &data, int user, Json::Value &er
 
 	std::vector<int> accessible = build_simple_int_vector_from_query(result, "id");
 
-	std::map link = build_simple_int_map_from_query(result, "id", "direct");
+	std::map<int,int> link = build_simple_int_map_from_query(result, "id", "direct");
 
 	//TODO this function should be changed
 	/*for (unsigned int i = 0; i < data["ids"].size(); i++)
@@ -170,8 +170,7 @@ Json::Value API::delete_application(Json::Value &data, int user, Json::Value &er
 		{
 			snprintf(query, API_BUFFER_SIZE, "DELETE FROM `application_profile` WHERE `application_id`=%d AND `profile_id`=(SELECT `id` FROM `profile` WHERE `user_id`=%d);", id, user);
 		}
-	}
-*/
+	}*/
 	delete result;
 
 	if(validate_array_vector(data["ids"], accessible) == false)
