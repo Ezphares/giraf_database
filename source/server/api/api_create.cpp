@@ -209,13 +209,14 @@ Json::Value API::create_department(Json::Value &data, int user, Json::Value &err
 		char email[strlen(object["email"].asCString())*2 + 3];
 		char address[strlen(object["address"].asCString())*2 + 3];
 		char phone[strlen(object["phone"].asCString())*2 + 3];
-		int top_department = data["topdepartment"].asInt(); // TODO Validate this
+		int top_department;
 
 		int err = 0;
 		err += extract_string(name, object, "name", false);
 		err += extract_string(email, object, "email", false);
 		err += extract_string(address, object, "address", false);
 		err += extract_string(phone, object, "phone", false);
+		err += extract_int(&top_department, object, "top_department", false);
 		if (err != 0)
 		{
 			errors.append("Value error(s) in profile data object");
