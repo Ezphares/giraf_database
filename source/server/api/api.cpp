@@ -57,7 +57,7 @@ std::string API::handle_request(const char *json)
 			const char* action = root["action"].asCString();
 			if (strcmp(action, "create") == 0)
 			{
-				//TODO
+				api_create(root, response, errors);
 			}
 			else if (strcmp(action, "read") == 0)
 			{
@@ -65,7 +65,7 @@ std::string API::handle_request(const char *json)
 			}
 			else if (strcmp(action, "update") == 0)
 			{
-				//TODO
+				api_update(root, response, errors);
 			}
 			else if (strcmp(action, "delete") == 0)
 			{

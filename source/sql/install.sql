@@ -98,6 +98,7 @@ CREATE TABLE `application` (
 CREATE TABLE `admin_of`(
 	`user_id`			INT(11)		NOT NULL,	
 	`department_id`		INT(11)		NOT NULL,
+    PRIMARY KEY (`user_id`, `department_id`),
 	FOREIGN KEY (`user_id`)
 		REFERENCES `user` (`id`)
 		ON DELETE CASCADE,

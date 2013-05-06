@@ -70,10 +70,12 @@ private:
 	Json::Value read_department_details(Json::Value &data, int user, Json::Value &errors);
 	Json::Value create_department(Json::Value &data, int user, Json::Value &errors);
 	Json::Value delete_department(Json::Value &data, int user, Json::Value &errors);
+	Json::Value update_department(Json::Value &data, int user, Json::Value &errors);
 
 	Json::Value read_user_list(Json::Value &data, int user, Json::Value &errors);
 	Json::Value read_user_details(Json::Value &data, int user, Json::Value &errors);
 	Json::Value create_user(Json::Value &data, int user, Json::Value &errors);
+	Json::Value update_user(Json::Value &data, int user, Json::Value &errors);
 	Json::Value delete_user(Json::Value &data, int user, Json::Value &errors);
 
 	Json::Value read_pictogram_list(Json::Value &data, int user, Json::Value &errors);
