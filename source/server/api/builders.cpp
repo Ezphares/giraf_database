@@ -87,3 +87,26 @@ bool validate_array_vector(Json::Value &array, std::vector<int> &vec)
 	}
 	return true;
 }
+
+bool validate_value_in_vector(int value, std::vector<int> &vector)
+{
+	for(std::vector<int>::iterator it = vector.begin(); it != vector.end(); it++)	if(value == *it) return true;
+
+	return false;
+}
+
+std::map<int, int> build_simple_int_map_from_query(QueryResult *query, const char *key_key, const char *value_key)
+{
+	std::map <int, int> a;
+	row_t r = query->next_row();
+
+	while(!r.empty())
+	{
+		a.insert(std::pair<int, int>(atoi(r[key_key].c_str()), atoi(r[value_key].c_str())));
+
+		r = query->next_row();
+	}
+
+	return a;
+
+}

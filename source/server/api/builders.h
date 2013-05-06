@@ -21,6 +21,7 @@ Json::Value build_simple_array_from_query(QueryResult *query, const char *key, v
 
 std::string build_in_string(Json::Value &array);
 bool validate_array_vector(Json::Value &array, std::vector<int> &vector);
+bool validate_value_in_vector(int value, std::vector<int> &vector);
 
 inline std::vector<int> build_simple_int_vector_from_query(QueryResult *query, const char *key)
 {
@@ -35,3 +36,5 @@ inline std::vector<int> build_simple_int_vector_from_query(QueryResult *query, c
 
 	return v;
 }
+
+std::map<int, int> build_simple_int_map_from_query(QueryResult *query, const char *key_key, const char *value_key);

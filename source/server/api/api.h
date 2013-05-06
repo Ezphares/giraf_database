@@ -46,7 +46,7 @@ private:
 	int validate_top(Json::Value &request, Json::Value &errors);
 	int validate_auth(Json::Value &auth, Json::Value &errors);
 	int validate_read(Json::Value &data, Json::Value &errors);
-	int validate_write(Json::Value &data, Json::Value &errors);
+	int validate_create(Json::Value &data, Json::Value &errors);
 	int validate_update(Json::Value &data, Json::Value &errors);
 	int validate_delete(Json::Value &data, Json::Value &errors);
 
@@ -67,6 +67,7 @@ private:
 
 	Json::Value read_department_list(Json::Value &data, int user, Json::Value &errors);
 	Json::Value read_department_details(Json::Value &data, int user, Json::Value &errors);
+	Json::Value API::create_department(Json::Value &data, int user, Json::Value &errors);
 	Json::Value delete_department(Json::Value &data, int user, Json::Value &errors);
 
 	Json::Value read_user_list(Json::Value &data, int user, Json::Value &errors);
@@ -78,6 +79,7 @@ private:
 
 	Json::Value read_application_list(Json::Value &data, int user, Json::Value &errors);
 	Json::Value read_application_details(Json::Value &data, int user, Json::Value &errors);
+	Json::Value delete_application(Json::Value &data, int user, Json::Value &errors);
 	// ETC, ETC
 
 
