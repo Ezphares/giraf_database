@@ -18,7 +18,7 @@ CBOOST=-I$(DIR_BOOST)
 
 CC=g++
 CFLAGS=-c -O0 -g3 -Wall $(CMYSQL) $(CBOOST)
-LDFLAGS=$(LMYSQL) $(LBOOST) -lpthread
+LDFLAGS=$(LMYSQL) $(LBOOST) -ljson -lpthread
 
 CONNECTION_OBJECTS=connection.o listener.o framework.o
 CONNECTION_SOURCES=connection/connection.cpp \
@@ -27,13 +27,20 @@ CONNECTION_SOURCES=connection/connection.cpp \
 DATABASE_OBJECTS=queryresult.o database.o
 DATABASE_SOURCES=database/queryresult.cpp \
                  database/database.cpp
-
-MODULES=program.o m_database m_connection
+API_OBJECTS=api.o api_read.o api_create.o api_delete.o api_update.o builders.o
+API_SOURCES=api/api.cpp \
+	    api/api_read.cpp \
+	    api/api_create.cpp \
+	    api/api_delete.cpp \
+	    api/api_update.cpp \
+	    api/builders.cpp
+	    
+MODULES=program.o m_database m_connection m_api
 TESTS=t_connection t_database
 
-OBJECTS=program.o $(CONNECTION_OBJECTS) $(DATABASE_OBJECTS)
+OBJECTS=program.o $(CONNECTION_OBJECTS) $(DATABASE_OBJECTS) $(API_OBJECTS)
 
-all : server
+all : server clean
 
 server : $(MODULES) 
 	$(CC) $(OBJECTS) $(LDFLAGS) -o $(OUTPUT)
@@ -46,6 +53,9 @@ m_connection : $(CONNECTION_SOURCES)
 
 m_database : $(DATABASE_SOURCES)
 	$(CC) $(CFLAGS) $(DATABASE_SOURCES)
+
+m_api : $(API_SOURCES)
+	$(CC) $(CFLAGS) $(API_SOURCES)
 
 clean :
 	rm -f *.o
