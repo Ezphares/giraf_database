@@ -62,7 +62,6 @@ int API::validate_read(Json::Value &data, Json::Value &errors)
 
 int API::api_read(Json::Value &request, Json::Value &response, Json::Value &errors)
 {
-
 	if (validate_read(request["data"], errors) < 0)
 	{
 		response["status"] = Json::Value(STATUS_STRUCTURE);
