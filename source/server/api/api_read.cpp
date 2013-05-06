@@ -152,9 +152,7 @@ Json::Value API::read_profile_details(Json::Value &data, int user, Json::Value &
 
 	snprintf(query, API_BUFFER_SIZE, "SELECT DISTINCT `id` FROM `profile_list` WHERE `user_id`=%d;", user);
 	QueryResult *result = _database->send_query(query);
-
 	std::vector<int> accessible = build_simple_int_vector_from_query(result, "id");
-
 	delete result;
 
 	if(validate_array_vector(data["ids"], accessible) == false)

@@ -94,7 +94,6 @@ Json::Value API::create_profile(Json::Value &data, int user, Json::Value &errors
 	{
 		Json::Value &object = data["values"][i];
 
-		fix_type(object, "department", V_INT);
 		int d = object["department"].asInt();
 		if (!validate_value_in_vector(d, departments))
 		{
@@ -102,7 +101,6 @@ Json::Value API::create_profile(Json::Value &data, int user, Json::Value &errors
 			return Json::Value(Json::nullValue);
 		}
 
-		fix_type(object, "role", V_INT);
 		int r = object["role"].asInt();
 
 		if(r != 2)
@@ -129,19 +127,19 @@ Json::Value API::create_profile(Json::Value &data, int user, Json::Value &errors
 	{
 		Json::Value &object = data["values"][i];
 
-		char name[strlen(object["name"].asCString())*2 + 3];
-		char email[std::max((unsigned int)strlen(object["email"].asCString())*2 + 3, 5u)];
-		char address[std::max((unsigned int)strlen(object["address"].asCString())*2 + 3, 5u)];
-		char phone[std::max((unsigned int)strlen(object["phone"].asCString())*2 + 3, 5u)];
-		char picture[std::max((unsigned int)strlen(object["picture"].asCString())*2 + 3, 5u)];
-		char settings[std::max((unsigned int)strlen(object["settings"].asCString())*2 + 3, 5u)];
+		char name[EXTRACT_SIZE];
+		char email[EXTRACT_SIZE];
+		char address[EXTRACT_SIZE];
+		char phone[EXTRACT_SIZE];
+		char picture[EXTRACT_SIZE];
+		char settings[EXTRACT_SIZE];
 		int department;
 		int role;
 
 		int err = 0;
 		err += extract_string(name, object, "name", false);
 		err += extract_string(email, object, "email", true);
-		err += extract_string(address, object, "address", true);
+		err += extract_string(address, object, "address", false);
 		err += extract_string(phone, object, "phone", true);
 		err += extract_string(picture, object, "picture", true);
 		err += extract_string(settings, object, "settings", true);
@@ -205,11 +203,12 @@ Json::Value API::create_department(Json::Value &data, int user, Json::Value &err
 	for(unsigned int i = 0; i < data["values"].size(); i++)
 	{
 		Json::Value &object = data["values"][i];
-		char name[strlen(object["name"].asCString())*2 + 3];
-		char email[strlen(object["email"].asCString())*2 + 3];
-		char address[strlen(object["address"].asCString())*2 + 3];
-		char phone[strlen(object["phone"].asCString())*2 + 3];
+
 		int top_department;
+		char name[EXTRACT_SIZE];
+		char email[EXTRACT_SIZE];
+		char address[EXTRACT_SIZE];
+		char phone[EXTRACT_SIZE];
 
 		int err = 0;
 		err += extract_string(name, object, "name", false);
@@ -248,9 +247,9 @@ Json::Value API::create_user(Json::Value &data, int user, Json::Value &errors)
 	for(unsigned int i = 0; i < data["values"].size(); i++)
 	{
 		Json::Value &object = data["values"][i];
-		char username[strlen(object["username"].asCString())*2 + 3];
-		char password[strlen(object["password"].asCString())*2 + 3];
-		char certificate[strlen(object["certificate"].asCString())*2 + 3];
+		char username[EXTRACT_SIZE];
+		char password[EXTRACT_SIZE];
+		char certificate[EXTRACT_SIZE];
 		int profile;
 
 		int err = 0;
@@ -261,6 +260,12 @@ Json::Value API::create_user(Json::Value &data, int user, Json::Value &errors)
 		if (err != 0)
 		{
 			errors.append("Value error(s) in profile data object");
+			return Json::Value(Json::nullValue);
+		}
+
+		if (password[0]== 'N' && certificate[0] == 'N')
+		{
+			errors.append(Json::Value("You must specify either a password or certificate"));
 			return Json::Value(Json::nullValue);
 		}
 

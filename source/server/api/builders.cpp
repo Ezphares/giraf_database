@@ -119,9 +119,11 @@ int extract_string(char *buffer, Json::Value &object, const char *key, bool null
 	{
 		if (!object[key].isString()) return -1;
 		const char *value = object[key].asCString();
-		std::strcpy(buffer + 1, value);
+		unsigned int length = std::min(EXTRACT_SIZE - 3u, (unsigned int)strlen(value));
+		std::strncpy(buffer + 1, value, length);
 		buffer[0] = '\'';
-		buffer[strlen(value) + 1] = '\'';
+		buffer[length + 1] = '\'';
+		buffer[length + 2] = '\0';
 	}
 	else
 	{
