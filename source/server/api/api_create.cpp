@@ -26,7 +26,7 @@ Json::Value API::create_profile(Json::Value &data, int user, Json::Value &errors
 	delete result;
 
 	snprintf(query, API_BUFFER_SIZE, "SELECT DISTINCT `id` FROM `profile_list` WHERE `user_id`=%d AND `role`=2;", user);
-	QueryResult *result = _database->send_query(query);
+	result = _database->send_query(query);
 	std::vector<int> children = build_simple_int_vector_from_query(result, "id");
 	delete result;
 
@@ -70,11 +70,11 @@ Json::Value API::create_profile(Json::Value &data, int user, Json::Value &errors
 		Json::Value &object = data["values"][i];
 
 		char name[strlen(object["name"].asCString())*2 + 3];
-		char email[strlen(object["email"].asCString())*2 + 3];
-		char address[strlen(object["address"].asCString())*2 + 3];
-		char phone[strlen(object["phone"].asCString())*2 + 3];
-		char picture[strlen(object["picture"].asCString())*2 + 3];
-		char settings[strlen(object["settings"].asCString())*2 + 3];
+		char email[std::max((unsigned int)strlen(object["email"].asCString())*2 + 3, 5u)];
+		char address[std::max((unsigned int)strlen(object["address"].asCString())*2 + 3, 5u)];
+		char phone[std::max((unsigned int)strlen(object["phone"].asCString())*2 + 3, 5u)];
+		char picture[std::max((unsigned int)strlen(object["picture"].asCString())*2 + 3, 5u)];
+		char settings[std::max((unsigned int)strlen(object["settings"].asCString())*2 + 3, 5u)];
 		int department;
 		int role;
 
@@ -108,7 +108,7 @@ Json::Value API::create_profile(Json::Value &data, int user, Json::Value &errors
 			email[0] = '"';
 			email[strlen(email)] = '"';
 		}
-		else email = "NULL";
+		else strncpy(email, "NULL", 5);
 
 		if(data.isMember("address"))
 		{
@@ -122,7 +122,7 @@ Json::Value API::create_profile(Json::Value &data, int user, Json::Value &errors
 			address[0] = '"';
 			address[strlen(address)] = '"';
 		}
-		else address = "NULL";
+		else strncpy(address, "NULL", 5);
 
 		if(data.isMember("phone"))
 		{
@@ -136,7 +136,7 @@ Json::Value API::create_profile(Json::Value &data, int user, Json::Value &errors
 			phone[0] = '"';
 			phone[strlen(phone)] = '"';
 		}
-		else phone = "NULL";
+		else strncpy(phone, "NULL", 5);
 
 		if(data.isMember("picture"))
 		{
@@ -150,7 +150,7 @@ Json::Value API::create_profile(Json::Value &data, int user, Json::Value &errors
 			picture[0] = '"';
 			picture[strlen(picture)] = '"';
 		}
-		else picture = "NULL";
+		else strncpy(picture, "NULL", 5);
 
 		if(data.isMember("settings"))
 		{
@@ -164,7 +164,7 @@ Json::Value API::create_profile(Json::Value &data, int user, Json::Value &errors
 			settings[0] = '"';
 			settings[strlen(settings)] = '"';
 		}
-		else settings = "NULL";
+		else strncpy(settings, "NULL", 5);
 
 		if(!data.isMember("department"))
 		{
@@ -336,3 +336,123 @@ Json::Value API::create_department(Json::Value &data, int user, Json::Value &err
 
 	return call_data;
 }
+
+Json::Value API::create_user(Json::Value &data, int user, Json::Value &errors)
+{
+	char query[API_BUFFER_SIZE];
+
+	snprintf(query, API_BUFFER_SIZE, "SELECT DISTINCT `id` FROM `profile_list` WHERE `user_id`=%d AND update=1;", user);
+	QueryResult *result = _database->send_query(query);
+	std::vector<int> accessible = build_simple_int_vector_from_query(result, "id");
+	delete result;
+
+	Json::Value call_data(Json::arrayValue);
+	std::vector<unsigned int> added_ids;
+	for(unsigned int i = 0; i < data["values"].size(); i++)
+	{
+		Json::Value &object = data["values"][i];
+		char profile[strlen(object["profile"].asCString())*2 + 3];
+		char username[strlen(object["username"].asCString())*2 + 3];
+		char password[strlen(object["password"].asCString())*2 + 3];
+		char certificate[strlen(object["certificate"].asCString())*2 + 3];
+
+		if(!object.isMember("profile"))
+		{
+			errors.append(Json::Value("Profile required"));
+			return Json::Value(Json::nullValue);
+		}
+		else
+		{
+			if(!object["profile"].isInt())
+			{
+				errors.append(Json::Value("Profile is not an integer"));
+				return Json::Value(Json::nullValue);
+			}
+			_database->escape(profile+1, object["profile"].asCString());
+			profile[0] = '"';
+			profile[strlen(profile)] = '"';
+		}
+
+		if(!object.isMember("username"))
+		{
+			errors.append(Json::Value("Username required"));
+			return Json::Value(Json::nullValue);
+		}
+		else
+		{
+			if(!object["username"].isString())
+			{
+				errors.append(Json::Value("Username is not a string"));
+				return Json::Value(Json::nullValue);
+			}
+			_database->escape(username+1, object["username"].asCString());
+			username[0] = '"';
+			username[strlen(username)] = '"';
+		}
+
+		if(!object.isMember("password") && !object.isMember("certificate"))
+		{
+			errors.append(Json::Value("You must specify either a password or certificate"));
+			return Json::Value(Json::nullValue);
+		}
+		else
+		{
+			if(object.isMember("password"))
+			{
+				if(!object["password"].isString())
+				{
+					errors.append(Json::Value("Password is not a string"));
+					return Json::Value(Json::nullValue);
+				}
+				_database->escape(password+1, object["password"].asCString());
+				password[0] = '"';
+				password[strlen(password)] = '"';
+			}
+			else strncpy(password, "NULL", 5);
+
+			if(object.isMember("certificate"))
+			{
+				if(!object["certificate"].isString())
+				{
+					errors.append(Json::Value("Certificate is not a string"));
+					return Json::Value(Json::nullValue);
+				}
+				_database->escape(certificate+1, object["certificate"].asCString());
+				certificate[0] = '"';
+				certificate[strlen(certificate)] = '"';
+			}
+			else strncpy(certificate, "NULL", 5);
+		}
+
+		int p = object["profile"].asInt();
+		if (!validate_value_in_vector(p, accessible))
+		{
+			errors.append(Json::Value("Illegal profile(s)"));
+			return Json::Value(Json::nullValue);
+		}
+
+		snprintf(query, API_BUFFER_SIZE, "SELECT COUNT (*) AS `createable` FROM `profile` WHERE `id`=%d AND `user_id`=NULL;", p);
+		QueryResult *result = _database->send_query(query);
+
+		row_t r = result->next_row();
+		if(atoi(r["createable"].c_str()) != 1)
+		{
+			errors.append(Json::Value("User already exists"));
+			return Json::Value(Json::nullValue);
+		}
+
+		snprintf(query, API_BUFFER_SIZE, "INSERT INTO `user` (`username`, `password`, `certificate`)"
+											"VALUES (%s, %s, %s);", username, password, certificate);
+		result = _database->send_query(query);
+		added_ids.push_back(_database->insert_id());
+		call_data.append(Json::Value(added_ids.back()));
+		delete result;
+
+		snprintf(query, API_BUFFER_SIZE, "UPDATE `profile` SET `user_id`=%d WHERE `id`=%d", added_ids.back(), p);
+		result = _database->send_query(query);
+		delete result;
+	}
+
+	return call_data;
+}
+
