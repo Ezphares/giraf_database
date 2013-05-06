@@ -149,78 +149,17 @@ Json::Value API::create_department(Json::Value &data, int user, Json::Value &err
 		char email[strlen(object["email"].asCString())*2 + 3];
 		char address[strlen(object["address"].asCString())*2 + 3];
 		char phone[strlen(object["phone"].asCString())*2 + 3];
-		int top_department = data["topdepartment"].asInt();
+		int top_department = data["topdepartment"].asInt(); // TODO Validate this
 
-		if(!data.isMember("name"))
+		int err = 0;
+		err += extract_string(name, object, "name", false);
+		err += extract_string(email, object, "email", false);
+		err += extract_string(address, object, "address", false);
+		err += extract_string(phone, object, "phone", false);
+		if (err != 0)
 		{
-			errors.append(Json::Value("Name required on department."));
+			errors.append("Value error(s) in profile data object");
 			return Json::Value(Json::nullValue);
-		}
-		else
-		{
-			if(!data["name"].isString())
-			{
-				errors.append(Json::Value("Name is not a string"));
-				return Json::Value(Json::nullValue);
-			}
-
-			_database->escape(name+1, object["name"].asCString());
-			name[0] = '"';
-			name[strlen(name)] = '"';
-		}
-
-		if(!data.isMember("email"))
-		{
-			errors.append(Json::Value("Email required on department."));
-			return Json::Value(Json::nullValue);
-		}
-		else
-		{
-			if(!data["email"].isString())
-			{
-				errors.append(Json::Value("Email is not a string"));
-				return Json::Value(Json::nullValue);
-			}
-
-			_database->escape(email+1, object["email"].asCString());
-			email[0] = '"';
-			email[strlen(email)] = '"';
-		}
-
-		if(!data.isMember("address"))
-		{
-			errors.append(Json::Value("Address required on department."));
-			return Json::Value(Json::nullValue);
-		}
-		else
-		{
-			if(!data["address"].isString())
-			{
-				errors.append(Json::Value("Address is not a string"));
-				return Json::Value(Json::nullValue);
-			}
-
-			_database->escape(address+1, object["address"].asCString());
-			address[0] = '"';
-			address[strlen(address)] = '"';
-		}
-
-		if(!data.isMember("phone"))
-		{
-			errors.append(Json::Value("Phone required on department."));
-			return Json::Value(Json::nullValue);
-		}
-		else
-		{
-			if(!data["phone"].isString())
-			{
-				errors.append(Json::Value("Phone is not a string"));
-				return Json::Value(Json::nullValue);
-			}
-
-			_database->escape(phone+1, object["phone"].asCString());
-			phone[0] = '"';
-			phone[strlen(phone)] = '"';
 		}
 
 		snprintf(query, API_BUFFER_SIZE, "INSERT INTO `department` (`name`, `email`, `address`, `phone`, `super_department_id`)"
@@ -248,87 +187,29 @@ Json::Value API::create_user(Json::Value &data, int user, Json::Value &errors)
 	for(unsigned int i = 0; i < data["values"].size(); i++)
 	{
 		Json::Value &object = data["values"][i];
-		char profile[strlen(object["profile"].asCString())*2 + 3];
 		char username[strlen(object["username"].asCString())*2 + 3];
 		char password[strlen(object["password"].asCString())*2 + 3];
 		char certificate[strlen(object["certificate"].asCString())*2 + 3];
+		int profile;
 
-		if(!object.isMember("profile"))
+		int err = 0;
+		err += extract_string(username, object, "username", false);
+		err += extract_string(password, object, "password", true);
+		err += extract_string(certificate, object, "certificate", true);
+		err += extract_int(&profile, object, "profile", false);
+		if (err != 0)
 		{
-			errors.append(Json::Value("Profile required"));
+			errors.append("Value error(s) in profile data object");
 			return Json::Value(Json::nullValue);
 		}
-		else
-		{
-			if(!object["profile"].isInt())
-			{
-				errors.append(Json::Value("Profile is not an integer"));
-				return Json::Value(Json::nullValue);
-			}
-			_database->escape(profile+1, object["profile"].asCString());
-			profile[0] = '"';
-			profile[strlen(profile)] = '"';
-		}
 
-		if(!object.isMember("username"))
-		{
-			errors.append(Json::Value("Username required"));
-			return Json::Value(Json::nullValue);
-		}
-		else
-		{
-			if(!object["username"].isString())
-			{
-				errors.append(Json::Value("Username is not a string"));
-				return Json::Value(Json::nullValue);
-			}
-			_database->escape(username+1, object["username"].asCString());
-			username[0] = '"';
-			username[strlen(username)] = '"';
-		}
-
-		if(!object.isMember("password") && !object.isMember("certificate"))
-		{
-			errors.append(Json::Value("You must specify either a password or certificate"));
-			return Json::Value(Json::nullValue);
-		}
-		else
-		{
-			if(object.isMember("password"))
-			{
-				if(!object["password"].isString())
-				{
-					errors.append(Json::Value("Password is not a string"));
-					return Json::Value(Json::nullValue);
-				}
-				_database->escape(password+1, object["password"].asCString());
-				password[0] = '"';
-				password[strlen(password)] = '"';
-			}
-			else strncpy(password, "NULL", 5);
-
-			if(object.isMember("certificate"))
-			{
-				if(!object["certificate"].isString())
-				{
-					errors.append(Json::Value("Certificate is not a string"));
-					return Json::Value(Json::nullValue);
-				}
-				_database->escape(certificate+1, object["certificate"].asCString());
-				certificate[0] = '"';
-				certificate[strlen(certificate)] = '"';
-			}
-			else strncpy(certificate, "NULL", 5);
-		}
-
-		int p = object["profile"].asInt();
-		if (!validate_value_in_vector(p, accessible))
+		if (!validate_value_in_vector(profile, accessible))
 		{
 			errors.append(Json::Value("Illegal profile(s)"));
 			return Json::Value(Json::nullValue);
 		}
 
-		snprintf(query, API_BUFFER_SIZE, "SELECT COUNT (*) AS `createable` FROM `profile` WHERE `id`=%d AND `user_id`=NULL;", p);
+		snprintf(query, API_BUFFER_SIZE, "SELECT COUNT (*) AS `createable` FROM `profile` WHERE `id`=%d AND `user_id`=NULL;", profile);
 		QueryResult *result = _database->send_query(query);
 
 		row_t r = result->next_row();
@@ -345,7 +226,7 @@ Json::Value API::create_user(Json::Value &data, int user, Json::Value &errors)
 		call_data.append(Json::Value(added_ids.back()));
 		delete result;
 
-		snprintf(query, API_BUFFER_SIZE, "UPDATE `profile` SET `user_id`=%d WHERE `id`=%d", added_ids.back(), p);
+		snprintf(query, API_BUFFER_SIZE, "UPDATE `profile` SET `user_id`=%d WHERE `id`=%d", added_ids.back(), profile);
 		result = _database->send_query(query);
 		delete result;
 	}
