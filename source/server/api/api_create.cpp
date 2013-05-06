@@ -78,122 +78,19 @@ Json::Value API::create_profile(Json::Value &data, int user, Json::Value &errors
 		int department;
 		int role;
 
-		if(!data.isMember("name"))
+		int err = 0;
+		err += extract_string(name, object, "name", false);
+		err += extract_string(email, object, "email", true);
+		err += extract_string(address, object, "address", true);
+		err += extract_string(phone, object, "phone", true);
+		err += extract_string(picture, object, "picture", true);
+		err += extract_string(settings, object, "settings", true);
+		err += extract_int(&department, object, "department", false);
+		err += extract_int(&role, object, "role", false);
+		if (err != 0)
 		{
-			errors.append(Json::Value("Name required on profile."));
+			errors.append("Value error(s) in profile data object");
 			return Json::Value(Json::nullValue);
-		}
-		else
-		{
-			if(!data["name"].isString())
-			{
-				errors.append(Json::Value("Name is not a string"));
-				return Json::Value(Json::nullValue);
-			}
-
-			_database->escape(name+1, object["name"].asCString());
-			name[0] = '"';
-			name[strlen(name)] = '"';
-		}
-
-		if(data.isMember("email"))
-		{
-			if(!data["email"].isString())
-			{
-				errors.append(Json::Value("Email is not a string"));
-				return Json::Value(Json::nullValue);
-			}
-
-			_database->escape(email+1, object["email"].asCString());
-			email[0] = '"';
-			email[strlen(email)] = '"';
-		}
-		else strncpy(email, "NULL", 5);
-
-		if(data.isMember("address"))
-		{
-			if(!data["address"].isString())
-			{
-				errors.append(Json::Value("Address is not a string"));
-				return Json::Value(Json::nullValue);
-			}
-
-			_database->escape(address+1, object["address"].asCString());
-			address[0] = '"';
-			address[strlen(address)] = '"';
-		}
-		else strncpy(address, "NULL", 5);
-
-		if(data.isMember("phone"))
-		{
-			if(!data["phone"].isString())
-			{
-				errors.append(Json::Value("Phone is not a string"));
-				return Json::Value(Json::nullValue);
-			}
-
-			_database->escape(phone+1, object["phone"].asCString());
-			phone[0] = '"';
-			phone[strlen(phone)] = '"';
-		}
-		else strncpy(phone, "NULL", 5);
-
-		if(data.isMember("picture"))
-		{
-			if(!data["picture"].isString())
-			{
-				errors.append(Json::Value("Picture is not a string"));
-				return Json::Value(Json::nullValue);
-			}
-
-			_database->escape(picture+1, object["picture"].asCString());
-			picture[0] = '"';
-			picture[strlen(picture)] = '"';
-		}
-		else strncpy(picture, "NULL", 5);
-
-		if(data.isMember("settings"))
-		{
-			if(!data["settings"].isString())
-			{
-				errors.append(Json::Value("Settings is not a string"));
-				return Json::Value(Json::nullValue);
-			}
-
-			_database->escape(settings+1, object["settings"].asCString());
-			settings[0] = '"';
-			settings[strlen(settings)] = '"';
-		}
-		else strncpy(settings, "NULL", 5);
-
-		if(!data.isMember("department"))
-		{
-			errors.append(Json::Value("Department required"));
-			return Json::Value(Json::nullValue);
-		}
-		else
-		{
-			if(!data["department"].isInt())
-			{
-				errors.append(Json::Value("Department is not an integer"));
-				return Json::Value(Json::nullValue);
-			}
-			department = data["department"].asInt();
-		}
-
-		if(!data.isMember("role"))
-		{
-			errors.append(Json::Value("Role required"));
-			return Json::Value(Json::nullValue);
-		}
-		else
-		{
-			if(!data["role"].isInt())
-			{
-				errors.append(Json::Value("Role is not an integer"));
-				return Json::Value(Json::nullValue);
-			}
-			role = data["role"].asInt();
 		}
 
 		char query[API_BUFFER_SIZE];
