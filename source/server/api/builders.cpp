@@ -5,6 +5,7 @@
 #include "builders.h"
 #include <iostream>
 #include <sstream>
+#include <cstring>
 
 void fix_rename(Json::Value &object, const char *key, const char *new_key)
 {
@@ -110,3 +111,36 @@ std::map<int, int> build_simple_int_map_from_query(QueryResult *query, const cha
 	return a;
 
 }
+
+int extract_string(char *buffer, Json::Value &object, const char *key, bool null)
+{
+	if (object.isMember(key))
+	{
+		const char *value = object[key].asCString();
+		std::strcpy(buffer + 1, value);
+		buffer[0] = '\'';
+		buffer[strlen(value) + 1] = '\'';
+	}
+	else
+	{
+		if (null) strncpy(buffer, "NULL", 5);
+		else return -1;
+	}
+	return 0;
+}
+
+int extract_int(int *buffer, Json::Value &object, const char *key, bool null)
+{
+	if (object.isMember(key))
+	{
+		int value = object[key].asInt();
+		*buffer = value;
+	}
+	else
+	{
+		if (null) *buffer = 0;
+		else return -1;
+	}
+	return 0;
+}
+
