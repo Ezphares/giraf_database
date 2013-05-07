@@ -10,6 +10,7 @@ int handle_api(Connection *connection)
 	const char *request = connection->receive();
 	std::string response = (new API())->handle_request(request);
 	connection->send(response.c_str());
+	connection->disconnect();
 	return 0;
 }
 
