@@ -19,23 +19,11 @@ int handle_api(Connection *connection)
 
 int main (int argc, char *argv[])
 {
-	char *api = "e";
 
+	
+	ServerInfo *server = run_server(2468, handle_api);
 
-
-
-	while (api[0] != 's')
-	{
-		//std::cin.getline(api, 1023);
-		std::string out = API().handle_request("{\"data\":{\"type\":\"user\", \"view\":\"list\", \"ids\":null}, \"action\":\"read\", \"auth\":{\"username\":\"john\", \"password\":\"123456\"}}");
-		std::cout << out  << std::endl;
-		break;
-	}
-
-	/*
-	ServerInfo *server = run_server(666, handle_api);
-
-	char *a = "";
+	char *a = "derp";
 
 	while (a[0] != 's')
 	{
@@ -43,7 +31,6 @@ int main (int argc, char *argv[])
 	}
 
 	stop_server(server);
-	*/
-
+	
 	return 0;
 }
