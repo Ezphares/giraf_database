@@ -31,7 +31,7 @@ CREATE TABLE `department` (
 CREATE TABLE `profile` (
 	`id`				INT(11)			NOT NULL	AUTO_INCREMENT,
 	`name`				VARCHAR(64)		NOT NULL,
-	`phone`				INT(11)			NULL,
+	`phone`				VARCHAR(11)		NULL,
 	`picture`			BLOB			NULL,
 	`email`				VARCHAR(64)		NULL,
 	`role`				SMALLINT		NOT NULL,
@@ -98,6 +98,7 @@ CREATE TABLE `application` (
 CREATE TABLE `admin_of`(
 	`user_id`			INT(11)		NOT NULL,	
 	`department_id`		INT(11)		NOT NULL,
+    PRIMARY KEY (`user_id`, `department_id`),
 	FOREIGN KEY (`user_id`)
 		REFERENCES `user` (`id`)
 		ON DELETE CASCADE,
@@ -185,12 +186,23 @@ CREATE TABLE `profile_category` (
 );
 
 CREATE TABLE `guardian_of` (
-	`guardian_id`		INT(11)		NOT NULL,
+	`guardian_id`	INT(11)		NOT NULL,
 	`child_id`		INT(11)		NOT NULL,
 	FOREIGN KEY (`guardian_id`)
 		REFERENCES `profile` (`id`)
-		ON DELETE CASCADE
+		ON DELETE CASCADE,
 	FOREIGN KEY (`child_id`)
 		REFERENCES `profile` (`id`)
 		ON DELETE CASCADE
 );
+
+
+
+
+
+
+
+
+
+
+
