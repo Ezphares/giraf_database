@@ -14,9 +14,17 @@ Authors:<br />
 
 Build instructions
 ==================
+Pre-requisites: <br />
+MySQL Connector/C <br />
+* Headers in /usr/local/include <br />
+* Libs (libmysql.so etc.) in /usr/local/lib
 
-To build the program, make sure boost and MySQL Connector/C is installed and setup correctly.
-If non-standard settings are used for these, modify the settings section in Makefile
+JsonCPP <br />
+* Headers in /usr/local/include <br />
+* Libs (renamed to libjson.so, libjson.a) in /usr/local/include
+
+Add line /usr/local/lib to /etc/ld.so.conf and run `sudo ldconfig` <br />
+Unit tests require BOOST installed
 
 Building the program:<br />
 cd to `source/server`<br />
