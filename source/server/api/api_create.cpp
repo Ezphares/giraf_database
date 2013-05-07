@@ -203,6 +203,7 @@ Json::Value API::create_department(Json::Value &data, int user, Json::Value &err
 	for(unsigned int i = 0; i < data["values"].size(); i++)
 	{
 		Json::Value &object = data["values"][i];
+
 		char name[EXTRACT_SIZE];
 		char email[EXTRACT_SIZE];
 		char address[EXTRACT_SIZE];
@@ -214,6 +215,7 @@ Json::Value API::create_department(Json::Value &data, int user, Json::Value &err
 		err += extract_string(email, object, "email", false);
 		err += extract_string(address, object, "address", false);
 		err += extract_string(phone, object, "phone", false);
+		err += extract_int(&top_department, object, "top_department", false);
 		if (err != 0)
 		{
 			errors.append("Value error(s) in profile data object");

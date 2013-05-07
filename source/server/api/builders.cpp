@@ -80,6 +80,7 @@ bool validate_array_vector(Json::Value &array, std::vector<int> &vec)
 {
 	for (unsigned int i = 0; i < array.size(); i++)
 	{
+		if (!array[i].isInt()) return false;
 		bool found = false;
 		int id = array[i].asInt();
 		for(std::vector<int>::iterator it = vec.begin(); it != vec.end(); it++)	if(id == *it) found = true;
@@ -116,6 +117,7 @@ int extract_string(char *buffer, Json::Value &object, const char *key, bool null
 {
 	if (object.isMember(key))
 	{
+		if (!object[key].isString()) return -1;
 		const char *value = object[key].asCString();
 		unsigned int length = std::min(EXTRACT_SIZE - 3u, (unsigned int)strlen(value));
 		std::strncpy(buffer + 1, value, length);
@@ -135,6 +137,7 @@ int extract_int(int *buffer, Json::Value &object, const char *key, bool null)
 {
 	if (object.isMember(key))
 	{
+		if (!object[key].isInt()) return -1;
 		int value = object[key].asInt();
 		*buffer = value;
 	}
