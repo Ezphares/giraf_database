@@ -23,12 +23,14 @@ int main (int argc, char *argv[])
 	
 	ServerInfo *server = run_server(2468, handle_api);
 
-	char *a = "derp";
+	char *a = (char *)malloc(64);
 
 	while (a[0] != 's')
 	{
 		std::cin >> a;
 	}
+
+	free(a);
 
 	stop_server(server);
 	
