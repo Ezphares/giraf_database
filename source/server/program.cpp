@@ -26,7 +26,7 @@ int main (int argc, char *argv[])
 {
 
 	
-	ServerInfo *server = run_server(2469, handle_api);
+	ServerInfo *server = run_server(2468, handle_api);
 
 	char *a = (char *)malloc(64);
 
