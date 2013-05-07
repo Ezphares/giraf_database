@@ -110,6 +110,8 @@ void API::create_session(Json::Value &response, int user)
 
 	response["session"] = session;
 
+	delete result;
+
 	return;
 }
 
