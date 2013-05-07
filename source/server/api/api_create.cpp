@@ -204,6 +204,7 @@ Json::Value API::create_department(Json::Value &data, int user, Json::Value &err
 	{
 		Json::Value &object = data["values"][i];
 
+
 		int top_department;
 		char name[EXTRACT_SIZE];
 		char email[EXTRACT_SIZE];
