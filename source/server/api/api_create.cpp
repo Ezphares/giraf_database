@@ -301,3 +301,122 @@ Json::Value API::create_user(Json::Value &data, int user, Json::Value &errors)
 	return call_data;
 }
 
+Json::Value API::create_pictogram(Json::Value &data, int user, Json::Value &errors)
+{
+	char query[API_BUFFER_SIZE];
+
+	Json::Value call_data(Json::arrayValue);
+	std::vector<unsigned int> added_ids;
+	for(unsigned int i = 0; i < data["values"].size(); i++)
+	{
+		Json::Value &object = data["values"][i];
+		char name[EXTRACT_SIZE];
+		char image[EXTRACT_SIZE];
+		char text[EXTRACT_SIZE];
+		char sound[EXTRACT_SIZE];
+		bool is_public;
+
+		int err = 0;
+		err += extract_string(name, object, "name", false);
+		err += extract_string(image, object, "image", true);
+		err += extract_string(text, object, "text", true);
+		err += extract_string(sound, object, "sound", true);
+		err += extract_bool(&is_public, object, "public", false);
+		if (err != 0)
+		{
+			errors.append("Value error(s) in profile data object");
+			return Json::Value(Json::nullValue);
+		}
+
+		const char *public_str = is_public ? "TRUE" : "FALSE";
+		snprintf(query, API_BUFFER_SIZE, "INSERT INTO `pictogram` (`name`, `image`, `text`, `sound`, `public`, `author`)"
+											"VALUES (%s, %s, %s, %s, %s, %d);", name, image, text, sound, public_str, user);
+		QueryResult *result = _database->send_query(query);
+		added_ids.push_back(_database->insert_id());
+		call_data.append(Json::Value(added_ids.back()));
+		delete result;
+
+		snprintf(query, API_BUFFER_SIZE, "SELECT `id` FROM `profile` WHERE `user_id`=%d", user);
+		row_t r = result->next_row();
+		delete result;
+
+		if(!r.empty())
+		{
+			snprintf(query, API_BUFFER_SIZE, "INSERT INTO `profile_pictogram` (`profile_id`, `pictogram_id`) VALUES (%d, %d);", atoi(r["id"].c_str()), added_ids.back());
+			result = _database->send_query(query);
+			delete result;
+		}
+
+		if(object.isMember("tags"))
+		{
+			if(!object["tags"].isArray())
+			{
+				errors.append(Json::Value("Tags is not an array"));
+				return Json::Value(Json::nullValue);
+			}
+
+			for(i = 0; i < object["tags"].size(); i++)
+			{
+				snprintf(query, API_BUFFER_SIZE, "INSERT INTO `tag` (`name`) VALUES (%s);", object["tags"][i]);
+				result = _database->send_query(query);
+				delete result;
+			}
+		}
+	}
+
+	return call_data;
+
+}
+
+Json::Value API::create_application(Json::Value &data, int user, Json::Value &errors)
+{
+	char query[API_BUFFER_SIZE];
+
+	Json::Value call_data(Json::arrayValue);
+	std::vector<unsigned int> added_ids;
+	for(unsigned int i = 0; i < data["values"].size(); i++)
+	{
+		Json::Value &object = data["values"][i];
+		char name[EXTRACT_SIZE];
+		char version[EXTRACT_SIZE];
+		char icon[EXTRACT_SIZE];
+		char package[EXTRACT_SIZE];
+		char activity[EXTRACT_SIZE];
+		char settings[EXTRACT_SIZE];
+		char description[EXTRACT_SIZE];
+
+		int err = 0;
+		err += extract_string(name, object, "name", false);
+		err += extract_string(version, object, "version", false);
+		err += extract_string(icon, object, "package", false);
+		err += extract_string(activity, object, "activity", false);
+		err += extract_string(settings, object, "settings", false);
+		err += extract_string(description, object, "description", true);
+		if (err != 0)
+		{
+			errors.append("Value error(s) in profile data object");
+			return Json::Value(Json::nullValue);
+		}
+
+		snprintf(query, API_BUFFER_SIZE, "INSERT INTO `application` (`name`, `version`, `icon`, `activity`, `settings`, `description`, `author`)"
+											"VALUES (%s, %s, %s, %s, %s, %s, d%);", name, version, icon, activity, settings, description, user);
+		QueryResult *result = _database->send_query(query);
+		added_ids.push_back(_database->insert_id());
+		call_data.append(Json::Value(added_ids.back()));
+		delete result;
+
+		snprintf(query, API_BUFFER_SIZE, "SELECT `id` FROM `profile` WHERE `user_id`=%d", user);
+		row_t r = result->next_row();
+		delete result;
+
+		if(!r.empty())
+		{
+			snprintf(query, API_BUFFER_SIZE, "INSERT INTO `profile_application` (`profile_id`, `application_id`) VALUES (%d, %d);", atoi(r["id"].c_str()), added_ids.back());
+			result = _database->send_query(query);
+			delete result;
+		}
+
+	}
+
+	return call_data;
+}
