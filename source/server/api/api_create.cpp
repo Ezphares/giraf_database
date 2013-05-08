@@ -204,11 +204,12 @@ Json::Value API::create_department(Json::Value &data, int user, Json::Value &err
 	{
 		Json::Value &object = data["values"][i];
 
+
+		int top_department;
 		char name[EXTRACT_SIZE];
 		char email[EXTRACT_SIZE];
 		char address[EXTRACT_SIZE];
 		char phone[EXTRACT_SIZE];
-		int top_department = data["topdepartment"].asInt(); // TODO Validate this
 
 		int err = 0;
 		err += extract_string(name, object, "name", false);

@@ -7,9 +7,14 @@
 
 int handle_api(Connection *connection)
 {
-	const char *request = connection->receive();
+	char *request = connection->receive();
+	std::cout << request << std::endl;
 	std::string response = (new API())->handle_request(request);
+
+	delete[] request;
+	std::cout << response.c_str() << std::endl;
 	connection->send(response.c_str());
+	connection->disconnect();
 	return 0;
 }
 
@@ -19,31 +24,20 @@ int handle_api(Connection *connection)
 
 int main (int argc, char *argv[])
 {
-	char *api = "e";
 
+	
+	ServerInfo *server = run_server(2468, handle_api);
 
-
-
-	while (api[0] != 's')
-	{
-		//std::cin.getline(api, 1023);
-		std::string out = API().handle_request("{\"data\":{\"type\":\"profile\", \"values\":[{\"id\":1, \"value\": {\"name\": \"Herpa\"}}]}, \"action\":\"update\", \"auth\":{\"username\":\"john\", \"password\":\"123456\"}}");
-		std::cout << out  << std::endl;
-		break;
-	}
-
-	/*
-	ServerInfo *server = run_server(666, handle_api);
-
-	char *a = "";
+	char *a = (char *)malloc(64);
 
 	while (a[0] != 's')
 	{
 		std::cin >> a;
 	}
 
-	stop_server(server);
-	*/
+	free(a);
 
+	stop_server(server);
+	
 	return 0;
 }

@@ -1,0 +1,12 @@
+{
+	"auth": {
+		"username": "john",
+		"password": "secret"
+	},
+	"action": "read",
+	"data": {
+		"type": "profile",
+		"view": "list",
+		"ids": null
+	}
+}

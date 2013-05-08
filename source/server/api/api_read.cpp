@@ -240,7 +240,7 @@ Json::Value API::read_department_details(Json::Value &data, int user, Json::Valu
 Json::Value API::read_user_list(Json::Value &data, int user, Json::Value &errors)
 {
 	char query[API_BUFFER_SIZE];
-	snprintf(query, API_BUFFER_SIZE, "SELECT DISTINCT `id`, `name` FROM `user_list` WHERE `user_id`=%d;", user);
+	snprintf(query, API_BUFFER_SIZE, "SELECT DISTINCT `id`, `username` FROM `user_list` WHERE `user_id`=%d;", user);
 	QueryResult *result = _database->send_query(query);
 
 	Json::Value call_data = build_array_from_query(result, fix_generic_list);
@@ -266,7 +266,7 @@ Json::Value API::read_user_details(Json::Value &data, int user, Json::Value &err
 	}
 
 	const std::string &st = build_in_string(data["ids"]);
-	snprintf(query, API_BUFFER_SIZE, "SELECT DISTINCT `id`, `name` FROM `user_list` WHERE `id` IN (%s);", st.c_str());
+	snprintf(query, API_BUFFER_SIZE, "SELECT DISTINCT `id`, `username` FROM `user_list` WHERE `id` IN (%s);", st.c_str());
 
 	result = _database->send_query(query);
 	Json::Value call_data = build_array_from_query(result, fix_generic_list);
