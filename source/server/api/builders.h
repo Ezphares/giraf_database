@@ -43,6 +43,6 @@ std::map<int, int> build_simple_int_map_from_query(QueryResult *query, const cha
 //TODO: validate types on both string and int
 int extract_string(char *buffer, Json::Value &object, const char *key, bool null = false);
 int extract_int(int *buffer, Json::Value &object, const char *key, bool null = false);
-
+int extract_bool(bool *buffer, Json::Value &object, const char *key, bool null = false);
 
 

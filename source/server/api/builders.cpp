@@ -149,3 +149,18 @@ int extract_int(int *buffer, Json::Value &object, const char *key, bool null)
 	return 0;
 }
 
+int extract_bool(bool *buffer, Json::Value &object, const char *key, bool null)
+{
+	if (object.isMember(key))
+	{
+		if (!object[key].isBool()) return -1;
+		int value = object[key].asBool();
+		*buffer = value;
+	}
+	else
+	{
+		if (null) *buffer = false;
+		else return -1;
+	}
+	return 0;
+}
