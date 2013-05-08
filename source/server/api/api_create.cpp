@@ -357,7 +357,7 @@ Json::Value API::create_pictogram(Json::Value &data, int user, Json::Value &erro
 
 			for(i = 0; i < object["tags"].size(); i++)
 			{
-				snprintf(query, API_BUFFER_SIZE, "INSERT INTO `tag` (`name`) VALUES (%s);", object["tags"][i]);
+				snprintf(query, API_BUFFER_SIZE, "INSERT INTO `tag` (`name`) VALUES (%s);", object["tags"][i].asCString());
 				result = _database->send_query(query);
 				delete result;
 			}

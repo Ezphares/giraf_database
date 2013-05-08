@@ -63,7 +63,6 @@ private:
 	int api_create(Json::Value &request, Json::Value &response, Json::Value &errors);
 
 	APICALL(read_profile_list);
-	//Json::Value read_profile_list(Json::Value &data, int user, Json::Value &errors);
 	Json::Value read_profile_details(Json::Value &data, int user, Json::Value &errors);
 	Json::Value update_profile(Json::Value &data, int user, Json::Value &errors);
 	Json::Value create_profile(Json::Value &data, int user, Json::Value &errors);
