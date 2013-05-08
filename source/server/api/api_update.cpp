@@ -86,9 +86,9 @@ int API::api_update(Json::Value &request, Json::Value &response, Json::Value &er
 	Json::Value call_data;
 
 	if (strcmp(request["data"]["type"].asCString(), "profile") == 0) 			call_data = update_profile(request["data"], user, errors);
-	else if (strcmp(request["data"]["type"].asCString(), "department") == 0) 	call_data;//TODO = update_department(request["data"], user, errors);
-	else if (strcmp(request["data"]["type"].asCString(), "user") == 0) 			call_data;//TODO = update_user(request["data"], user, errors);
-	else if (strcmp(request["data"]["type"].asCString(), "pictogram") == 0) 	call_data;//TODO = delete_pictogram(request["data"], user, errors);
+	else if (strcmp(request["data"]["type"].asCString(), "department") == 0) 	call_data = update_department(request["data"], user, errors);
+	else if (strcmp(request["data"]["type"].asCString(), "user") == 0) 			call_data = update_user(request["data"], user, errors);
+	else if (strcmp(request["data"]["type"].asCString(), "pictogram") == 0) 	call_data;//TODO = update_pictogram(request["data"], user, errors);
 	else if (strcmp(request["data"]["type"].asCString(), "application") == 0) 	call_data;//TODO = update_application(request["data"], user, errors);
 	else
 	{
@@ -338,7 +338,7 @@ Json::Value API::update_department(Json::Value &data, int user, Json::Value &err
 	return Json::Value(Json::nullValue);
 }
 
-Json::Value API::update_department(Json::Value &data, int user, Json::Value &errors)
+Json::Value API::update_user(Json::Value &data, int user, Json::Value &errors)
 {
 	char query[API_BUFFER_SIZE];
 
