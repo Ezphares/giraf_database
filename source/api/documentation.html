@@ -193,6 +193,7 @@
 				<p><span class="code">OPTIONAL</span> means that create calls does not need to provide this value</p>
 				<p><span class="code">RESPONSE ONLY</span> means that create and update calls should not provide this value, but read calls will return it</p>
 				<p><span class="code">REQUEST ONLY</span> means the value can be updated and created, but never read.</p>
+				<p><span class="code">CONSTANT</span>< means that the value can only be changed on create</p>
 				<p><span class="code">"light_value_object"</span> is always response only, in list views</p>
 
 				<h3>Users</h3>
@@ -203,7 +204,8 @@
 				{ <br />
 				&nbsp;&nbsp;"id": RESPONSE ONLY INT, <br />
 				&nbsp;&nbsp;"profile": INT, <br />
-				&nbsp;&nbsp;"username": STRING, <br />
+				&nbsp;&nbsp;"username": CONSTANT STRING, <br />
+				&nbsp;&nbsp;"profile": CONSTANT INT, <br />
 				&nbsp;&nbsp;"password": REQUEST ONLY OPTIONAL STRING, <br />
 				&nbsp;&nbsp;"certificate": REQUEST ONLY OPTIONAL STRING <br />
 				}
