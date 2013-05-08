@@ -39,13 +39,17 @@ CREATE TABLE `profile` (
 	`settings`			BLOB			NULL,
 	`user_id`			INT(11)			NULL		UNIQUE,
 	`department_id`		INT(11)			NOT NULL,
+    `author`            INT(11)         NULL,
 	PRIMARY KEY (`id`),
 	FOREIGN KEY (`user_id`)
 		REFERENCES `user` (`id`)
 		ON DELETE SET NULL,
 	FOREIGN KEY (`department_id`)
 		REFERENCES `department` (`id`)
-		ON DELETE CASCADE
+		ON DELETE CASCADE,
+    FOREIGN KEY (`author`)
+        REFERENCES `profile` (`id`)
+        ON DELETE SET NULL
 );
 
 CREATE TABLE `pictogram` (
