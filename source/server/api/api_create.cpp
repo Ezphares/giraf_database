@@ -328,9 +328,9 @@ Json::Value API::create_pictogram(Json::Value &data, int user, Json::Value &erro
 			return Json::Value(Json::nullValue);
 		}
 
-		const char *public_str = is_public ? "TRUE" : "FALSE";
+		int public_int = is_public ? 1 : 0;
 		snprintf(query, API_BUFFER_SIZE, "INSERT INTO `pictogram` (`name`, `image`, `text`, `sound`, `public`, `author`)"
-											"VALUES (%s, %s, %s, %s, %s, %d);", name, image, text, sound, public_str, user);
+											"VALUES (%s, %s, %s, %s, %d, %d);", name, image, text, sound, public_int, user);
 		QueryResult *result = _database->send_query(query);
 		added_ids.push_back(_database->insert_id());
 		call_data.append(Json::Value(added_ids.back()));

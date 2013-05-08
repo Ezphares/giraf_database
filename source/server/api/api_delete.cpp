@@ -89,8 +89,8 @@ Json::Value API::delete_profile(Json::Value &data, int user, Json::Value &errors
 
 	if(validate_array_vector(data["ids"], accessible) == false)
 	{
-			errors.append(Json::Value("Invalid ID access"));
-			return Json::Value(Json::nullValue);
+		errors.append(Json::Value("Invalid ID access"));
+		return Json::Value(Json::nullValue);
 	}
 	const std::string &st = build_in_string(data["ids"]);
 	snprintf(query, API_BUFFER_SIZE, "DELETE FROM `profile` WHERE `id` IN (%s);", st.c_str());
@@ -114,8 +114,8 @@ Json::Value API::delete_department(Json::Value &data, int user, Json::Value &err
 
 	if(validate_array_vector(data["ids"], accessible) == false)
 	{
-			errors.append(Json::Value("Invalid ID access"));
-			return Json::Value(Json::nullValue);
+		errors.append(Json::Value("Invalid ID access"));
+		return Json::Value(Json::nullValue);
 	}
 	const std::string &st = build_in_string(data["ids"]);
 	snprintf(query, API_BUFFER_SIZE, "DELETE FROM `department` WHERE `id` IN (%s);", st.c_str());
@@ -132,14 +132,13 @@ Json::Value API::delete_user(Json::Value &data, int user, Json::Value &errors)
 
 	snprintf(query, API_BUFFER_SIZE, "SELECT DISTINCT `id` FROM `user_list` WHERE `user_id`=%d AND `delete`=1;", user);
 	QueryResult *result = _database->send_query(query);
-
 	std::vector<int> accessible = build_simple_int_vector_from_query(result, "id");
 	delete result;
 
 	if(validate_array_vector(data["ids"], accessible) == false)
 	{
-			errors.append(Json::Value("Invalid ID access"));
-			return Json::Value(Json::nullValue);
+		errors.append(Json::Value("Invalid ID access"));
+		return Json::Value(Json::nullValue);
 	}
 
 	const std::string &st = build_in_string(data["ids"]);
@@ -151,36 +150,32 @@ Json::Value API::delete_user(Json::Value &data, int user, Json::Value &errors)
 	return Json::Value(Json::nullValue);
 }
 
-Json::Value API::delete_application(Json::Value &data, int user, Json::Value &errors)
+Json::Value API::delete_pictogram(Json::Value &data, int user, Json::Value &errors)
 {
 	char query[API_BUFFER_SIZE];
 
-	snprintf(query, API_BUFFER_SIZE, "SELECT DISTINCT `id`, MAX(`direct`) FROM `application_list` WHERE `user_id`=%d GROUP BY `id`;", user);
+	snprintf(query, API_BUFFER_SIZE, "SELECT DISTINCT `id` FROM `pictogram_list` WHERE `user_id`=%d AND `author`=1;", user);
 	QueryResult *result = _database->send_query(query);
-
 	std::vector<int> accessible = build_simple_int_vector_from_query(result, "id");
-
-	std::map<int,int> link = build_simple_int_map_from_query(result, "id", "direct");
-
-	//TODO this function should be changed
-	/*for (unsigned int i = 0; i < data["ids"].size(); i++)
-	{
-		int id = data["ids"][i].asInt();
-		if (link[id] == 1)
-		{
-			snprintf(query, API_BUFFER_SIZE, "DELETE FROM `application_profile` WHERE `application_id`=%d AND `profile_id`=(SELECT `id` FROM `profile` WHERE `user_id`=%d);", id, user);
-		}
-	}*/
 	delete result;
 
-	if(validate_array_vector(data["ids"], accessible) == false)
+	if (validate_array_vector(data["ids"], accessible) == false)
 	{
-			errors.append(Json::Value("Invalid ID access"));
-			return Json::Value(Json::nullValue);
+		errors.append(Json::Value("Invalid ID access"));
+		return Json::Value(Json::nullValue);
 	}
+	const std::string &st = build_in_string(data["ids"]);
+	snprintf(query, API_BUFFER_SIZE, "UPDATE `pictogram` SET `public`=0, `author`=NULL WHERE `id` IN %s;", st.c_str());
 
+	result = _database->send_query(query);
+	delete result;
 
+	return Json::Value(Json::nullValue);
+}
 
+Json::Value API::delete_application(Json::Value &data, int user, Json::Value &errors)
+{
+	errors.append(Json::Value("Applications cannot be deleted. Unlink instead."));
 	return Json::Value(Json::nullValue);
 }
 
