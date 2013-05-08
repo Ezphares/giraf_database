@@ -337,3 +337,65 @@ Json::Value API::update_department(Json::Value &data, int user, Json::Value &err
 
 	return Json::Value(Json::nullValue);
 }
+
+Json::Value API::update_department(Json::Value &data, int user, Json::Value &errors)
+{
+	char query[API_BUFFER_SIZE];
+
+	snprintf(query, API_BUFFER_SIZE, "SELECT DISTINCT `id` FROM `user_list` WHERE `user_id`=%d;", user);
+	QueryResult *result = _database->send_query(query);
+	std::vector<int> accessible = build_simple_int_vector_from_query(result, "id");
+	delete result;
+
+	for(unsigned int i = 0; i < data["values"].size(); i++)
+	{
+		Json::Value &object = data["values"][i];
+
+		int d = object["value"]["id"].asInt();
+		if (!validate_value_in_vector(d, accessible))
+		{
+			errors.append(Json::Value("Illegal user"));
+			return Json::Value(Json::nullValue);
+		}
+	}
+
+	for(unsigned int i = 0; i < data["values"].size(); i++)
+	{
+		Json::Value &object = data["values"][i]["value"];
+
+		char password[EXTRACT_SIZE];
+		char certificate[EXTRACT_SIZE];
+
+		int err = 0;
+		err += extract_string(password, object, "password", true);
+		err += extract_string(certificate, object, "certificate", true);
+		if (err != 0)
+		{
+			errors.append("Type error(s) in user data object");
+			return Json::Value(Json::nullValue);
+		}
+
+		if(password[0] == 'N' && certificate[0] == 'N')
+		{
+			errors.append(Json::Value("You must specify either a password or certificate"));
+			return Json::Value(Json::nullValue);
+		}
+
+		std::stringstream values;
+		if(password[0] != 'N') values << "password=" << password;
+
+		if(certificate[0] != 'N')
+		{
+			if(values.str().size() != 0) values << ",";
+			values << "certificate=" << certificate;
+		}
+
+		std::string v = values.str();
+		char query[API_BUFFER_SIZE];
+		snprintf(query, API_BUFFER_SIZE, "UPDATE `user` SET %s WHERE id=%d;", v.c_str(), data["values"][i]["id"].asInt());
+		QueryResult *result = _database->send_query(query);
+		delete result;
+
+	}
+	return Json::Value(Json::nullValue);
+}
