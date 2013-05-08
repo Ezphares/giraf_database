@@ -24,6 +24,8 @@
 #include "builders.h"
 #include <algorithm>
 
+#define APICALL(name) Json::Value name(Json::Value &data, int number, Json::Value &errors)
+
 class API
 {
 public:
@@ -60,7 +62,8 @@ private:
 	int api_update(Json::Value &request, Json::Value &response, Json::Value &errors);
 	int api_create(Json::Value &request, Json::Value &response, Json::Value &errors);
 
-	Json::Value read_profile_list(Json::Value &data, int user, Json::Value &errors);
+	APICALL(read_profile_list);
+	//Json::Value read_profile_list(Json::Value &data, int user, Json::Value &errors);
 	Json::Value read_profile_details(Json::Value &data, int user, Json::Value &errors);
 	Json::Value update_profile(Json::Value &data, int user, Json::Value &errors);
 	Json::Value create_profile(Json::Value &data, int user, Json::Value &errors);

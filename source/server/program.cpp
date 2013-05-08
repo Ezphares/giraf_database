@@ -24,8 +24,6 @@ int handle_api(Connection *connection)
 
 int main (int argc, char *argv[])
 {
-
-	
 	ServerInfo *server = run_server(2468, handle_api);
 
 	char *a = (char *)malloc(64);
