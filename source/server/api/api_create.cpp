@@ -152,8 +152,8 @@ Json::Value API::create_profile(Json::Value &data, int user, Json::Value &errors
 		}
 
 		char query[API_BUFFER_SIZE];
-		snprintf(query, API_BUFFER_SIZE, "INSERT INTO `profile` (`name`, `email`, `department_id`, `role`, `address`, `phone`, `picture`, `settings`)"
-											"VALUES (%s, %s, %d, %d, %s, %s, %s, %s);", name, email, department, role, address, phone, picture, settings);
+		snprintf(query, API_BUFFER_SIZE, "INSERT INTO `profile` (`name`, `email`, `department_id`, `role`, `address`, `phone`, `picture`, `settings`, `author`)"
+											"VALUES (%s, %s, %d, %d, %s, %s, %s, %s, %d);", name, email, department, role, address, phone, picture, settings, user);
 		QueryResult *result = _database->send_query(query);
 		added_ids.push_back(_database->insert_id());
 		call_data.append(Json::Value(added_ids.back()));
@@ -223,8 +223,8 @@ Json::Value API::create_department(Json::Value &data, int user, Json::Value &err
 			return Json::Value(Json::nullValue);
 		}
 
-		snprintf(query, API_BUFFER_SIZE, "INSERT INTO `department` (`name`, `email`, `address`, `phone`, `super_department_id`)"
-													"VALUES (%s, %s, %s, %s, %d);", name, email, address, phone, top_department);
+		snprintf(query, API_BUFFER_SIZE, "INSERT INTO `department` (`name`, `email`, `address`, `phone`, `super_department_id`, `author`)"
+													"VALUES (%s, %s, %s, %s, %d, %d);", name, email, address, phone, top_department, user);
 		QueryResult *result = _database->send_query(query);
 		added_ids.push_back(_database->insert_id());
 		call_data.append(Json::Value(added_ids.back()));
