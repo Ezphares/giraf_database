@@ -40,7 +40,13 @@ CREATE VIEW `giraf`.`profile_list` AS
         `department` ON `admin_of`.`department_id`=`department`.`id`
         JOIN
         `profile` ON `department`.`id`=`profile`.`department_id`
-        WHERE (`profile`.`user_id` IS NULL) OR (`user`.`id` != `profile`.`user_id`);
+        WHERE (`profile`.`user_id` IS NULL) OR (`user`.`id` != `profile`.`user_id`)
+    UNION
+    /* CREATED PROFILES */
+    SELECT `user`.`id` AS `user_id`, `profile`.`id`, `profile`.`role`, `profile`.`name`, (1) `update`, (1) `delete` FROM
+        `user`
+        JOIN
+        `profile` ON `user`.`id`= `profile`.`author`;
 
 
 CREATE VIEW `giraf`.`user_list` AS
@@ -86,11 +92,17 @@ CREATE VIEW `giraf`.`department_list` AS
         JOIN
         `department` AS `p_admin` ON `admin_of`.`department_id`=`p_admin`.`id`
         JOIN
-        `department` ON `p_admin`.`id`=`department`.`super_department_id`;
-
+        `department` ON `p_admin`.`id`=`department`.`super_department_id`
+    UNION
+    /* CREATED DEPARTMENTS */
+    SELECT `user`.`id` AS `user_id`, `department`.`id`, `department`.`name`, (1) `update`, (1) `delete` FROM
+        `user`
+        JOIN
+        `department` ON `user`.`id`=`department`.`author`;
+        
 CREATE VIEW `pictogram_list` AS
     /* PROFILE */
-    SELECT `user`.`id` AS `user_id`, `pictogram`.`id`, `pictogram`.`name`, (1) `direct` FROM
+    SELECT `user`.`id` AS `user_id`, `pictogram`.`id`, `pictogram`.`name`, (1) `direct`, (0) `author` FROM
         `user`
         JOIN
         `profile` ON `user`.`id`=`profile`.`user_id`
@@ -100,7 +112,7 @@ CREATE VIEW `pictogram_list` AS
         `pictogram` ON `profile_pictogram`.`pictogram_id`=`pictogram`.`id`
     UNION
     /* DEPARTMENT */
-    SELECT `user`.`id` AS `user_id`, `pictogram`.`id`, `pictogram`.`name`, (0) `direct` FROM
+    SELECT `user`.`id` AS `user_id`, `pictogram`.`id`, `pictogram`.`name`, (0) `direct`, (0) `author` FROM
         `user`
         JOIN
         `profile` ON `user`.`id`=`profile`.`user_id`
@@ -109,11 +121,17 @@ CREATE VIEW `pictogram_list` AS
         JOIN
         `department_pictogram` ON `department`.`id`=`department_pictogram`.`department_id`
         JOIN
-        `pictogram` ON `department_pictogram`.`pictogram_id`=`pictogram`.`id`;
+        `pictogram` ON `department_pictogram`.`pictogram_id`=`pictogram`.`id`
+    UNION
+    /* CREATED PICTOGRAMS */
+    SELECT `user`.`id` AS `user_id`, `pictogram`.`id`, `pictogram`.`name`, (0) `direct`, (1) `author` FROM
+        `user`
+        JOIN
+        `pictogram` ON `user`.`id`=`pictogram`.`author`;
     
 CREATE VIEW `application_list` AS
     /* PROFILE */
-    SELECT `user`.`id` AS `user_id`, `application`.`id`, `application`.`name` FROM
+    SELECT `user`.`id` AS `user_id`, `application`.`id`, `application`.`name`, (0) `author` FROM
         `user`
         JOIN
         `profile` ON `user`.`id`=`profile`.`user_id`
@@ -123,7 +141,7 @@ CREATE VIEW `application_list` AS
         `application` ON `profile_application`.`application_id`=`application`.`id`
     UNION
     /* DEPARTMENT */
-    SELECT `user`.`id` AS `user_id`, `application`.`id`, `application`.`name` FROM
+    SELECT `user`.`id` AS `user_id`, `application`.`id`, `application`.`name`, (0) `author` FROM
         `user`
         JOIN
         `profile` ON `user`.`id`=`profile`.`user_id`
@@ -132,7 +150,13 @@ CREATE VIEW `application_list` AS
         JOIN
         `department_application` ON `department`.`id`=`department_application`.`department_id`
         JOIN
-        `application` ON `department_application`.`application_id`=`application`.`id`;
+        `application` ON `department_application`.`application_id`=`application`.`id`
+    UNION
+    /* CREATED applications */
+    SELECT `user`.`id` AS `user_id`, `application`.`id`, `application`.`name`, (1) `author` FROM
+        `user`
+        JOIN
+        `application` ON `user`.`id`=`application`.`author`;
 
 CREATE VIEW `application_details` AS
     SELECT `user`.`id` AS `user_id`, `application`.*, `profile_application`.`settings`, (1) `direct` FROM
