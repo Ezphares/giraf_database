@@ -12,6 +12,8 @@
 #include <poll.h>
 
 Connection::Connection() :
+		_connection_fd(0),
+		_connection_length(0),
 		_connected(false)
 {
 
