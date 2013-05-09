@@ -5,6 +5,11 @@
 
 BOOST_AUTO_TEST_SUITE(api_calls)
 
+BOOST_AUTO_TEST_CASE(api_builders)
+{
+
+}
+
 BOOST_AUTO_TEST_CASE(api_structure)
 {
 	Json::Value check;
