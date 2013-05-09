@@ -56,7 +56,7 @@ int API::api_delete(Json::Value &request, Json::Value &response, Json::Value &er
 	if (strcmp(request["data"]["type"].asCString(), "profile") == 0) 			call_data = delete_profile(request["data"], user, errors);
 	else if (strcmp(request["data"]["type"].asCString(), "department") == 0) 	call_data = delete_department(request["data"], user, errors);
 	else if (strcmp(request["data"]["type"].asCString(), "user") == 0) 			call_data = delete_user(request["data"], user, errors);
-	else if (strcmp(request["data"]["type"].asCString(), "pictogram") == 0) 	call_data;//TODO = delete_pictogram(request["data"], user, errors);
+	else if (strcmp(request["data"]["type"].asCString(), "pictogram") == 0) 	call_data = delete_pictogram(request["data"], user, errors);
 	else if (strcmp(request["data"]["type"].asCString(), "application") == 0) 	call_data = delete_application(request["data"], user, errors);
 	else
 	{

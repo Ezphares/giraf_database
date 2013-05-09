@@ -84,11 +84,13 @@ private:
 	Json::Value read_pictogram_details(Json::Value &data, int user, Json::Value &errors);
 	Json::Value create_pictogram(Json::Value &data, int user, Json::Value &errors);
 	APICALL(delete_pictogram);
+	APICALL(update_pictogram);
 
 	Json::Value read_application_list(Json::Value &data, int user, Json::Value &errors);
 	Json::Value read_application_details(Json::Value &data, int user, Json::Value &errors);
 	Json::Value delete_application(Json::Value &data, int user, Json::Value &errors);
 	Json::Value create_application(Json::Value &data, int user, Json::Value &errors);
+	APICALL(update_application);
 	// ETC, ETC
 
 

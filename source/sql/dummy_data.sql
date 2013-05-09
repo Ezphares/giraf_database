@@ -25,4 +25,9 @@ INSERT INTO `guardian_of` (`guardian_id`, `child_id`)
 
 INSERT INTO `pictogram` (`name`, `public`) VALUES ('bil', false), ('hus', true);
 
-INSERT INTO profile_pictogram (profile_id, pictogram_id) values (1, 1), (1, 2);
+INSERT INTO `profile_pictogram` (`profile_id`, `pictogram_id`) VALUES (1, 1), (1, 2);
+
+INSERT INTO `application` (`name`, `version`, `icon`, `package`, `activity`, `description`)
+        VALUES ('Tog', '1.0', 'Herp', 'deeerp', 'ANDERS', 'hurr durr');
+
+INSERT INTO `profile_application` (`profile_id`, `application_id`) VALUES (1, 1);

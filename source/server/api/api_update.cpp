@@ -88,8 +88,8 @@ int API::api_update(Json::Value &request, Json::Value &response, Json::Value &er
 	if (strcmp(request["data"]["type"].asCString(), "profile") == 0) 			call_data = update_profile(request["data"], user, errors);
 	else if (strcmp(request["data"]["type"].asCString(), "department") == 0) 	call_data = update_department(request["data"], user, errors);
 	else if (strcmp(request["data"]["type"].asCString(), "user") == 0) 			call_data = update_user(request["data"], user, errors);
-	else if (strcmp(request["data"]["type"].asCString(), "pictogram") == 0) 	call_data;//TODO = update_pictogram(request["data"], user, errors);
-	else if (strcmp(request["data"]["type"].asCString(), "application") == 0) 	call_data;//TODO = update_application(request["data"], user, errors);
+	else if (strcmp(request["data"]["type"].asCString(), "pictogram") == 0) 	call_data = update_pictogram(request["data"], user, errors);
+	else if (strcmp(request["data"]["type"].asCString(), "application") == 0) 	call_data = update_application(request["data"], user, errors);
 	else
 	{
 		response["status"] = STATUS_STRUCTURE;
@@ -398,4 +398,132 @@ Json::Value API::update_user(Json::Value &data, int user, Json::Value &errors)
 
 	}
 	return Json::Value(Json::nullValue);
+}
+
+Json::Value API::update_application(Json::Value &data, int user, Json::Value &errors)
+{
+	char query[API_BUFFER_SIZE];
+
+	snprintf(query, API_BUFFER_SIZE, "SELECT DISTINCT `id` FROM `application_list` WHERE `user_id`=%d AND `author`=1;", user);
+	QueryResult *result = _database->send_query(query);
+	std::vector<int> accessible = build_simple_int_vector_from_query(result, "id");
+	delete result;
+
+	for(unsigned int i = 0; i < data["values"].size(); i++)
+	{
+		Json::Value &object = data["values"][i];
+
+		int d = object["id"].asInt();
+		if (!validate_value_in_vector(d, accessible))
+		{
+			errors.append(Json::Value("Illegal application"));
+			return Json::Value(Json::nullValue);
+		}
+	}
+
+	for(unsigned int i = 0; i < data["values"].size(); i++)
+	{
+		Json::Value &object = data["values"][i]["value"];
+
+		char version[EXTRACT_SIZE];
+		char icon[EXTRACT_SIZE];
+		char package[EXTRACT_SIZE];
+		char activity[EXTRACT_SIZE];
+		char description[EXTRACT_SIZE];
+
+		int err = 0;
+		err += extract_string(version, object, "version", true);
+		err += extract_string(icon, object, "icon", true);
+		err += extract_string(package, object, "package", true);
+		err += extract_string(activity, object, "activity", true);
+		err += extract_string(description, object, "description", true);
+		if (err != 0)
+		{
+			errors.append("Type error(s) in profile data object");
+			return Json::Value(Json::nullValue);
+		}
+
+		std::stringstream values;
+		if(version[0] != 'N') values << "version=" << version;
+
+		if(icon[0] != 'N')
+		{
+			if(values.str().size() != 0) values << ",";
+			values << "icon=" << icon;
+		}
+
+		if(package[0] != 'N')
+		{
+			if(values.str().size() != 0) values << ",";
+			values << "package=" << package;
+		}
+
+		if(activity[0] != 'N')
+		{
+			if(values.str().size() != 0) values << ",";
+			values << "activity=" << activity;
+		}
+
+		if(description[0] != 'N')
+		{
+			if(values.str().size() != 0) values << ",";
+			values << "description=" << description;
+		}
+
+		std::string v = values.str();
+		char query[API_BUFFER_SIZE];
+		snprintf(query, API_BUFFER_SIZE, "UPDATE `application` SET %s WHERE id=%d;", v.c_str(), data["values"][i]["id"].asInt());
+		QueryResult *result = _database->send_query(query);
+		delete result;
+	}
+
+	return Json::Value(Json::nullValue);
+}
+
+Json::Value API::update_pictogram(Json::Value &data, int user, Json::Value &errors)
+{
+	char query[API_BUFFER_SIZE];
+
+	snprintf(query, API_BUFFER_SIZE, "SELECT DISTINCT `id` FROM `pictogram_list` WHERE `user_id`=%d;", user);
+	QueryResult *result = _database->send_query(query);
+	std::vector<int> accessible = build_simple_int_vector_from_query(result, "id");
+	delete result;
+
+	for(unsigned int i = 0; i < data["values"].size(); i++)
+	{
+		Json::Value &object = data["values"][i];
+
+		int d = object["id"].asInt();
+		if (!validate_value_in_vector(d, accessible))
+		{
+			errors.append(Json::Value("Illegal pictogram"));
+			return Json::Value(Json::nullValue);
+		}
+	}
+//TODO: this should be done after categories and tags.
+/*
+	for(unsigned int i = 0; i < data["values"].size(); i++)
+	{
+		char version[EXTRACT_SIZE];
+		char icon[EXTRACT_SIZE];
+		char package[EXTRACT_SIZE];
+		char activity[EXTRACT_SIZE];
+		char description[EXTRACT_SIZE];
+
+		int err = 0;
+		err += extract_string(version, object, "version", true);
+		err += extract_string(icon, object, "icon", true);
+		err += extract_string(package, object, "package", true);
+		err += extract_string(activity, object, "activity", true);
+		err += extract_string(description, object, "description", true);
+		if (err != 0)
+		{
+			errors.append("Type error(s) in profile data object");
+			return Json::Value(Json::nullValue);
+		}
+
+	}
+*/
+	return Json::Value(Json::nullValue);
+
 }

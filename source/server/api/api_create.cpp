@@ -57,8 +57,8 @@ int API::api_create (Json::Value &request, Json::Value &response, Json::Value &e
 	if (strcmp(request["data"]["type"].asCString(), "profile") == 0) 			call_data = create_profile(request["data"], user, errors);
 	else if (strcmp(request["data"]["type"].asCString(), "department") == 0) 	call_data = create_department(request["data"], user, errors);
 	else if (strcmp(request["data"]["type"].asCString(), "user") == 0) 			call_data = create_user(request["data"], user, errors);
-	else if (strcmp(request["data"]["type"].asCString(), "pictogram") == 0) 	call_data;//TODO = delete_pictogram(request["data"], user, errors);
-	else if (strcmp(request["data"]["type"].asCString(), "application") == 0) 	call_data;//TODO = create_application(request["data"], user, errors);
+	else if (strcmp(request["data"]["type"].asCString(), "pictogram") == 0) 	call_data = create_pictogram(request["data"], user, errors);
+	else if (strcmp(request["data"]["type"].asCString(), "application") == 0) 	call_data = create_application(request["data"], user, errors);
 	else
 	{
 		response["status"] = STATUS_STRUCTURE;
@@ -355,17 +355,32 @@ Json::Value API::create_pictogram(Json::Value &data, int user, Json::Value &erro
 				return Json::Value(Json::nullValue);
 			}
 
+
 			for(i = 0; i < object["tags"].size(); i++)
 			{
-				snprintf(query, API_BUFFER_SIZE, "INSERT INTO `tag` (`name`) VALUES (%s);", object["tags"][i].asCString());
+				const char *tag = object["tags"][i].asCString();
+				int tag_id;
+				snprintf(query, API_BUFFER_SIZE, "SELECT `id` FROM `tag` WHERE `name`=\"%s\";", tag);
 				result = _database->send_query(query);
+				r = result->next_row();
 				delete result;
+
+				if(!r.empty()) tag_id = atoi(r["id"].c_str());
+				else
+				{
+					snprintf(query, API_BUFFER_SIZE, "INSERT INTO `tag` (`name`) VALUES (%s);", tag);
+					result = _database->send_query(query);
+					tag_id = _database->insert_id();
+					delete result;
+				}
+
+				snprintf(query, API_BUFFER_SIZE, "INSERT INTO `pictogram_tag` (`pictogram_id`, `tag_id`) VALUES (%d, %d);", added_ids.back(), tag_id);
+				result = _database->send_query(query);
 			}
 		}
 	}
 
 	return call_data;
-
 }
 
 Json::Value API::create_application(Json::Value &data, int user, Json::Value &errors)
