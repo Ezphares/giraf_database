@@ -4,6 +4,7 @@
 #include "api.h"
 #include <json/reader.h>
 
+
 BOOST_AUTO_TEST_SUITE(api_calls)
 
 BOOST_AUTO_TEST_CASE(api_builders)
@@ -106,7 +107,7 @@ BOOST_AUTO_TEST_CASE(api_read)
 	reader.parse(API().handle_request(profile_fail), check);
 	BOOST_CHECK_EQUAL(strcmp(check["status"].asCString(), STATUS_ACCESS), 0);
 
-	const char *profile_succeed = "{\"data\":{\"type\":\"profile\", \"view\":\"details\, \"ids\":[1]}, \"action\":\"read\", \"auth\":{\"username\":\"john\", \"password\":\"123456\"}}";
+	const char *profile_succeed = "{\"data\":{\"type\":\"profile\", \"view\":\"details\", \"ids\":[1]}, \"action\":\"read\", \"auth\":{\"username\":\"john\", \"password\":\"123456\"}}";
 	reader.parse(API().handle_request(profile_succeed), check);
 	BOOST_CHECK_EQUAL(check["data"].isArray(), 0);
 	BOOST_CHECK_EQUAL(check["data"][0u].isMember("id"), 0);
@@ -119,7 +120,7 @@ BOOST_AUTO_TEST_CASE(api_read)
 	reader.parse(API().handle_request(user_fail), check);
 	BOOST_CHECK_EQUAL(strcmp(check["status"].asCString(), STATUS_ACCESS), 0);
 
-	const char *user_succeed = "{\"data\":{\"type\":\"user\", \"view\":\"details\, \"ids\":[1]}, \"action\":\"read\", \"auth\":{\"username\":\"john\", \"password\":\"123456\"}}";
+	const char *user_succeed = "{\"data\":{\"type\":\"user\", \"view\":\"details\", \"ids\":[1]}, \"action\":\"read\", \"auth\":{\"username\":\"john\", \"password\":\"123456\"}}";
 	reader.parse(API().handle_request(user_succeed), check);
 	BOOST_CHECK_EQUAL(check["data"].isArray(), 0);
 	BOOST_CHECK_EQUAL(check["data"][0u].isMember("id"), 0);
@@ -133,12 +134,12 @@ BOOST_AUTO_TEST_CASE(api_read)
 	reader.parse(API().handle_request(department_fail), check);
 	BOOST_CHECK_EQUAL(strcmp(check["status"].asCString(), STATUS_ACCESS), 0);
 
-	const char *department_succeed = "{\"data\":{\"type\":\"department\", \"view\":\"details\, \"ids\":[1]}, \"action\":\"read\", \"auth\":{\"username\":\"john\", \"password\":\"123456\"}}";
+	const char *department_succeed = "{\"data\":{\"type\":\"department\", \"view\":\"details\", \"ids\":[1]}, \"action\":\"read\", \"auth\":{\"username\":\"john\", \"password\":\"123456\"}}";
 	reader.parse(API().handle_request(department_succeed), check);
 	BOOST_CHECK_EQUAL(check["data"].isArray(), 0);
 	BOOST_CHECK_EQUAL(check["data"][0u].isMember("id"), 0);
 
-	const char *application_list = "{\"data\":{\"type\":\"application\", \"view\":\"list\, \"ids\":null}, \"action\":\"read\", \"auth\":{\"username\":\"john\", \"password\":\"123456\"}}";
+	const char *application_list = "{\"data\":{\"type\":\"application\", \"view\":\"list\", \"ids\":null}, \"action\":\"read\", \"auth\":{\"username\":\"john\", \"password\":\"123456\"}}";
 	reader.parse(API().handle_request(application_list), check);
 	BOOST_CHECK_EQUAL(check["data"].isArray(), 0);
 
@@ -146,7 +147,7 @@ BOOST_AUTO_TEST_CASE(api_read)
 	reader.parse(API().handle_request(application_fail), check);
 	BOOST_CHECK_EQUAL(strcmp(check["status"].asCString(), STATUS_ACCESS), 0);
 
-	const char *application_succeed = "{\"data\":{\"type\":\"application\", \"view\":\"details\, \"ids\":[1]}, \"action\":\"read\", \"auth\":{\"username\":\"john\", \"password\":\"123456\"}}";
+	const char *application_succeed = "{\"data\":{\"type\":\"application\", \"view\":\"details\", \"ids\":[1]}, \"action\":\"read\", \"auth\":{\"username\":\"john\", \"password\":\"123456\"}}";
 	reader.parse(API().handle_request(application_succeed), check);
 	BOOST_CHECK_EQUAL(check["data"].isArray(), 0);
 	BOOST_CHECK_EQUAL(check["data"][0u].isMember("id"), 0);
@@ -160,7 +161,7 @@ BOOST_AUTO_TEST_CASE(api_read)
 	reader.parse(API().handle_request(pictogram_fail), check);
 	BOOST_CHECK_EQUAL(strcmp(check["status"].asCString(), STATUS_ACCESS), 0);
 
-	const char *pictogram_succeed = "{\"data\":{\"type\":\"pictogram\", \"view\":\"details\, \"ids\":[1]}, \"action\":\"read\", \"auth\":{\"username\":\"john\", \"password\":\"123456\"}}";
+	const char *pictogram_succeed = "{\"data\":{\"type\":\"pictogram\", \"view\":\"details\", \"ids\":[1]}, \"action\":\"read\", \"auth\":{\"username\":\"john\", \"password\":\"123456\"}}";
 	reader.parse(API().handle_request(pictogram_succeed), check);
 	BOOST_CHECK_EQUAL(check["data"].isArray(), 0);
 	BOOST_CHECK_EQUAL(check["data"][0u].isMember("id"), 0);

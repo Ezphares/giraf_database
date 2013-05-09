@@ -407,14 +407,15 @@ Json::Value API::create_application(Json::Value &data, int user, Json::Value &er
 		err += extract_string(activity, object, "activity", false);
 		err += extract_string(settings, object, "settings", false);
 		err += extract_string(description, object, "description", true);
+		err += extract_string(package, object, "package", false);
 		if (err != 0)
 		{
 			errors.append("Value error(s) in profile data object");
 			return Json::Value(Json::nullValue);
 		}
 
-		snprintf(query, API_BUFFER_SIZE, "INSERT INTO `application` (`name`, `version`, `icon`, `activity`, `settings`, `description`, `author`)"
-											"VALUES (%s, %s, %s, %s, %s, %s, d%);", name, version, icon, activity, settings, description, user);
+		snprintf(query, API_BUFFER_SIZE, "INSERT INTO `application` (`name`, `version`, `icon`, `activity`, `settings`, `description`, `package`, `author`)"
+											"VALUES (%s, %s, %s, %s, %s, %s, %s, %d);", name, version, icon, activity, settings, description, package, user);
 		QueryResult *result = _database->send_query(query);
 		added_ids.push_back(_database->insert_id());
 		call_data.append(Json::Value(added_ids.back()));
