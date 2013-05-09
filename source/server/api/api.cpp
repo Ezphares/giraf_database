@@ -50,7 +50,8 @@ std::string API::handle_request(const char *json)
 		if (root["action"].isNull())
 		{
 			int user = authenticate(root["auth"]);
-			if (user) create_session(response, user);
+			if (user > 0) create_session(response, user);
+			else response["status"] = Json::Value(STATUS_AUTH);
 		}
 		else
 		{
