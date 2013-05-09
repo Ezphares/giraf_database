@@ -36,7 +36,7 @@ API_SOURCES=api/api.cpp \
 	    api/builders.cpp
 	    
 MODULES=program.o m_database m_connection m_api
-TESTS=t_connection t_database
+TESTS=t_connection t_database t_api
 
 OBJECTS=program.o $(CONNECTION_OBJECTS) $(DATABASE_OBJECTS) $(API_OBJECTS)
 
@@ -68,3 +68,5 @@ t_connection :
 t_database :
 	$(CC) $(DATABASE_SOURCES) database/test.cpp $(LDFLAGS) -o test_database
 
+t_api :
+	$(CC) $(DATABASE_SOURCES) $(API_SOURCES) api/test.cpp $(LDFLAGS) -o test_api
