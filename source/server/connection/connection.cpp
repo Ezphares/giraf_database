@@ -12,6 +12,8 @@
 #include <poll.h>
 
 Connection::Connection() :
+		_connection_fd(0),
+		_connection_length(0),
 		_connected(false)
 {
 
@@ -72,7 +74,7 @@ int Connection::send(const char *message)
 	return 0;
 }
 
-const char *Connection::receive()
+char *Connection::receive()
 {
 	if (!this->is_connected())
 	{
@@ -107,8 +109,11 @@ const char *Connection::receive()
 	while (p.revents & POLLIN);
 
 	free(buffer);
+	std::string s = msg.str();
 
-	return msg.str().c_str();
+	char *m = new char[s.size() + 1];
+	std::copy(s.begin(), s.end(), m);
+	return m;
 }
 
 void Connection::disconnect()
