@@ -21,9 +21,8 @@ int API::validate_update(Json::Value &data, Json::Value &errors)
 		}
 	}
 
-	if (!data.isMember("values"))
+	if (data.isMember("values"))
 	{
-		errors.append(Json::Value("\"data\":\"values\" key missing"));
 		if (!data["values"].isArray())
 		{
 			errors.append(Json::Value("\"data\":\"values\" was not an array"));
@@ -33,32 +32,42 @@ int API::validate_update(Json::Value &data, Json::Value &errors)
 			for (unsigned int i = 0; i < data["values"].size(); i++)
 			{
 				Json::Value &object = data["values"][i];
-				if (!object.isMember("id"))
+				if (!object.isObject())
 				{
-					errors.append(Json::Value("Missing update id"));
+					errors.append(Json::Value("Values member was not an object"));
 				}
 				else
 				{
-					if (object["id"].isInt())
+					if (!object.isMember("id"))
 					{
-						errors.append(Json::Value("Update id was not an integer"));
+						errors.append(Json::Value("Missing update id"));
+					}
+					else
+					{
+						if (!object["id"].isInt())
+						{
+							errors.append(Json::Value("Update id was not an integer"));
+						}
+					}
+
+					if (!object.isMember("value"))
+					{
+						errors.append(Json::Value("Missing update value"));
+					}
+					else
+					{
+						if (!object["value"].isObject())
+						{
+							errors.append(Json::Value("Update value was not an object"));
+						}
 					}
 				}
-
-				if (!object.isMember("value"))
-				{
-					errors.append(Json::Value("Missing update value"));
-				}
-				else
-				{
-					if (object["value"].isObject())
-					{
-						errors.append(Json::Value("Update value was not an object"));
-					}
-				}
-
 			}
 		}
+	}
+	else
+	{
+		errors.append(Json::Value("\"data\":\"values\" key missing"));
 	}
 
 	if (errors.empty()) return 0;
@@ -130,41 +139,46 @@ Json::Value API::update_profile(Json::Value &data, int user, Json::Value &errors
 	{
 		Json::Value &object = data["values"][i];
 
-		int d = object["value"]["department"].asInt();
-		if (!validate_value_in_vector(d, departments))
+		int d;
+		if (extract_int(&d, object["value"], "department", false) == 0)
 		{
-			errors.append(Json::Value("Illegal department"));
-			return Json::Value(Json::nullValue);
+			if (!validate_value_in_vector(d, departments))
+			{
+				errors.append(Json::Value("Illegal department"));
+				return Json::Value(Json::nullValue);
+			}
 		}
 
-		if(validate_array_vector(object["id"], accessible) == false)
+		if(validate_value_in_vector(object["id"].asInt(), accessible) == false)
 		{
 				errors.append(Json::Value("Invalid ID access"));
 				return Json::Value(Json::nullValue);
 		}
 
-		int r = object["value"]["role"].asInt();
-		if(object["value"].isMember("guardian_of"))
+		int r;
+		if (extract_int(&r, object["value"], "role", false) == 0)
 		{
-			if(r != 2)
+			if(object["value"].isMember("guardian_of"))
 			{
-				if (!validate_array_vector(object["guardian_of"], children))
+				if(r != 2)
 				{
-					errors.append(Json::Value("Illegal profile(s)"));
-					return Json::Value(Json::nullValue);
+					if (!validate_array_vector(object["value"]["guardian_of"], children))
+					{
+						errors.append(Json::Value("Illegal profile(s)"));
+						return Json::Value(Json::nullValue);
+					}
 				}
-			}
-			else
-			{
-				if (!object["value"]["guardian_of"].empty())
+				else
 				{
-					errors.append(Json::Value("Child as guardian"));
-					return Json::Value(Json::nullValue);
+					if (!object["value"]["guardian_of"].empty())
+					{
+						errors.append(Json::Value("Child as guardian"));
+						return Json::Value(Json::nullValue);
+					}
 				}
 			}
 		}
 	}
-
 
 	for(unsigned int i = 0; i < data["values"].size(); i++)
 	{
@@ -245,21 +259,22 @@ Json::Value API::update_profile(Json::Value &data, int user, Json::Value &errors
 		delete result;
 
 
-		if(data.isMember("guardian_of"))
+		if(object.isMember("guardian_of"))
 		{
 			int id = data["values"][i]["id"].asInt();
 			snprintf(query, API_BUFFER_SIZE, "DELETE FROM `guardian_of` WHERE `guardian_id`=%d;", id);
 			QueryResult *result = _database->send_query(query);
 			delete result;
 
-			for (unsigned int i = 0; i < data["guardian_of"].size(); i++)
+			for (unsigned int j = 0; j < data["guardian_of"].size(); j++)
 			{
-				int child = data["guardian_of"][i].asInt();
+				int child = object["guardian_of"][j].asInt();
 				snprintf(query, API_BUFFER_SIZE, "INSERT INTO `guardian_of` (`guardian_id`, `child_id`) VALUES (%d, %d);", id, child);
 				QueryResult *result = _database->send_query(query);
 				delete result;
 			}
 		}
+
 	}
 
 	return Json::Value(Json::nullValue);
@@ -279,7 +294,7 @@ Json::Value API::update_department(Json::Value &data, int user, Json::Value &err
 	{
 		Json::Value &object = data["values"][i];
 
-		int d = object["value"]["department"].asInt();
+		int d = object["id"].asInt();
 		if (!validate_value_in_vector(d, accessible))
 		{
 			errors.append(Json::Value("Illegal department"));

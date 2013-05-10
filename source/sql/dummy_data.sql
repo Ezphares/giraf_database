@@ -31,3 +31,5 @@ INSERT INTO `application` (`name`, `version`, `icon`, `package`, `activity`, `de
         VALUES ('Tog', '1.0', 'Herp', 'deeerp', 'ANDERS', 'hurr durr');
 
 INSERT INTO `profile_application` (`profile_id`, `application_id`) VALUES (1, 1);
+
+INSERT INTO `admin_of` (`user_id`, `department_id`) VALUES (1, 1);

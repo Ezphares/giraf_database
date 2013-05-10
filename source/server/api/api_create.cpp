@@ -5,6 +5,7 @@
  */
 
 #include "api.h"
+#include <iostream>
 
 int API::validate_create(Json::Value &data, Json::Value &errors)
 {
@@ -216,7 +217,7 @@ Json::Value API::create_department(Json::Value &data, int user, Json::Value &err
 		err += extract_string(email, object, "email", false);
 		err += extract_string(address, object, "address", false);
 		err += extract_string(phone, object, "phone", false);
-		err += extract_int(&top_department, object, "top_department", false);
+		err += extract_int(&top_department, object, "topdepartment", false);
 		if (err != 0)
 		{
 			errors.append("Value error(s) in profile data object");
@@ -238,7 +239,7 @@ Json::Value API::create_user(Json::Value &data, int user, Json::Value &errors)
 {
 	char query[API_BUFFER_SIZE];
 
-	snprintf(query, API_BUFFER_SIZE, "SELECT DISTINCT `id` FROM `profile_list` WHERE `user_id`=%d AND update=1;", user);
+	snprintf(query, API_BUFFER_SIZE, "SELECT DISTINCT `id` FROM `profile_list` WHERE `user_id`=%d AND `update`=1;", user);
 	QueryResult *result = _database->send_query(query);
 	std::vector<int> accessible = build_simple_int_vector_from_query(result, "id");
 	delete result;
@@ -276,15 +277,17 @@ Json::Value API::create_user(Json::Value &data, int user, Json::Value &errors)
 			return Json::Value(Json::nullValue);
 		}
 
-		snprintf(query, API_BUFFER_SIZE, "SELECT COUNT (*) AS `createable` FROM `profile` WHERE `id`=%d AND `user_id`=NULL;", profile);
+		snprintf(query, API_BUFFER_SIZE, "SELECT `id` FROM `profile` WHERE `id`=%d AND `user_id` IS NULL;", profile);
 		QueryResult *result = _database->send_query(query);
-
 		row_t r = result->next_row();
-		if(atoi(r["createable"].c_str()) != 1)
+		delete result;
+
+		if(r.empty())
 		{
 			errors.append(Json::Value("User already exists"));
 			return Json::Value(Json::nullValue);
 		}
+
 
 		snprintf(query, API_BUFFER_SIZE, "INSERT INTO `user` (`username`, `password`, `certificate`)"
 											"VALUES (%s, %s, %s);", username, password, certificate);
@@ -405,7 +408,6 @@ Json::Value API::create_application(Json::Value &data, int user, Json::Value &er
 		err += extract_string(version, object, "version", false);
 		err += extract_string(icon, object, "package", false);
 		err += extract_string(activity, object, "activity", false);
-		err += extract_string(settings, object, "settings", false);
 		err += extract_string(description, object, "description", true);
 		err += extract_string(package, object, "package", false);
 		if (err != 0)
@@ -414,20 +416,22 @@ Json::Value API::create_application(Json::Value &data, int user, Json::Value &er
 			return Json::Value(Json::nullValue);
 		}
 
-		snprintf(query, API_BUFFER_SIZE, "INSERT INTO `application` (`name`, `version`, `icon`, `activity`, `settings`, `description`, `package`, `author`)"
-											"VALUES (%s, %s, %s, %s, %s, %s, %s, %d);", name, version, icon, activity, settings, description, package, user);
+		snprintf(query, API_BUFFER_SIZE, "INSERT INTO `application` (`name`, `version`, `icon`, `activity`, `description`, `package`, `author`)"
+											"VALUES (%s, %s, %s, %s, %s, %s, %d);", name, version, icon, activity, description, package, user);
 		QueryResult *result = _database->send_query(query);
 		added_ids.push_back(_database->insert_id());
 		call_data.append(Json::Value(added_ids.back()));
 		delete result;
 
 		snprintf(query, API_BUFFER_SIZE, "SELECT `id` FROM `profile` WHERE `user_id`=%d", user);
+		result = _database->send_query(query);
 		row_t r = result->next_row();
 		delete result;
 
 		if(!r.empty())
 		{
-			snprintf(query, API_BUFFER_SIZE, "INSERT INTO `profile_application` (`profile_id`, `application_id`) VALUES (%d, %d);", atoi(r["id"].c_str()), added_ids.back());
+			extract_string(settings, object, "settings", true);
+			snprintf(query, API_BUFFER_SIZE, "INSERT INTO `profile_application` (`profile_id`, `application_id`, `settings`) VALUES (%d, %d, %s);", atoi(r["id"].c_str()), added_ids.back(), settings);
 			result = _database->send_query(query);
 			delete result;
 		}

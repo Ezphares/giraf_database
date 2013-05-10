@@ -180,7 +180,7 @@ int API::validate_top(Json::Value &request, Json::Value &errors)
 	{
 		if (!request["action"].isString() && !request["action"].isNull())
 		{
-			errors.append(Json::Value("\"action\" was not an a string or null"));
+			errors.append(Json::Value("\"action\" was not a string or null"));
 		}
 	}
 

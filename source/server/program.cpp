@@ -3,8 +3,6 @@
 #include "api/api.h"
 #include <iostream>
 
-
-
 int handle_api(Connection *connection)
 {
 	char *request = connection->receive();
@@ -17,10 +15,6 @@ int handle_api(Connection *connection)
 	connection->disconnect();
 	return 0;
 }
-
-
-
-
 
 int main (int argc, char *argv[])
 {
@@ -36,6 +30,6 @@ int main (int argc, char *argv[])
 	free(a);
 
 	stop_server(server);
-	
+
 	return 0;
 }
