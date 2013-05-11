@@ -277,8 +277,19 @@ Json::Value API::create_user(Json::Value &data, int user, Json::Value &errors)
 			return Json::Value(Json::nullValue);
 		}
 
-		snprintf(query, API_BUFFER_SIZE, "SELECT `id` FROM `profile` WHERE `id`=%d AND `user_id` IS NULL;", profile);
+		snprintf(query, API_BUFFER_SIZE, "SELECT `id` FROM `user` WHERE `username`=%s;", username);
 		QueryResult *result = _database->send_query(query);
+		row_t r = result->next_row();
+		delete result;
+
+		if(!r.empty())
+		{
+			errors.append(Json::Value("Duplicate username"));
+			return Json::Value(Json::nullValue);
+		}
+
+		snprintf(query, API_BUFFER_SIZE, "SELECT `id` FROM `profile` WHERE `id`=%d AND `user_id` IS NULL;", profile);
+		result = _database->send_query(query);
 		row_t r = result->next_row();
 		delete result;
 
