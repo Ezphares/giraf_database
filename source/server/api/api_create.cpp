@@ -60,6 +60,7 @@ int API::api_create (Json::Value &request, Json::Value &response, Json::Value &e
 	else if (strcmp(request["data"]["type"].asCString(), "user") == 0) 			call_data = create_user(request["data"], user, errors);
 	else if (strcmp(request["data"]["type"].asCString(), "pictogram") == 0) 	call_data = create_pictogram(request["data"], user, errors);
 	else if (strcmp(request["data"]["type"].asCString(), "application") == 0) 	call_data = create_application(request["data"], user, errors);
+	else if (strcmp(request["data"]["type"].asCString(), "category") == 0) 		call_data = create_category(request["data"], user, errors);
 	else
 	{
 		response["status"] = STATUS_STRUCTURE;
@@ -290,7 +291,7 @@ Json::Value API::create_user(Json::Value &data, int user, Json::Value &errors)
 
 		snprintf(query, API_BUFFER_SIZE, "SELECT `id` FROM `profile` WHERE `id`=%d AND `user_id` IS NULL;", profile);
 		result = _database->send_query(query);
-		row_t r = result->next_row();
+		r = result->next_row();
 		delete result;
 
 		if(r.empty())
@@ -417,7 +418,7 @@ Json::Value API::create_application(Json::Value &data, int user, Json::Value &er
 		int err = 0;
 		err += extract_string(name, object, "name", false);
 		err += extract_string(version, object, "version", false);
-		err += extract_string(icon, object, "package", false);
+		err += extract_string(icon, object, "icon", false);
 		err += extract_string(activity, object, "activity", false);
 		err += extract_string(description, object, "description", true);
 		err += extract_string(package, object, "package", false);
@@ -447,6 +448,76 @@ Json::Value API::create_application(Json::Value &data, int user, Json::Value &er
 			delete result;
 		}
 
+	}
+
+	return call_data;
+}
+
+Json::Value API::create_category(Json::Value &data, int user, Json::Value &errors)
+{
+	char query[API_BUFFER_SIZE];
+
+	Json::Value call_data(Json::arrayValue);
+	std::vector<unsigned int> added_ids;
+
+	for(unsigned int i = 0; i < data["values"].size(); i++)
+	{
+		Json::Value &object = data["values"][i];
+		char name[EXTRACT_SIZE];
+		char colour[EXTRACT_SIZE];
+		char icon[EXTRACT_SIZE];
+		int topdepartment;
+
+		int err = 0;
+		err += extract_string(name, object, "name", false);
+		err += extract_string(colour, object, "colour", false);
+		err += extract_string(icon, object, "icon", true);
+		err += extract_int(&topdepartment, object, "topdepartment", true);
+		if (err != 0)
+		{
+			errors.append("Value error(s) in profile data object");
+			return Json::Value(Json::nullValue);
+		}
+
+		snprintf(query, API_BUFFER_SIZE, "SELECT `id` FROM `category_list` WHERE `name`=%s AND `user_id`=%d", name, user);
+		QueryResult *result = _database->send_query(query);
+		row_t r = result->next_row();
+		delete result;
+
+		if(!r.empty())
+		{
+			errors.append("Category already exists");
+			return Json::Value(Json::nullValue);
+		}
+
+		snprintf(query, API_BUFFER_SIZE, "SELECT `id` FROM `category_list` WHERE `id`=%d AND `user_id`=%d", topdepartment, user);
+		result = _database->send_query(query);
+		r = result->next_row();
+		delete result;
+
+		if(r.empty())
+		{
+			errors.append("Invalid topdepartment");
+			return Json::Value(Json::nullValue);
+		}
+
+		snprintf(query, API_BUFFER_SIZE, "INSERT INTO `category` (`name`, `colour`, `icon`, `topdepartment`)"
+											"VALUES (%s, %s, %s, %d);", name, colour, icon, topdepartment);
+		result = _database->send_query(query);
+		added_ids.push_back(_database->insert_id());
+		call_data.append(Json::Value(added_ids.back()));
+		delete result;
+
+		snprintf(query, API_BUFFER_SIZE, "SELECT `id` FROM `profile` WHERE `user_id`=%d)", user);
+		result = _database->send_query(query);
+		r = result->next_row();
+		delete result;
+
+		int profile = atoi(r["id"].c_str());
+		snprintf(query, API_BUFFER_SIZE, "INSERT INTO `profile_category` (`profile_id`, `category_id`)"
+											"VALUES (%d, %d);", profile, added_ids.back());
+		result = _database->send_query(query);
+		delete result;
 	}
 
 	return call_data;

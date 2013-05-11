@@ -12,6 +12,7 @@ int id_department;
 int id_user;
 int id_application;
 int id_pictogram;
+int id_category;
 
 BOOST_AUTO_TEST_CASE(api_builders)
 {
@@ -140,6 +141,15 @@ BOOST_AUTO_TEST_CASE(api_create)
 	BOOST_CHECK_EQUAL(strcmp(check["status"].asCString(), STATUS_OK), 0);
 	id_application = check["data"][0u].asInt();
 
+	const char *category_fail = "{\"data\":{\"type\":\"category\", \"values\":[{\"name\": 1}]}, \"action\":\"create\", \"auth\":{\"username\":\"john\", \"password\":\"123456\"}}";
+	reader.parse(API().handle_request(category_fail), check);
+	BOOST_CHECK_EQUAL(strcmp(check["status"].asCString(), STATUS_ACCESS), 0);
+
+	const char *category_success = "{\"data\":{\"type\":\"category\", \"values\":[{\"name\": \"Jeppe\", \"colour\": \"red\"}]}, \"action\":\"create\", \"auth\":{\"username\":\"john\", \"password\":\"123456\"}}";
+	reader.parse(API().handle_request(category_success), check);
+	BOOST_CHECK_EQUAL(strcmp(check["status"].asCString(), STATUS_OK), 0);
+	id_category = check["data"][0u].asInt();
+
 //TODO: pictogram
 
 }
@@ -220,8 +230,24 @@ BOOST_AUTO_TEST_CASE(api_read)
 	reader.parse(API().handle_request(pictogram_fail), check);
 	BOOST_CHECK_EQUAL(strcmp(check["status"].asCString(), STATUS_ACCESS), 0);
 
-	const char *pictogram_succeed = "{\"data\":{\"type\":\"pictogram\", \"view\":\"details\", \"ids\":[1]}, \"action\":\"read\", \"auth\":{\"username\":\"john\", \"password\":\"123456\"}}";
-	reader.parse(API().handle_request(pictogram_succeed), check);
+	const char *pictogram_succeed = "{\"data\":{\"type\":\"pictogram\", \"view\":\"details\", \"ids\":[%d]}, \"action\":\"read\", \"auth\":{\"username\":\"john\", \"password\":\"123456\"}}";
+	snprintf(query, API_BUFFER_SIZE, pictogram_succeed, id_pictogram);
+	reader.parse(API().handle_request(query), check);
+	BOOST_CHECK_EQUAL(check["data"].isArray(), true);
+	BOOST_CHECK_EQUAL(check["data"][0u].isMember("id"), true);
+
+	const char *category_list = "{\"data\":{\"type\":\"category\", \"view\":\"list\", \"ids\":null}, \"action\":\"read\", \"auth\":{\"username\":\"john\", \"password\":\"123456\"}}";
+	reader.parse(API().handle_request(category_list), check);
+	BOOST_CHECK_EQUAL(check["data"].isArray(), true);
+	BOOST_CHECK_EQUAL(check["data"][0u].isMember("id"), true);
+
+	const char *category_fail = "{\"data\":{\"type\":\"category\", \"view\":\"details\", \"ids\":[1000, 42]}, \"action\":\"read\", \"auth\":{\"username\":\"john\", \"password\":\"123456\"}}";
+	reader.parse(API().handle_request(category_fail), check);
+	BOOST_CHECK_EQUAL(strcmp(check["status"].asCString(), STATUS_ACCESS), 0);
+
+	const char *category_succeed = "{\"data\":{\"type\":\"category\", \"view\":\"details\", \"ids\":[%d]}, \"action\":\"read\", \"auth\":{\"username\":\"john\", \"password\":\"123456\"}}";
+	snprintf(query, API_BUFFER_SIZE, category_succeed, id_category);
+	reader.parse(API().handle_request(query), check);
 	BOOST_CHECK_EQUAL(check["data"].isArray(), true);
 	BOOST_CHECK_EQUAL(check["data"][0u].isMember("id"), true);
 

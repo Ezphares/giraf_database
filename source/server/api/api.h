@@ -91,8 +91,12 @@ private:
 	Json::Value delete_application(Json::Value &data, int user, Json::Value &errors);
 	Json::Value create_application(Json::Value &data, int user, Json::Value &errors);
 	APICALL(update_application);
-	// ETC, ETC
 
+	APICALL(read_category_list);
+	APICALL(read_category_details);
+	APICALL(create_category);
+	APICALL(update_category);
+	APICALL(delete_category);
 
 private:
 	Database *_database;
