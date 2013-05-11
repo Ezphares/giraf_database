@@ -397,12 +397,12 @@ CREATE VIEW `pictogram_extras` AS
         JOIN
         `tag` ON `pictogram_tag`.`tag_id`=`tag`.`id`;
 
-
-
-
-
-
-
-
-
-
+CREATE VIEW `category_list` AS
+    SELECT `user`.`id` AS `user_id`, `category`.`id`, `category`.`name`, `category`.`super_category_id` FROM
+        `user`
+        JOIN
+        `profile` ON `user`.`id`=`profile`.`user_id`
+        JOIN
+        `profile_category` ON `profile`.`id` = `profile_category`.`profile_id`
+        JOIN
+        `category` ON `profile_category`.`category_id` = `category`.`id`;
