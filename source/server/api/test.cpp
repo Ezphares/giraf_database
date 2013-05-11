@@ -150,7 +150,15 @@ BOOST_AUTO_TEST_CASE(api_create)
 	BOOST_CHECK_EQUAL(strcmp(check["status"].asCString(), STATUS_OK), 0);
 	id_category = check["data"][0u].asInt();
 
-//TODO: pictogram
+	const char *pictogram_fail = "{\"data\":{\"type\":\"pictogram\", \"values\":[{\"name\": 1}]}, \"action\":\"create\", \"auth\":{\"username\":\"john\", \"password\":\"123456\"}}";
+	reader.parse(API().handle_request(pictogram_fail), check);
+	BOOST_CHECK_EQUAL(strcmp(check["status"].asCString(), STATUS_ACCESS), 0);
+
+	const char *pictogram_success = "{\"data\":{\"type\":\"pictogram\", \"values\":[{\"name\": \"Jeppe\", \"public\": false, \"categories\":[%d]}]}, \"action\":\"create\", \"auth\":{\"username\":\"john\", \"password\":\"123456\"}}";
+	snprintf(query, API_BUFFER_SIZE, pictogram_success, id_category);
+	reader.parse(API().handle_request(query), check);
+	BOOST_CHECK_EQUAL(strcmp(check["status"].asCString(), STATUS_OK), 0);
+	id_pictogram = check["data"][0u].asInt();
 
 }
 
@@ -295,7 +303,23 @@ BOOST_AUTO_TEST_CASE(api_update)
 	reader.parse(API().handle_request(query), check);
 	BOOST_CHECK_EQUAL(strcmp(check["status"].asCString(), STATUS_OK), 0);
 
-	//TODO: Pictogram
+	const char *category_fail = "{\"data\":{\"type\": \"category\", \"values\": [{\"id\": 1042, \"value\":{\"version\": \"2.0\"}}]}, \"action\":\"update\", \"auth\":{\"username\":\"john\", \"password\":\"123456\"}}";
+	reader.parse(API().handle_request(category_fail), check);
+	BOOST_CHECK_EQUAL(strcmp(check["status"].asCString(), STATUS_ACCESS), 0);
+
+	const char *category_success = "{\"data\":{\"type\": \"category\", \"values\": [{\"id\": %d, \"value\":{\"name\": \"Barbara\"}}]}, \"action\":\"update\", \"auth\":{\"username\":\"john\", \"password\":\"123456\"}}";
+	snprintf(query, API_BUFFER_SIZE, category_success, id_category);
+	reader.parse(API().handle_request(query), check);
+	BOOST_CHECK_EQUAL(strcmp(check["status"].asCString(), STATUS_OK), 0);
+
+	const char *pictogram_fail = "{\"data\":{\"type\": \"pictogram\", \"values\": [{\"id\": 1042, \"value\":{\"version\": \"2.0\"}}]}, \"action\":\"update\", \"auth\":{\"username\":\"john\", \"password\":\"123456\"}}";
+	reader.parse(API().handle_request(pictogram_fail), check);
+	BOOST_CHECK_EQUAL(strcmp(check["status"].asCString(), STATUS_ACCESS), 0);
+
+	const char *pictogram_success = "{\"data\":{\"type\": \"pictogram\", \"values\": [{\"id\": %d, \"value\":{\"sound\": \"Barbara\"}}]}, \"action\":\"update\", \"auth\":{\"username\":\"john\", \"password\":\"123456\"}}";
+	snprintf(query, API_BUFFER_SIZE, pictogram_success, id_pictogram);
+	reader.parse(API().handle_request(query), check);
+	BOOST_CHECK_EQUAL(strcmp(check["status"].asCString(), STATUS_OK), 0);
 
 }
 
@@ -341,8 +365,23 @@ BOOST_AUTO_TEST_CASE(api_delete)
 	reader.parse(API().handle_request(query), check);
 	BOOST_CHECK_EQUAL(strcmp(check["status"].asCString(), STATUS_OK), 0);
 
+	const char *category_fail = "{\"data\":{\"type\": \"category\", \"ids\":[1042]}, \"action\":\"delete\", \"auth\":{\"username\":\"john\", \"password\":\"123456\"}}";
+	reader.parse(API().handle_request(category_fail), check);
+	BOOST_CHECK_EQUAL(strcmp(check["status"].asCString(), STATUS_ACCESS), 0);
 
-	//TODO: Pictogram
+	const char *category_success = "{\"data\":{\"type\": \"category\", \"ids\":[%d]}, \"action\":\"delete\", \"auth\":{\"username\":\"john\", \"password\":\"123456\"}}";
+	snprintf(query, API_BUFFER_SIZE, category_success, id_category);
+	reader.parse(API().handle_request(query), check);
+	BOOST_CHECK_EQUAL(strcmp(check["status"].asCString(), STATUS_OK), 0);
+
+	const char *pictogram_fail = "{\"data\":{\"type\": \"pictogram\", \"ids\":[1042]}, \"action\":\"delete\", \"auth\":{\"username\":\"john\", \"password\":\"123456\"}}";
+	reader.parse(API().handle_request(pictogram_fail), check);
+	BOOST_CHECK_EQUAL(strcmp(check["status"].asCString(), STATUS_ACCESS), 0);
+
+	const char *pictogram_success = "{\"data\":{\"type\": \"pictogram\", \"ids\":[%d]}, \"action\":\"delete\", \"auth\":{\"username\":\"john\", \"password\":\"123456\"}}";
+	snprintf(query, API_BUFFER_SIZE, pictogram_success, id_pictogram);
+	reader.parse(API().handle_request(query), check);
+	BOOST_CHECK_EQUAL(strcmp(check["status"].asCString(), STATUS_OK), 0);
 
 }
 

@@ -400,8 +400,8 @@ Json::Value API::read_pictogram_details(Json::Value &data, int user, Json::Value
 
 void fix_category_list(Json::Value &o)
 {
-	fix_rename(o, "super_department_id", "topdepartment");
-	fix_type(o, "topdepartment", V_INT);
+	fix_rename(o, "super_category_id", "topcategory");
+	fix_type(o, "topcategory", V_INT);
 	fix_type(o, "id", V_INT);
 }
 
@@ -409,7 +409,7 @@ Json::Value API::read_category_list(Json::Value &data, int user, Json::Value &er
 {
 	char query[API_BUFFER_SIZE];
 
-	snprintf(query, API_BUFFER_SIZE, "SELECT DISTINCT `id`, `name`, `super_department_id` FROM `category_list` WHERE `user_id`=%d;", user);
+	snprintf(query, API_BUFFER_SIZE, "SELECT DISTINCT `id`, `name`, `super_category_id` FROM `category_list` WHERE `user_id`=%d;", user);
 	QueryResult *result = _database->send_query(query);
 	Json::Value call_data = build_array_from_query(result, fix_category_list);
 	delete result;
