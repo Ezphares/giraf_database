@@ -143,7 +143,8 @@ Json::Value API::read_profile_list(Json::Value &data, int user, Json::Value &err
 void fix_profile_details(Json::Value &o)
 {
 	fix_rename(o, "department_id", "department");
-	fix_remove(o, "user_id");
+	fix_rename(o, "user_id", "user");
+	fix_type(o, "user", V_INT);
 	fix_type(o, "id", V_INT);
 	fix_type(o, "role", V_INT);
 	fix_type(o, "department", V_INT);
