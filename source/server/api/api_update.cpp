@@ -511,7 +511,6 @@ Json::Value API::update_pictogram(Json::Value &data, int user, Json::Value &erro
 		{
 			if(validate_array_vector(object["categories"], categories) != true)
 			{
-				std::cout << "invalid id" << std::endl;
 				errors.append(Json::Value("Invalid ID access"));
 				return Json::Value(Json::nullValue);
 			}
@@ -566,6 +565,7 @@ Json::Value API::update_pictogram(Json::Value &data, int user, Json::Value &erro
 		err += extract_string(text, object, "text", true);
 		if (err != 0)
 		{
+			std::cout << "type errors" << std::endl;
 			errors.append("Type error(s) in profile data object");
 			return Json::Value(Json::nullValue);
 		}
@@ -597,8 +597,59 @@ Json::Value API::update_pictogram(Json::Value &data, int user, Json::Value &erro
 		QueryResult *result = _database->send_query(query);
 		delete result;
 
-	}
+		if(object.isMember("tags"))
+		{
+			if(!object["tags"].isArray())
+			{
+				std::cout << "tags not an array" << std::endl;
+				errors.append(Json::Value("Tags is not an array"));
+				return Json::Value(Json::nullValue);
+			}
 
+			snprintf(query, API_BUFFER_SIZE, "DELETE FROM `pictogram_tag` WHERE `pictogram_id`=%d;", pictogram_id);
+			result = _database->send_query(query);
+			delete result;
+
+			for(i = 0; i < object["tags"].size(); i++)
+			{
+				const char *tag = object["tags"][i].asCString();
+				int tag_id;
+				snprintf(query, API_BUFFER_SIZE, "SELECT `id` FROM `tag` WHERE `name`=\"%s\";", tag);
+				result = _database->send_query(query);
+				r = result->next_row();
+				delete result;
+
+				if(!r.empty()) tag_id = atoi(r["id"].c_str());
+				else
+				{
+					snprintf(query, API_BUFFER_SIZE, "INSERT INTO `tag` (`name`) VALUES ('%s');", tag);
+					result = _database->send_query(query);
+					tag_id = _database->insert_id();
+					delete result;
+				}
+
+				snprintf(query, API_BUFFER_SIZE, "INSERT INTO `pictogram_tag` (`pictogram_id`, `tag_id`) VALUES (%d, %d);", pictogram_id, tag_id);
+				result = _database->send_query(query);
+			}
+		}
+
+		if(object.isMember("categories"))
+		{
+			snprintf(query, API_BUFFER_SIZE, "DELETE FROM `pictogram_category` WHERE `pictogram_id`=%d;", pictogram_id);
+			result = _database->send_query(query);
+			delete result;
+
+			for(i = 0; i < object["categories"].size(); i++)
+			{
+				int category_id = object["categories"][i].asInt();
+				snprintf(query, API_BUFFER_SIZE, "INSERT INTO `pictogram_category` (`pictogram_id`, `category_id`) VALUES (%d, %d);", pictogram_id, category_id);
+				result = _database->send_query(query);
+				delete result;
+			}
+		}
+
+	}
+	//TODO: create copy of the pictogram if multiple links exist
 	return Json::Value(Json::nullValue);
 }
 
@@ -670,6 +721,6 @@ Json::Value API::update_category(Json::Value &data, int user, Json::Value &error
 		QueryResult *result = _database->send_query(query);
 		delete result;
 	}
-	//TODO: create copy of the pictogram if multiple links exist
+
 	return Json::Value(Json::nullValue);
 }

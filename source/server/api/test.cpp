@@ -316,8 +316,8 @@ BOOST_AUTO_TEST_CASE(api_update)
 	reader.parse(API().handle_request(pictogram_fail), check);
 	BOOST_CHECK_EQUAL(strcmp(check["status"].asCString(), STATUS_ACCESS), 0);
 
-	const char *pictogram_success = "{\"data\":{\"type\": \"pictogram\", \"values\": [{\"id\": %d, \"value\":{\"sound\": \"Barbara\"}}]}, \"action\":\"update\", \"auth\":{\"username\":\"john\", \"password\":\"123456\"}}";
-	snprintf(query, API_BUFFER_SIZE, pictogram_success, id_pictogram);
+	const char *pictogram_success = "{\"data\":{\"type\": \"pictogram\", \"values\": [{\"id\": %d, \"value\":{\"sound\": \"Barbara\", \"tags\":[\"derp\"], \"categories\":[%d]}}]}, \"action\":\"update\", \"auth\":{\"username\":\"john\", \"password\":\"123456\"}}";
+	snprintf(query, API_BUFFER_SIZE, pictogram_success, id_pictogram, id_category);
 	reader.parse(API().handle_request(query), check);
 	BOOST_CHECK_EQUAL(strcmp(check["status"].asCString(), STATUS_OK), 0);
 

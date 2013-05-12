@@ -126,12 +126,14 @@ void fix_profile_list(Json::Value &o)
 {
 	fix_type(o, "id", V_INT);
 	fix_type(o, "role", V_INT);
+	fix_type(o, "update", V_INT);
+	fix_type(o, "delete", V_INT);
 }
 
 Json::Value API::read_profile_list(Json::Value &data, int user, Json::Value &errors)
 {
 	char query[API_BUFFER_SIZE];
-	snprintf(query, API_BUFFER_SIZE, "SELECT DISTINCT `id`, `name`, `role` FROM `profile_list` WHERE `user_id`=%d;", user);
+	snprintf(query, API_BUFFER_SIZE, "SELECT DISTINCT `id`, `name`, `role`, MAX(`update`) AS `update`, MAX(`delete`) AS `delete` FROM `profile_list` WHERE `user_id`=%d GROUP BY `id`;", user);
 	QueryResult *result = _database->send_query(query);
 
 	Json::Value call_data = build_array_from_query(result, fix_profile_list);
@@ -185,12 +187,14 @@ Json::Value API::read_profile_details(Json::Value &data, int user, Json::Value &
 void fix_generic_list(Json::Value &o)
 {
 	fix_type(o, "id", V_INT);
+	fix_type(o, "update", V_INT);
+	fix_type(o, "delete", V_INT);
 }
 
 Json::Value API::read_department_list(Json::Value &data, int user, Json::Value &errors)
 {
 	char query[API_BUFFER_SIZE];
-	snprintf(query, API_BUFFER_SIZE, "SELECT DISTINCT `id`, `name` FROM `department_list` WHERE `user_id`=%d;", user);
+	snprintf(query, API_BUFFER_SIZE, "SELECT DISTINCT `id`, `name`, MAX(`update`) AS `update`, MAX(`delete`) AS `delete` FROM `department_list` WHERE `user_id`=%d GROUP BY `id`;", user);
 	QueryResult *result = _database->send_query(query);
 
 	Json::Value call_data = build_array_from_query(result, fix_generic_list);
@@ -244,7 +248,7 @@ Json::Value API::read_department_details(Json::Value &data, int user, Json::Valu
 Json::Value API::read_user_list(Json::Value &data, int user, Json::Value &errors)
 {
 	char query[API_BUFFER_SIZE];
-	snprintf(query, API_BUFFER_SIZE, "SELECT DISTINCT `id`, `username` FROM `user_list` WHERE `user_id`=%d;", user);
+	snprintf(query, API_BUFFER_SIZE, "SELECT DISTINCT `id`, `username`, MAX(`delete`) AS `delete` FROM `user_list` WHERE `user_id`=%d GROUP BY `id`;", user);
 	QueryResult *result = _database->send_query(query);
 
 	Json::Value call_data = build_array_from_query(result, fix_generic_list);
@@ -279,13 +283,19 @@ Json::Value API::read_user_details(Json::Value &data, int user, Json::Value &err
 	return call_data;
 }
 
+void fix_app_picto_list(Json::Value &o)
+{
+	fix_type(o, "id", V_INT);
+	fix_type(o, "author", V_INT);
+}
+
 Json::Value API::read_application_list(Json::Value &data, int user, Json::Value &errors)
 {
 	char query[API_BUFFER_SIZE];
-	snprintf(query, API_BUFFER_SIZE, "SELECT DISTINCT `id`, `name` FROM `application_list` WHERE `user_id`=%d;", user);
+	snprintf(query, API_BUFFER_SIZE, "SELECT DISTINCT `id`, `name`, MAX(`update`) AS `update`, MAX(`delete`) AS `delete` FROM `application_list` WHERE `user_id`=%d GROUP BY `id`;", user);
 	QueryResult *result = _database->send_query(query);
 
-	Json::Value call_data = build_array_from_query(result, fix_generic_list);
+	Json::Value call_data = build_array_from_query(result, fix_app_picto_list);
 
 	delete result;
 	return call_data;
@@ -317,7 +327,7 @@ Json::Value API::read_application_details(Json::Value &data, int user, Json::Val
 	}
 
 	const std::string &st = build_in_string(data["ids"]);
-	snprintf(query, API_BUFFER_SIZE, "SELECT DISTINCT *, MAX(`direct`) AS `max` FROM `application_details` WHERE `id` IN (%s) GROUP BY `id`;", st.c_str());
+	snprintf(query, API_BUFFER_SIZE, "SELECT DISTINCT * FROM `application_details` WHERE `id` IN (%s);", st.c_str());
 
 	result = _database->send_query(query);
 	Json::Value call_data = build_array_from_query(result, fix_application_details);
@@ -329,10 +339,10 @@ Json::Value API::read_application_details(Json::Value &data, int user, Json::Val
 Json::Value API::read_pictogram_list(Json::Value &data, int user, Json::Value &errors)
 {
 	char query[API_BUFFER_SIZE];
-	snprintf(query, API_BUFFER_SIZE, "SELECT DISTINCT `id`, `name` FROM `pictogram_list` WHERE `user_id`=%d;", user);
+	snprintf(query, API_BUFFER_SIZE, "SELECT DISTINCT `id`, `name`, MAX(`author`) AS `author` FROM `pictogram_list` WHERE `user_id`=%d GROUP  BY `id`;", user);
 	QueryResult *result = _database->send_query(query);
 
-	Json::Value call_data = build_array_from_query(result, fix_generic_list);
+	Json::Value call_data = build_array_from_query(result, fix_app_picto_list);
 	delete result;
 
 	for (unsigned int i = 0; i < call_data.size(); i++)
