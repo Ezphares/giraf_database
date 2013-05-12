@@ -245,16 +245,28 @@ Json::Value API::read_department_details(Json::Value &data, int user, Json::Valu
 	return call_data;
 }
 
+void fix_user_list(Json::Value &o)
+{
+	fix_type(o, "id", V_INT);
+	fix_type(o, "delete", V_INT);
+
+}
+
 Json::Value API::read_user_list(Json::Value &data, int user, Json::Value &errors)
 {
 	char query[API_BUFFER_SIZE];
 	snprintf(query, API_BUFFER_SIZE, "SELECT DISTINCT `id`, `username`, MAX(`delete`) AS `delete` FROM `user_list` WHERE `user_id`=%d GROUP BY `id`;", user);
 	QueryResult *result = _database->send_query(query);
 
-	Json::Value call_data = build_array_from_query(result, fix_generic_list);
+	Json::Value call_data = build_array_from_query(result, fix_user_list);
 
 	delete result;
 	return call_data;
+}
+
+void fix_user_details(Json::Value &o)
+{
+	fix_type(o, "id", V_INT);
 }
 
 Json::Value API::read_user_details(Json::Value &data, int user, Json::Value &errors)
@@ -277,7 +289,7 @@ Json::Value API::read_user_details(Json::Value &data, int user, Json::Value &err
 	snprintf(query, API_BUFFER_SIZE, "SELECT DISTINCT `id`, `username` FROM `user_list` WHERE `id` IN (%s);", st.c_str());
 
 	result = _database->send_query(query);
-	Json::Value call_data = build_array_from_query(result, fix_generic_list);
+	Json::Value call_data = build_array_from_query(result, fix_user_details);
 	delete result;
 
 	return call_data;
@@ -292,7 +304,7 @@ void fix_app_picto_list(Json::Value &o)
 Json::Value API::read_application_list(Json::Value &data, int user, Json::Value &errors)
 {
 	char query[API_BUFFER_SIZE];
-	snprintf(query, API_BUFFER_SIZE, "SELECT DISTINCT `id`, `name`, MAX(`update`) AS `update`, MAX(`delete`) AS `delete` FROM `application_list` WHERE `user_id`=%d GROUP BY `id`;", user);
+	snprintf(query, API_BUFFER_SIZE, "SELECT DISTINCT `id`, `name`, MAX(`author`) AS `author` FROM `application_list` WHERE `user_id`=%d GROUP BY `id`;", user);
 	QueryResult *result = _database->send_query(query);
 
 	Json::Value call_data = build_array_from_query(result, fix_app_picto_list);
@@ -308,7 +320,6 @@ void fix_application_details(Json::Value &o)
 	fix_remove(o, "max");
 	fix_remove(o, "direct");
 }
-
 
 Json::Value API::read_application_details(Json::Value &data, int user, Json::Value &errors)
 {
