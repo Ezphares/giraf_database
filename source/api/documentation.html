@@ -92,7 +92,7 @@
 				<h3 id="request_action">Request Action</h3>
 				<p><span class="code">request_action</span>is a string describing what the request wants to accomplish. Possible values are:</p>
 				<div class="code">
-				"create" OR "read" OR "update" OR "delete" OR null
+				"create" OR "read" OR "update" OR "delete" OR "link" OR null
 				</div>
 				<p>A null value signifies that the request does not want to access the database, but only check if authentication was successful (eg. to get a session code).</p>
 				<div class="clear"/>
@@ -133,6 +133,33 @@
 				&nbsp;&nbsp;] <br />
 				}
 				</div>
+				{ <br />
+				&nbsp;&nbsp;"profile": INT, <br />
+				&nbsp;&nbsp;"department": INT, <br />
+				&nbsp;&nbsp;"link": <br />
+				&nbsp;&nbsp;[ <br />
+				&nbsp;&nbsp;&nbsp;&nbsp;{ <br />
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"type": "pictogram" OR "application", <br />
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"id": INT, <br />
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"settings": STRING <br />
+				&nbsp;&nbsp;&nbsp;&nbsp;}, <br />
+				&nbsp;&nbsp;&nbsp;&nbsp;... <br />
+				&nbsp;&nbsp;], <br />
+				&nbsp;&nbsp;"unlink": <br />
+				&nbsp;&nbsp;[ <br />
+				&nbsp;&nbsp;&nbsp;&nbsp;{ <br />
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"type": "pictogram" OR "application", <br />
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"id": INT, <br />
+				&nbsp;&nbsp;&nbsp;&nbsp;}, <br />
+				&nbsp;&nbsp;&nbsp;&nbsp;... <br />
+				&nbsp;&nbsp;] <br />
+				}
+				<h4>Link</h4>
+				<div class="code">
+					
+				</div>
+				<p>Exactly one of <span class="code">department</span> or <span class="code">profile</span> should be set, not both.</p>
+				<p><span class="code">settings</span> is only used if <span class="code">profile</span> is set, and <span class="code">type</span> is <span class="code">"application"</span></p>
 
 				<h4>Delete</h4>
 				<div class="code">
@@ -166,7 +193,7 @@
 				<p>The type and value of <span class="code">data</span> depends on the <span class="code"><a href="#request_action">request_action</a></span> of the request, and whether any errors were found.</p>
 				<h4>Errors were found</h4>
 				<p><span class="code">null</span></p>
-				<h4>Actions delete and update</h4>
+				<h4>Actions delete, update and link</h4>
 				<p><span class="code">null</span></p>
 				<h4>Action create</h4>
 				<p><span class="code">[INT, ...]</span> A list of ids of the objects created.</p>
