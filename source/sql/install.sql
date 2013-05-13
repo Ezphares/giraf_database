@@ -114,6 +114,7 @@ CREATE TABLE `admin_of`(
 CREATE TABLE `department_pictogram` (
 	`department_id`		INT(11)		NOT NULL,	
 	`pictogram_id`		INT(11)		NOT NULL,
+    PRIMARY KEY (`department_id`, `pictogram_id`),
 	FOREIGN KEY (`department_id`)
 		REFERENCES `department` (`id`)
 		ON DELETE CASCADE,
@@ -125,6 +126,7 @@ CREATE TABLE `department_pictogram` (
 CREATE TABLE `profile_pictogram` (
 	`profile_id`		INT(11)		NOT NULL,	
 	`pictogram_id`		INT(11)		NOT NULL,
+    PRIMARY KEY (`profile_id`, `pictogram_id`),
 	FOREIGN KEY (`profile_id`)
 		REFERENCES `profile` (`id`)
 		ON DELETE CASCADE,
@@ -135,7 +137,8 @@ CREATE TABLE `profile_pictogram` (
 
 CREATE TABLE `department_application` (
 	`department_id`		INT(11)		NOT NULL,
-	`application_id`	INT(11)		NOT NULL,	
+	`application_id`	INT(11)		NOT NULL,
+    PRIMARY KEY (`department_id`, `application_id`),	
 	FOREIGN KEY (`department_id`)
 		REFERENCES `department` (`id`)
 		ON DELETE CASCADE,
@@ -148,6 +151,7 @@ CREATE TABLE `profile_application`(
 	`profile_id`		INT(11)		NOT NULL,
 	`application_id`	INT(11)		NOT NULL,	
 	`settings`			BLOB		NULL,
+    PRIMARY KEY (`profile_id`, `application_id`),
 	FOREIGN KEY (`profile_id`)
 		REFERENCES `profile` (`id`)
 		ON DELETE CASCADE,
@@ -159,6 +163,7 @@ CREATE TABLE `profile_application`(
 CREATE TABLE `pictogram_tag` (
 	`pictogram_id`		INT(11)		NOT NULL,
 	`tag_id`			INT(11)		NOT NULL,	
+    PRIMARY KEY (`tag_id`, `pictogram_id`),
 	FOREIGN KEY (`pictogram_id`)
 		REFERENCES `pictogram` (`id`)
 		ON DELETE CASCADE,
@@ -170,6 +175,7 @@ CREATE TABLE `pictogram_tag` (
 CREATE TABLE `pictogram_category` (
 	`pictogram_id`		INT(11)		NOT NULL,
 	`category_id`	INT(11)		NOT NULL,	
+    PRIMARY KEY (`category_id`, `pictogram_id`),
 	FOREIGN KEY (`pictogram_id`)
 		REFERENCES `pictogram` (`id`)
 		ON DELETE CASCADE,
@@ -180,7 +186,8 @@ CREATE TABLE `pictogram_category` (
 
 CREATE TABLE `profile_category` (
 	`profile_id`		INT(11)		NOT NULL,
-	`category_id`		INT(11)		NOT NULL,	
+	`category_id`		INT(11)		NOT NULL,
+    PRIMARY KEY (`profile_id`, `category_id`),
 	FOREIGN KEY (`profile_id`)
 		REFERENCES `profile` (`id`)
 		ON DELETE CASCADE,
@@ -192,6 +199,7 @@ CREATE TABLE `profile_category` (
 CREATE TABLE `guardian_of` (
 	`guardian_id`	INT(11)		NOT NULL,
 	`child_id`		INT(11)		NOT NULL,
+    PRIMARY KEY (`guardian_id`, `child_id`),
 	FOREIGN KEY (`guardian_id`)
 		REFERENCES `profile` (`id`)
 		ON DELETE CASCADE,
