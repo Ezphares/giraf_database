@@ -116,12 +116,14 @@ std::map<int, int> build_simple_int_map_from_query(QueryResult *query, const cha
 
 }
 
-int extract_string(char *buffer, Json::Value &object, const char *key, bool null)
+int extract_string(char *buffer, Json::Value &object, const char *key, bool null, Database *escape_db)
 {
 	if (object.isMember(key))
 	{
 		if (!object[key].isString()) return -1;
-		const char *value = object[key].asCString();
+		const char *raw_value = object[key].asCString();
+		char *value = raw_value;
+		if (escape_db != NULL) escape_db->escape(value, raw_value);
 		unsigned int length = std::min(EXTRACT_SIZE - 3u, (unsigned int)strlen(value));
 		std::strncpy(buffer + 1, value, length);
 		buffer[0] = '\'';
