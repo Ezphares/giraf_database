@@ -154,7 +154,7 @@ BOOST_AUTO_TEST_CASE(api_create)
 	reader.parse(API().handle_request(pictogram_fail), check);
 	BOOST_CHECK_EQUAL(strcmp(check["status"].asCString(), STATUS_ACCESS), 0);
 
-	const char *pictogram_success = "{\"data\":{\"type\":\"pictogram\", \"values\":[{\"name\": \"Jeppe\", \"public\": false, \"categories\":[%d]}]}, \"action\":\"create\", \"auth\":{\"username\":\"john\", \"password\":\"123456\"}}";
+	const char *pictogram_success = "{\"data\":{\"type\":\"pictogram\", \"values\":[{\"name\": \"Jeppe\", \"public\": true, \"categories\":[%d]}]}, \"action\":\"create\", \"auth\":{\"username\":\"john\", \"password\":\"123456\"}}";
 	snprintf(query, API_BUFFER_SIZE, pictogram_success, id_category);
 	reader.parse(API().handle_request(query), check);
 	BOOST_CHECK_EQUAL(strcmp(check["status"].asCString(), STATUS_OK), 0);
@@ -259,6 +259,58 @@ BOOST_AUTO_TEST_CASE(api_read)
 	BOOST_CHECK_EQUAL(check["data"].isArray(), true);
 	BOOST_CHECK_EQUAL(check["data"][0u].isMember("id"), true);
 
+}
+
+BOOST_AUTO_TEST_CASE(api_link)
+{
+	Json::Value check;
+	Json::Reader reader;
+	char query[API_BUFFER_SIZE];
+
+	const char* profile_link_fail = "{\"data\":{\"profile\":%d, \"link\":[{\"type\": \"pictogram\", \"id\":1042}]}, \"action\":\"link\", \"auth\":{\"username\":\"john\", \"password\":\"123456\"}}";
+	snprintf(query, API_BUFFER_SIZE, profile_link_fail, id_profile);
+	reader.parse(API().handle_request(query), check);
+	BOOST_CHECK_EQUAL(strcmp(check["status"].asCString(), STATUS_ACCESS), 0);
+
+	const char* profile_link_success = "{\"data\":{\"profile\":%d, \"link\":[{\"type\": \"pictogram\", \"id\":%d}]}, \"action\":\"link\", \"auth\":{\"username\":\"john\", \"password\":\"123456\"}}";
+	snprintf(query, API_BUFFER_SIZE, profile_link_success, id_profile, id_pictogram);
+	reader.parse(API().handle_request(query), check);
+	BOOST_CHECK_EQUAL(strcmp(check["status"].asCString(), STATUS_OK), 0);
+
+	const char* department_link_fail = "{\"data\":{\"department\":%d, \"link\":[{\"type\": \"pictogram\", \"id\":1042}]}, \"action\":\"link\", \"auth\":{\"username\":\"john\", \"password\":\"123456\"}}";
+	snprintf(query, API_BUFFER_SIZE, department_link_fail, id_department);
+	reader.parse(API().handle_request(query), check);
+	BOOST_CHECK_EQUAL(strcmp(check["status"].asCString(), STATUS_ACCESS), 0);
+
+	const char* department_link_success = "{\"data\":{\"department\":%d, \"link\":[{\"type\": \"pictogram\", \"id\":%d}]}, \"action\":\"link\", \"auth\":{\"username\":\"john\", \"password\":\"123456\"}}";
+	snprintf(query, API_BUFFER_SIZE, department_link_success, id_department, id_pictogram);
+	reader.parse(API().handle_request(query), check);
+	BOOST_CHECK_EQUAL(strcmp(check["status"].asCString(), STATUS_OK), 0);
+
+	const char* profile_app_link_fail = "{\"data\":{\"profile\":%d, \"link\":[{\"type\": \"application\", \"id\":1042}]}, \"action\":\"link\", \"auth\":{\"username\":\"john\", \"password\":\"123456\"}}";
+	snprintf(query, API_BUFFER_SIZE, profile_app_link_fail, id_profile);
+	reader.parse(API().handle_request(query), check);
+	BOOST_CHECK_EQUAL(strcmp(check["status"].asCString(), STATUS_ACCESS), 0);
+
+	const char* profile_app_link_success = "{\"data\":{\"profile\":%d, \"link\":[{\"type\": \"application\", \"id\":%d, \"settings:\": \"blah\"}]}, \"action\":\"link\", \"auth\":{\"username\":\"john\", \"password\":\"123456\"}}";
+	snprintf(query, API_BUFFER_SIZE, profile_app_link_success, id_profile, id_application);
+	reader.parse(API().handle_request(query), check);
+	BOOST_CHECK_EQUAL(strcmp(check["status"].asCString(), STATUS_OK), 0);
+
+	const char* department_app_link_fail = "{\"data\":{\"department\":%d, \"link\":[{\"type\": \"application\", \"id\":1042}]}, \"action\":\"link\", \"auth\":{\"username\":\"john\", \"password\":\"123456\"}}";
+	snprintf(query, API_BUFFER_SIZE, department_app_link_fail, id_department);
+	reader.parse(API().handle_request(query), check);
+	BOOST_CHECK_EQUAL(strcmp(check["status"].asCString(), STATUS_ACCESS), 0);
+
+	const char* department_app_link_success = "{\"data\":{\"department\":%d, \"link\":[{\"type\": \"application\", \"id\":%d}]}, \"action\":\"link\", \"auth\":{\"username\":\"john\", \"password\":\"123456\"}}";
+	snprintf(query, API_BUFFER_SIZE, department_app_link_success, id_department, id_application);
+	reader.parse(API().handle_request(query), check);
+	BOOST_CHECK_EQUAL(strcmp(check["status"].asCString(), STATUS_OK), 0);
+
+	const char* department_unlink_success = "{\"data\":{\"department\":%d, \"unlink\":[{\"type\": \"application\", \"id\":%d}]}, \"action\":\"link\", \"auth\":{\"username\":\"john\", \"password\":\"123456\"}}";
+	snprintf(query, API_BUFFER_SIZE, department_app_link_success, id_department, id_application);
+	reader.parse(API().handle_request(query), check);
+	BOOST_CHECK_EQUAL(strcmp(check["status"].asCString(), STATUS_OK), 0);
 }
 
 BOOST_AUTO_TEST_CASE(api_update)

@@ -7,7 +7,7 @@
 
 
 #include "api.h"
-
+#include <iostream>
 
 int API::validate_link(Json::Value &data, Json::Value &errors)
 {
@@ -40,7 +40,7 @@ int API::validate_link(Json::Value &data, Json::Value &errors)
 				else if (strcmp(object["type"].asCString(), "application") != 0 && strcmp(object["type"].asCString(), "pictogram")) errors.append(Json::Value("Invalid link type"));
 
 				if (!object.isMember("id")) errors.append(Json::Value("ID missing from link"));
-				else if (!object["id"].isString()) errors.append(Json::Value("Link ID was not an integer"));
+				else if (!object["id"].isInt()) errors.append(Json::Value("Link ID was not an integer"));
 
 				if (object.isMember("settings") && !object["settings"].isString()) errors.append(Json::Value("Link settings was not a string"));
 			}
@@ -54,12 +54,11 @@ int API::validate_link(Json::Value &data, Json::Value &errors)
 				else if (strcmp(object["type"].asCString(), "application") != 0 && strcmp(object["type"].asCString(), "pictogram")) errors.append(Json::Value("Invalid unlink type"));
 
 				if (!object.isMember("id")) errors.append(Json::Value("ID missing from unlink"));
-				else if (!object["id"].isString()) errors.append(Json::Value("Unlink ID was not an integer"));
+				else if (!object["id"].isInt()) errors.append(Json::Value("Unlink ID was not an integer"));
 			}
 		}
 		else errors.append(Json::Value("\"data\":\"unlink\" was not an array"));
 	}
-
 
 	if (errors.empty()) return 0;
 	else return -1;
@@ -144,7 +143,7 @@ Json::Value API::execute_link(Json::Value &data, int user, Json::Value &errors)
 		{
 			Json::Value &object = data["link"][i];
 			char *settings = NULL;
-			char *type;
+			char type[EXTRACT_SIZE];
 			_database->escape(type, object["type"].asCString());
 			int object_id = object["id"].asInt();
 
@@ -152,23 +151,30 @@ Json::Value API::execute_link(Json::Value &data, int user, Json::Value &errors)
 			{
 				if(object.isMember("settings") && profile != 0)	_database->escape(settings, object["settings"].asCString());
 
+				snprintf(query, API_BUFFER_SIZE, "SELECT `id` FROM `application` WHERE `id`=%d", object_id);
+				result = _database->send_query(query);
+				r = result->next_row();
+				delete result;
+
+				if (r.empty())
+				{
+					errors.append(Json::Value("Illegal application"));
+					return Json::Value(Json::nullValue);
+				}
+
 			}
 			else
 			{
-				//TODO: we need to update the view to include public pictograms!
-				/*
-				snprintf(query, API_BUFFER_SIZE, "SELECT DISTINCT `id` FROM `pictogram_list` WHERE `user_id`=%d OR `public`=1;", user);
+				snprintf(query, API_BUFFER_SIZE, "SELECT `id` FROM `pictogram` WHERE `id`=%d", object_id); //TODO Limit this to visible and public pics
 				result = _database->send_query(query);
-				std::vector<int> accessible = build_simple_int_vector_from_query(result, "id");
+				r = result->next_row();
 				delete result;
 
-				int pictogram = data["id"].asInt();
-				if (!validate_value_in_vector(pictogram, accessible))
+				if (r.empty())
 				{
 					errors.append(Json::Value("Illegal pictogram"));
 					return Json::Value(Json::nullValue);
 				}
-				*/
 			}
 
 			snprintf(query, API_BUFFER_SIZE, "SELECT * FROM `%s_%s` WHERE `%s_id`=%d AND `%s_id`=%d;", actor, type, actor, actor_id, type, object_id);
@@ -201,7 +207,7 @@ Json::Value API::execute_link(Json::Value &data, int user, Json::Value &errors)
 		for(unsigned int i = 0; i < data["link"].size(); i++)
 		{
 			Json::Value &object = data["link"][i];
-			char *type;
+			char type[EXTRACT_SIZE];
 			_database->escape(type, object["type"].asCString());
 			int object_id = object["id"].asInt();
 
