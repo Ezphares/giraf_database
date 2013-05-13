@@ -122,8 +122,12 @@ int extract_string(char *buffer, Json::Value &object, const char *key, bool null
 	{
 		if (!object[key].isString()) return -1;
 		const char *raw_value = object[key].asCString();
-		char *value = raw_value;
+		char value[EXTRACT_SIZE];
+		memset(value, 0, EXTRACT_SIZE);
+
 		if (escape_db != NULL) escape_db->escape(value, raw_value);
+		else std::strncpy(value, raw_value, EXTRACT_SIZE - 1);
+
 		unsigned int length = std::min(EXTRACT_SIZE - 3u, (unsigned int)strlen(value));
 		std::strncpy(buffer + 1, value, length);
 		buffer[0] = '\'';
