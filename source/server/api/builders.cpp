@@ -68,7 +68,10 @@ Json::Value build_simple_array_from_query(QueryResult *query, const char *key, v
 std::string build_in_string(Json::Value &array)
 {
 	std::stringstream str;
-	for (unsigned int i = 0; i < array.size(); i++)
+
+	if (!array.isArray() || array.size() == 0) str << "0";
+
+	else for (unsigned int i = 0; i < array.size(); i++)
 	{
 		if (i > 0) str << ",";
 		str << array[i].asInt();
