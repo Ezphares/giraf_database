@@ -34,6 +34,11 @@ int API::validate_link(Json::Value &data, Json::Value &errors)
 			for (unsigned int i = 0; i < data["link"].size(); i++)
 			{
 				Json::Value &object = data["link"][i];
+				if (!object.isObject())
+				{
+					errors.append(Json::Value("Link contained non-object value"));
+					continue;
+				}
 
 				if (!object.isMember("type")) errors.append(Json::Value("Type missing from link"));
 				else if (!object["type"].isString()) errors.append(Json::Value("Link type was not a string"));
@@ -44,10 +49,22 @@ int API::validate_link(Json::Value &data, Json::Value &errors)
 
 				if (object.isMember("settings") && !object["settings"].isString()) errors.append(Json::Value("Link settings was not a string"));
 			}
+		}
+		else errors.append(Json::Value("\"data\":\"link\" was not an array"));
+	}
 
+	if (data.isMember("unlink"))
+	{
+		if (data["unlink"].isArray())
+		{
 			for (unsigned int i = 0; i < data["unlink"].size(); i++)
 			{
 				Json::Value &object = data["unlink"][i];
+				if (!object.isObject())
+				{
+					errors.append(Json::Value("Unlink contained non-object value"));
+					continue;
+				}
 
 				if (!object.isMember("type")) errors.append(Json::Value("Type missing from unlink"));
 				else if (!object["type"].isString()) errors.append(Json::Value("Link type was not a unstring"));
