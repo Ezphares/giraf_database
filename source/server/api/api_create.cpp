@@ -139,12 +139,12 @@ Json::Value API::create_profile(Json::Value &data, int user, Json::Value &errors
 		int role;
 
 		int err = 0;
-		err += extract_string(name, object, "name", false);
-		err += extract_string(email, object, "email", true);
-		err += extract_string(address, object, "address", false);
-		err += extract_string(phone, object, "phone", true);
-		err += extract_string(picture, object, "picture", true);
-		err += extract_string(settings, object, "settings", true);
+		err += extract_string(name, object, "name", false, _database);
+		err += extract_string(email, object, "email", true, _database);
+		err += extract_string(address, object, "address", false, _database);
+		err += extract_string(phone, object, "phone", true, _database);
+		err += extract_string(picture, object, "picture", true, _database);
+		err += extract_string(settings, object, "settings", true, _database);
 		err += extract_int(&department, object, "department", false);
 		err += extract_int(&role, object, "role", false);
 		if (err != 0)
@@ -214,10 +214,10 @@ Json::Value API::create_department(Json::Value &data, int user, Json::Value &err
 		char phone[EXTRACT_SIZE];
 
 		int err = 0;
-		err += extract_string(name, object, "name", false);
-		err += extract_string(email, object, "email", false);
-		err += extract_string(address, object, "address", false);
-		err += extract_string(phone, object, "phone", false);
+		err += extract_string(name, object, "name", false, _database);
+		err += extract_string(email, object, "email", false, _database);
+		err += extract_string(address, object, "address", false, _database);
+		err += extract_string(phone, object, "phone", false, _database);
 		err += extract_int(&top_department, object, "topdepartment", false);
 		if (err != 0)
 		{
@@ -256,9 +256,9 @@ Json::Value API::create_user(Json::Value &data, int user, Json::Value &errors)
 		int profile;
 
 		int err = 0;
-		err += extract_string(username, object, "username", false);
-		err += extract_string(password, object, "password", true);
-		err += extract_string(certificate, object, "certificate", true);
+		err += extract_string(username, object, "username", false, _database);
+		err += extract_string(password, object, "password", true, _database);
+		err += extract_string(certificate, object, "certificate", true, _database);
 		err += extract_int(&profile, object, "profile", false);
 		if (err != 0)
 		{
@@ -351,10 +351,10 @@ Json::Value API::create_pictogram(Json::Value &data, int user, Json::Value &erro
 		bool is_public;
 
 		int err = 0;
-		err += extract_string(name, object, "name", false);
-		err += extract_string(image, object, "image", true);
-		err += extract_string(text, object, "text", true);
-		err += extract_string(sound, object, "sound", true);
+		err += extract_string(name, object, "name", false, _database);
+		err += extract_string(image, object, "image", true, _database);
+		err += extract_string(text, object, "text", true, _database);
+		err += extract_string(sound, object, "sound", true, _database);
 		err += extract_bool(&is_public, object, "public", false);
 		if (err != 0)
 		{
@@ -447,12 +447,12 @@ Json::Value API::create_application(Json::Value &data, int user, Json::Value &er
 		char description[EXTRACT_SIZE];
 
 		int err = 0;
-		err += extract_string(name, object, "name", false);
-		err += extract_string(version, object, "version", false);
-		err += extract_string(icon, object, "icon", false);
-		err += extract_string(activity, object, "activity", false);
-		err += extract_string(description, object, "description", true);
-		err += extract_string(package, object, "package", false);
+		err += extract_string(name, object, "name", false, _database);
+		err += extract_string(version, object, "version", false, _database);
+		err += extract_string(icon, object, "icon", false, _database);
+		err += extract_string(activity, object, "activity", false, _database);
+		err += extract_string(description, object, "description", true, _database);
+		err += extract_string(package, object, "package", false, _database);
 		if (err != 0)
 		{
 			errors.append("Value error(s) in profile data object");
@@ -473,7 +473,7 @@ Json::Value API::create_application(Json::Value &data, int user, Json::Value &er
 
 		if(!r.empty())
 		{
-			extract_string(settings, object, "settings", true);
+			extract_string(settings, object, "settings", true, _database);
 			snprintf(query, API_BUFFER_SIZE, "INSERT INTO `profile_application` (`profile_id`, `application_id`, `settings`) VALUES (%d, %d, %s);", atoi(r["id"].c_str()), added_ids.back(), settings);
 			result = _database->send_query(query);
 			delete result;
@@ -500,9 +500,9 @@ Json::Value API::create_category(Json::Value &data, int user, Json::Value &error
 		int topcategory;
 
 		int err = 0;
-		err += extract_string(name, object, "name", false);
-		err += extract_string(colour, object, "colour", false);
-		err += extract_string(icon, object, "icon", true);
+		err += extract_string(name, object, "name", false, _database);
+		err += extract_string(colour, object, "colour", false, _database);
+		err += extract_string(icon, object, "icon", true, _database);
 		err += extract_int(&topcategory, object, "topcategory", true);
 		if (err != 0)
 		{

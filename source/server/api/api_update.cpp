@@ -195,12 +195,12 @@ Json::Value API::update_profile(Json::Value &data, int user, Json::Value &errors
 		int role;
 
 		int err = 0;
-		err += extract_string(name, object, "name", true);
-		err += extract_string(email, object, "email", true);
-		err += extract_string(address, object, "address", true);
-		err += extract_string(phone, object, "phone", true);
-		err += extract_string(picture, object, "picture", true);
-		err += extract_string(settings, object, "settings", true);
+		err += extract_string(name, object, "name", true, _database);
+		err += extract_string(email, object, "email", true, _database);
+		err += extract_string(address, object, "address", true, _database);
+		err += extract_string(phone, object, "phone", true, _database);
+		err += extract_string(picture, object, "picture", true, _database);
+		err += extract_string(settings, object, "settings", true, _database);
 		err += extract_int(&department, object, "department", true);
 		err += extract_int(&role, object, "role", true);
 		if (err != 0)
@@ -312,10 +312,10 @@ Json::Value API::update_department(Json::Value &data, int user, Json::Value &err
 		char phone[EXTRACT_SIZE];
 
 		int err = 0;
-		err += extract_string(name, object, "name", true);
-		err += extract_string(email, object, "email", true);
-		err += extract_string(address, object, "address", true);
-		err += extract_string(phone, object, "phone", true);
+		err += extract_string(name, object, "name", true, _database);
+		err += extract_string(email, object, "email", true, _database);
+		err += extract_string(address, object, "address", true, _database);
+		err += extract_string(phone, object, "phone", true, _database);
 		if (err != 0)
 		{
 			errors.append("Type error(s) in profile data object");
@@ -382,8 +382,8 @@ Json::Value API::update_user(Json::Value &data, int user, Json::Value &errors)
 		char certificate[EXTRACT_SIZE];
 
 		int err = 0;
-		err += extract_string(password, object, "password", true);
-		err += extract_string(certificate, object, "certificate", true);
+		err += extract_string(password, object, "password", true, _database);
+		err += extract_string(certificate, object, "certificate", true, _database);
 		if (err != 0)
 		{
 			errors.append("Type error(s) in user data object");
@@ -447,11 +447,11 @@ Json::Value API::update_application(Json::Value &data, int user, Json::Value &er
 		char description[EXTRACT_SIZE];
 
 		int err = 0;
-		err += extract_string(version, object, "version", true);
-		err += extract_string(icon, object, "icon", true);
-		err += extract_string(package, object, "package", true);
-		err += extract_string(activity, object, "activity", true);
-		err += extract_string(description, object, "description", true);
+		err += extract_string(version, object, "version", true, _database);
+		err += extract_string(icon, object, "icon", true, _database);
+		err += extract_string(package, object, "package", true, _database);
+		err += extract_string(activity, object, "activity", true, _database);
+		err += extract_string(description, object, "description", true, _database);
 		if (err != 0)
 		{
 			errors.append("Type error(s) in profile data object");
@@ -559,10 +559,10 @@ Json::Value API::update_pictogram(Json::Value &data, int user, Json::Value &erro
 		char text[EXTRACT_SIZE];
 
 		int err = 0;
-		err += extract_string(name, object, "name", true);
-		err += extract_string(image, object, "image", true);
-		err += extract_string(sound, object, "sound", true);
-		err += extract_string(text, object, "text", true);
+		err += extract_string(name, object, "name", true, _database);
+		err += extract_string(image, object, "image", true, _database);
+		err += extract_string(sound, object, "sound", true, _database);
+		err += extract_string(text, object, "text", true, _database);
 		if (err != 0)
 		{
 			std::cout << "type errors" << std::endl;
@@ -684,9 +684,9 @@ Json::Value API::update_category(Json::Value &data, int user, Json::Value &error
 		int topcategory;
 
 		int err = 0;
-		err += extract_string(name, object, "name", true);
-		err += extract_string(icon, object, "icon", true);
-		err += extract_string(colour, object, "colour", true);
+		err += extract_string(name, object, "name", true, _database);
+		err += extract_string(icon, object, "icon", true, _database);
+		err += extract_string(colour, object, "colour", true, _database);
 		err += extract_int(&topcategory, object, "topcategory", true);
 		if (err != 0)
 		{
