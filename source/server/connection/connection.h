@@ -27,7 +27,7 @@ public:
 public:
 	int connect_to_host(const char *hostname, unsigned int port);
 	int send(const char *message);
-	const char *receive(); // This is a blocking call.
+	char *receive(); // This is a blocking call.
 	void disconnect();
 	bool is_connected();
 

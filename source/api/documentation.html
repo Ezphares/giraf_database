@@ -61,7 +61,7 @@
 			
 				<div class="code">
 				{ <br />
-				&nbsp;&nbsp;"auth": <a href="#request_auth">request_auth</a>, <br />
+				&nbsp;&nbsp;"auth": <a href="#request_auth">request_auth</a>,<br />
 				&nbsp;&nbsp;"action": <a href="#request_action">request_action</a>,<br />
 				&nbsp;&nbsp;"data": <a href="#request_data">request_data</a> <br />
 				}
@@ -92,7 +92,7 @@
 				<h3 id="request_action">Request Action</h3>
 				<p><span class="code">request_action</span>is a string describing what the request wants to accomplish. Possible values are:</p>
 				<div class="code">
-				"create" OR "read" OR "update" OR "delete" OR null
+				"create" OR "read" OR "update" OR "delete" OR "link" OR null
 				</div>
 				<p>A null value signifies that the request does not want to access the database, but only check if authentication was successful (eg. to get a session code).</p>
 				<div class="clear"/>
@@ -133,6 +133,32 @@
 				&nbsp;&nbsp;] <br />
 				}
 				</div>
+				<h4>Link</h4>
+				<div class="code">
+				{ <br />
+				&nbsp;&nbsp;"profile": INT, <br />
+				&nbsp;&nbsp;"department": INT, <br />
+				&nbsp;&nbsp;"link": <br />
+				&nbsp;&nbsp;[ <br />
+				&nbsp;&nbsp;&nbsp;&nbsp;{ <br />
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"type": "pictogram" OR "application", <br />
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"id": INT, <br />
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"settings": STRING <br />
+				&nbsp;&nbsp;&nbsp;&nbsp;}, <br />
+				&nbsp;&nbsp;&nbsp;&nbsp;... <br />
+				&nbsp;&nbsp;], <br />
+				&nbsp;&nbsp;"unlink": <br />
+				&nbsp;&nbsp;[ <br />
+				&nbsp;&nbsp;&nbsp;&nbsp;{ <br />
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"type": "pictogram" OR "application", <br />
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"id": INT, <br />
+				&nbsp;&nbsp;&nbsp;&nbsp;}, <br />
+				&nbsp;&nbsp;&nbsp;&nbsp;... <br />
+				&nbsp;&nbsp;] <br />
+				}	
+				</div>
+				<p>Exactly one of <span class="code">department</span> or <span class="code">profile</span> should be set, not both.</p>
+				<p><span class="code">settings</span> is only used if <span class="code">profile</span> is set, and <span class="code">type</span> is <span class="code">"application"</span></p>
 
 				<h4>Delete</h4>
 				<div class="code">
@@ -147,9 +173,10 @@
 
 				<div class="code">
 				{ <br />
-				&nbsp;&nbsp;"status": <a href="#response_status">status_code</a> <br />
-				&nbsp;&nbsp;"errors": [STRING, ...] <br />
-				&nbsp;&nbsp;"data": <a href="#response_data">response_data</a> <br />
+				&nbsp;&nbsp;"status": <a href="#response_status">status_code</a>, <br />
+				&nbsp;&nbsp;"errors": [STRING, ...], <br />
+				&nbsp;&nbsp;"data": <a href="#response_data">response_data</a>, <br />
+				&nbsp;&nbsp;"session": <a href="#response_session">session_info</a> <br />
 				}
 				</div>
 
@@ -165,7 +192,7 @@
 				<p>The type and value of <span class="code">data</span> depends on the <span class="code"><a href="#request_action">request_action</a></span> of the request, and whether any errors were found.</p>
 				<h4>Errors were found</h4>
 				<p><span class="code">null</span></p>
-				<h4>Actions delete and update</h4>
+				<h4>Actions delete, update and link</h4>
 				<p><span class="code">null</span></p>
 				<h4>Action create</h4>
 				<p><span class="code">[INT, ...]</span> A list of ids of the objects created.</p>
@@ -174,6 +201,17 @@
 					<li>If view is details: <span class="code">[<a href="#data_type">value_object</a>, ...]</span></li>
 					<li>If view is list: <span class="code">[<a href="#data_type">light_value_object</a>, ...]</span></li>
 				</ul>
+				
+				<h3 id="response_session">Session Info</h3>
+				<p><span class="code">session_info</span> is an object containing information about the currently authenticated user and session. It looks like this:</p>
+				<div class="code">
+				{ <br />
+				&nbsp;&nbsp;"user": INT, <br />
+				&nbsp;&nbsp;"profile": INT OR null, <br />
+				&nbsp;&nbsp;"session": STRING (NOT YET IMPLEMENTED) <br />
+				}
+				</div>
+				<p>If the request was not successful, this object will be replaced by a null-value.</p>
 
 				<h2 id="data_type">Data Types</h2>
 				<p>Depending on what is being accessed, different parameters are available.</p>
@@ -181,6 +219,7 @@
 				<p><span class="code">OPTIONAL</span> means that create calls does not need to provide this value</p>
 				<p><span class="code">RESPONSE ONLY</span> means that create and update calls should not provide this value, but read calls will return it</p>
 				<p><span class="code">REQUEST ONLY</span> means the value can be updated and created, but never read.</p>
+				<p><span class="code">CONSTANT</span>< means that the value can only be changed on create</p>
 				<p><span class="code">"light_value_object"</span> is always response only, in list views</p>
 
 				<h3>Users</h3>
@@ -190,7 +229,9 @@
 				"value_object":
 				{ <br />
 				&nbsp;&nbsp;"id": RESPONSE ONLY INT, <br />
-				&nbsp;&nbsp;"username": STRING, <br />
+				&nbsp;&nbsp;"profile": INT, <br />
+				&nbsp;&nbsp;"username": CONSTANT STRING, <br />
+				&nbsp;&nbsp;"profile": CONSTANT INT, <br />
 				&nbsp;&nbsp;"password": REQUEST ONLY OPTIONAL STRING, <br />
 				&nbsp;&nbsp;"certificate": REQUEST ONLY OPTIONAL STRING <br />
 				}
@@ -213,10 +254,12 @@
 				{ <br />
 				&nbsp;&nbsp;"id": RESPONSE ONLY INT, <br />
 				&nbsp;&nbsp;"name": STRING, <br />
-				&nbsp;&nbsp;"email": STRING, <br />
+				&nbsp;&nbsp;"email": OPTIONAL STRING, <br />
 				&nbsp;&nbsp;"department": INT, <br />
+				&nbsp;&nbsp;"user": RESPONSE ONLY INT, <br />
 				&nbsp;&nbsp;"role": INT, <br />
-				&nbsp;&nbsp;"address": OPTIONAL STRING, <br />
+				&nbsp;&nbsp;"guardian_of": OPTIONAL [INT, ...], <br />
+				&nbsp;&nbsp;"address": STRING, <br />
 				&nbsp;&nbsp;"phone": OPTIONAL STRING, <br />
 				&nbsp;&nbsp;"picture": OPTIONAL STRING, <br />
 				&nbsp;&nbsp;"settings": OPTIONAL STRING <br />
@@ -244,7 +287,7 @@
 				&nbsp;&nbsp;"phone": STRING, <br />
 				&nbsp;&nbsp;"email": STRING, <br />
 				&nbsp;&nbsp;"subdepartments": OPTIONAL RESPONSE ONLY [INT, ...], <br />
-				&nbsp;&nbsp;"topdepartment": OPTIONAL INT <br />
+				&nbsp;&nbsp;"topdepartment": INT <br />
 				}
 				</div>
 				<p></p>
@@ -290,8 +333,8 @@
 				"value_object":
 				{ <br />
 				&nbsp;&nbsp;"id": RESPONSE ONLY INT, <br />
-				&nbsp;&nbsp;"name": STRING, <br />
-				&nbsp;&nbsp;"version": FLOAT, <br />
+				&nbsp;&nbsp;"name": CONSTANT STRING, <br />
+				&nbsp;&nbsp;"version": STRING, <br />
 				&nbsp;&nbsp;"icon": STRING, <br />
 				&nbsp;&nbsp;"package": STRING, <br />
 				&nbsp;&nbsp;"activity": STRING, <br />
@@ -305,6 +348,29 @@
 				{ <br />
 				&nbsp;&nbsp;"id": INT, <br />
 				&nbsp;&nbsp;"name": STRING <br />
+				}
+				</div>
+				
+				<h3>Categories</h3>
+				<div class="code">"type": "category"</div>
+				<p></p>
+				<div class="code">
+				"value_object":
+				{ <br />
+				&nbsp;&nbsp;"id": RESPONSE ONLY INT, <br />
+				&nbsp;&nbsp;"name": STRING, <br />
+				&nbsp;&nbsp;"colour": STRING, <br />
+				&nbsp;&nbsp;"icon": OPTIONAL STRING, <br />
+				&nbsp;&nbsp;"topcategory": OPTIONAL INT <br />
+				}
+				</div>
+				<p></p>
+				<div class="code">
+				"light_value_object":
+				{ <br />
+				&nbsp;&nbsp;"id": INT, <br />
+				&nbsp;&nbsp;"name": STRING <br />
+				&nbsp;&nbsp;"topcategory": INT <br />
 				}
 				</div>
 

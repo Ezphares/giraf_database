@@ -7,6 +7,7 @@
 #include "listener.h"
 
 Listener::Listener() :
+	_socket_fd(0),
 	_stop(false)
 {
 }

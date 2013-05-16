@@ -4,6 +4,7 @@
  */
 
 #include "database.h"
+#include <cstring>
 
 Database::Database(const char *address, unsigned int port,
 		const char *database, const char *username,
@@ -42,7 +43,6 @@ void Database::disconnect_database()
 int Database::connect_database()
 {
 	_conn = mysql_init(NULL);
-
 	if(_conn == NULL)
 	{
 		fprintf(stderr, "Error %u: %s\n", mysql_errno(_conn), mysql_error(_conn));
@@ -56,4 +56,15 @@ int Database::connect_database()
 	}
 
 	return 0;
+}
+
+void Database::escape(char *buffer, const char *input)
+{
+	mysql_real_escape_string(_conn, buffer, input, strlen(input));
+}
+
+unsigned int Database::insert_id()
+{
+	unsigned int id = mysql_insert_id(_conn);
+	return id;
 }
