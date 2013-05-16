@@ -1,0 +1,64 @@
+\section{API}
+The API calls are quite similar in structure, regardless of the data type and action they implement. They all start out by verifying that the data they have received is in accodance with what is expected and needed for the call to be performed, create the SQL statement to be executed, send it and prepare whatever return data is expected for the given call. 
+
+\subsection{Read calls}
+All read calls are first validated to contain the required data, i.e. type, view and ids, and that the types are correct. Afterwards it is determined that the read call is of the list or details variety, and which data type is requested, and the call is performed.
+
+\subsubsection{List}
+All calls requesting list data utilize the views implemented in the database for each data type. As an example¸ the read call for profile is shown below.
+
+\begin{listing}[language=c++, firstline=133]
+Json::Value API::read_profile_list(Json::Value &data, int user, Json::Value &errors)
+{
+	char query[API_BUFFER_SIZE];
+	snprintf(query, API_BUFFER_SIZE, "SELECT DISTINCT `id`, `name`, `role`, MAX(`update`) AS `update`, MAX(`delete`) 											AS `delete` FROM `profile_list` WHERE `user_id`=%d GROUP BY `id`;", user);
+	QueryResult *result = _database->send_query(query);
+
+	Json::Value call_data = build_array_from_query(result, fix_profile_list);
+
+	delete result;
+	return call_data;
+}
+\end{listing}
+
+As can be seen, the read list call for the "profile" data type, like all the others, receive the data, a user id requesting the data and a pointer to the errors array. A query is created and sent via the database module. The response from the database is then placed in an array and returned to the caller. 
+
+\subsubsection{Details}
+If the call is for a detailed view, the caller has to provide an array of ids for which the details are needed. 
+
+As an example of what the details calls look like, the call for the data type "profile" is shown below:
+
+\begin{listing}[language=c++, firstline=155]
+Json::Value API::read_profile_details(Json::Value &data, int user, Json::Value &errors)
+{
+	char query[API_BUFFER_SIZE];
+
+	snprintf(query, API_BUFFER_SIZE, "SELECT DISTINCT `id` FROM `profile_list` WHERE `user_id`=%d;", user);
+	QueryResult *result = _database->send_query(query);
+	std::vector<int> accessible = build_simple_int_vector_from_query(result, "id");
+	delete result;
+
+	if(validate_array_vector(data["ids"], accessible) == false)
+	{
+			errors.append(Json::Value("Invalid ID access"));
+			return Json::Value(Json::nullValue);
+	}
+	const std::string &st = build_in_string(data["ids"]);
+	snprintf(query, API_BUFFER_SIZE, "SELECT DISTINCT * FROM `profile` WHERE `id` IN (%s);", st.c_str());
+
+	result = _database->send_query(query);
+	Json::Value call_data = build_array_from_query(result, fix_profile_details);
+	delete result;
+
+	for (unsigned int i = 0; i < call_data.size(); i++)
+	{
+		snprintf(query, API_BUFFER_SIZE, "SELECT DISTINCT `child_id` FROM `guardian_of` WHERE `guardian_id`=%d;", call_data[i]["id"].asInt());
+		result = _database->send_query(query);
+		call_data[i]["guardian_of"] = build_simple_array_from_query(result, "child_id", V_INT);
+		delete result;
+	}
+
+	return call_data;
+}
+\end{listing}
+
