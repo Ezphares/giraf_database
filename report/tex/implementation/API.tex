@@ -1,8 +1,6 @@
 \section{API Calls}
 The API calls are very similar in structure, regardless of the data type and action they implement. They all start out by verifying that the data they have received is in accordance with what is expected and needed for the call to be performed, create the SQL statement to be executed, send it and prepare whatever return data is expected for the given call. 
 
-For all read calls, some data from the database have to be altered to conform to the API standard either by renaming or fixing the type of the data. In order for this to happen, two functions are implemented,  \lstinline|fix_rename| and  \lstinline|fix_type|, which as their names imply rename and fix the type respectively. At each call shown in the following subsection the fix-function is included.  
-
 \subsection{Read and delete calls}
 All read calls are first validated to contain the required data, i.e. type, view and ids, and that the types are correct (e.g. ids must always be either null or an array). Afterwards it is determined that the read call is of the list or details variety, and which data type is requested, and the call is performed.
 
