@@ -1,6 +1,12 @@
 \section{Builder Functions}
 The so-called builder functions are implemented to facilitate ease of reading and writing in the API calls.
 
+\subsection{Fix}
 For all read calls to the API, some data from the database have to be altered to conform to the API standard either by renaming or fixing the type of the data. In order for this to happen, two functions are implemented,  \lstinline|fix_rename| and  \lstinline|fix_type|, which as their names imply rename and fix the type respectively. 
 
 \subsection{Extractors}
+The API needs to extract data from Json objects in order to build the queries to the database, and to prevent misuse of the queries some of these data need to be escaped and all need to be validated. This is done with three extractor functions: \lstinline|extract_string|, \lstinline|extract_int| and \lstinline|extract_bool|. In \autoref{lst:extract_string} is the \lstinline|extract_string| function.
+
+\lstinputlisting[label=lst:extract_string, caption=Extract String, language=c++]{lst/extract_string.cpp}
+
+Each of the functions are similar in that they all validate that the given key is of the expected type (in \autoref{lst:extract_string} this would be string) and if not they return an error. Apart from validating the type, \lstinline|extract_string| also escapes the string using the database module, if a database is provided in the input. 
