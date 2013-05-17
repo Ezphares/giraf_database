@@ -1,64 +1,36 @@
-\section{API}
-The API calls are quite similar in structure, regardless of the data type and action they implement. They all start out by verifying that the data they have received is in accodance with what is expected and needed for the call to be performed, create the SQL statement to be executed, send it and prepare whatever return data is expected for the given call. 
+\section{API Calls}
+The API calls are very similar in structure, regardless of the data type and action they implement. They all start out by verifying that the data they have received is in accordance with what is expected and needed for the call to be performed, create the SQL statement to be executed, send it and prepare whatever return data is expected for the given call. 
 
-\subsection{Read calls}
-All read calls are first validated to contain the required data, i.e. type, view and ids, and that the types are correct. Afterwards it is determined that the read call is of the list or details variety, and which data type is requested, and the call is performed.
+For all read calls, some data from the database have to be altered to conform to the API standard either by renaming or fixing the type of the data. In order for this to happen, two functions are implemented,  \lstinline|fix_rename| and  \lstinline|fix_type|, which as their names imply rename and fix the type respectively. At each call shown in the following subsection the fix-function is included.  
+
+\subsection{Read and delete calls}
+All read calls are first validated to contain the required data, i.e. type, view and ids, and that the types are correct (e.g. ids must always be either null or an array). Afterwards it is determined that the read call is of the list or details variety, and which data type is requested, and the call is performed.
+
+The delete calls are almost exact copies of the read details calls, only the SQL-statements differ.
 
 \subsubsection{List}
-All calls requesting list data utilize the views implemented in the database for each data type. As an example¸ the read call for profile is shown below.
+All calls requesting list data utilize the views implemented in the database for each data type. As an example¸ the read call for \lstinline|profile| is shown below.
 
-\begin{listing}[language=c++, firstline=133]
-Json::Value API::read_profile_list(Json::Value &data, int user, Json::Value &errors)
-{
-	char query[API_BUFFER_SIZE];
-	snprintf(query, API_BUFFER_SIZE, "SELECT DISTINCT `id`, `name`, `role`, MAX(`update`) AS `update`, MAX(`delete`) 											AS `delete` FROM `profile_list` WHERE `user_id`=%d GROUP BY `id`;", user);
-	QueryResult *result = _database->send_query(query);
+\lstinputlisting[label=lst:read_profile_list, caption=Read Profile List, language=c++]{lst/read_profile_list.cpp}
 
-	Json::Value call_data = build_array_from_query(result, fix_profile_list);
-
-	delete result;
-	return call_data;
-}
-\end{listing}
-
-As can be seen, the read list call for the "profile" data type, like all the others, receive the data, a user id requesting the data and a pointer to the errors array. A query is created and sent via the database module. The response from the database is then placed in an array and returned to the caller. 
+As can be seen, the read list call for the \lstinline|profile| data type, like all the others, receive the data, a user id requesting the data and a pointer to the errors array. A query is created and sent via the database module. The response from the database is then placed in an array and returned to the caller. 
 
 \subsubsection{Details}
 If the call is for a detailed view, the caller has to provide an array of ids for which the details are needed. 
 
-As an example of what the details calls look like, the call for the data type "profile" is shown below:
+As an example of what the details calls look like, the call for the data type \lstinline|profile| is shown below:
 
-\begin{listing}[language=c++, firstline=155]
-Json::Value API::read_profile_details(Json::Value &data, int user, Json::Value &errors)
-{
-	char query[API_BUFFER_SIZE];
+\lstinputlisting[label=lst:read_profile_details, caption=Read Profile Details, language=c++]{lst/read_profile_details.cpp}
 
-	snprintf(query, API_BUFFER_SIZE, "SELECT DISTINCT `id` FROM `profile_list` WHERE `user_id`=%d;", user);
-	QueryResult *result = _database->send_query(query);
-	std::vector<int> accessible = build_simple_int_vector_from_query(result, "id");
-	delete result;
+In lines 14-17 a list of profiles accessible to the calling user is compiled, and saved in a linked list. Each id requested is then checked again this list in line 19, and if the requested id is not in the list an error is added to the errors array, and the function returns.
 
-	if(validate_array_vector(data["ids"], accessible) == false)
-	{
-			errors.append(Json::Value("Invalid ID access"));
-			return Json::Value(Json::nullValue);
-	}
-	const std::string &st = build_in_string(data["ids"]);
-	snprintf(query, API_BUFFER_SIZE, "SELECT DISTINCT * FROM `profile` WHERE `id` IN (%s);", st.c_str());
+If all the requested ids are accessible the ids are turned into a comma separated string in line 24, which is then inserted into the query in line 25. The query is sent to the database, and the response is added to the \lstinline|call_data| object in lines 26 and 27.
 
-	result = _database->send_query(query);
-	Json::Value call_data = build_array_from_query(result, fix_profile_details);
-	delete result;
+Seeing as a call for profile details also requires info about which children a person is guardian of, this is fetched from the database and inserted into the \lstinline|call_data| object in lines 31-37. Finally the data is returned to the caller.
 
-	for (unsigned int i = 0; i < call_data.size(); i++)
-	{
-		snprintf(query, API_BUFFER_SIZE, "SELECT DISTINCT `child_id` FROM `guardian_of` WHERE `guardian_id`=%d;", call_data[i]["id"].asInt());
-		result = _database->send_query(query);
-		call_data[i]["guardian_of"] = build_simple_array_from_query(result, "child_id", V_INT);
-		delete result;
-	}
+\subsection{Create and Update calls}
+These two actions are so similar that a single example will suffice to show the general idea of the. Like other API calls the data is first validated at top level, and the appropriate call for the data type is executed. Here, the create profile call is shown:
 
-	return call_data;
-}
-\end{listing}
+\lstinputlisting[label=lst:read_profile_details, caption=Read Profile Details, language=c++]{lst/create_profile.cpp}
 
+In lines 5 to 13 the accessible departments and children are selected from the database to ensure that a user does not try to assign the profile to a department, make it a guardian of a child he or she does not have access to or make a child a guardian of someone. This check is performed in lines 15-44. In lines 50-74 the data to be inserted in the database is extracted and escpaed with the \lstinline|extract_string| and \lstinline|extract_int| functions. The query is then formed and sent in lines 76-82, and the \lstinline|guardian_of| table is updated in the same manner in lines 84-95. In line 98 the list of ids created in the database is returned.
