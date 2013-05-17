@@ -19,6 +19,13 @@ user context.
 Additionally, it does not create additional authentication work for the server implementations, since checking whether a user has a given right
 should be checked each time in any case.
 
+\subsubsection*{All or nothing}
+
+To keep things simple, calls should be kept all or nothing, that is, if it is not possible to complete the request fully, nothing should be done.
+An example of this could be a read call trying to retrieve details of several profile, one of which is inaccessible to the authenticated user. In this case, the
+user receives no information, but an error message stating the error. This is more important when updating or creating data in bulk, in which case
+it could be difficult for the client to know which parts of the request were completed, and which were not.
+
 \subsection{Data Serialization Format}
 
 When communicating on a network, it is important that the data can be serialized, that is, represented as a series of symbols. Two of the most
