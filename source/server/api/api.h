@@ -52,6 +52,7 @@ private:
 	int validate_create(Json::Value &data, Json::Value &errors);
 	int validate_update(Json::Value &data, Json::Value &errors);
 	int validate_delete(Json::Value &data, Json::Value &errors);
+	int validate_link(Json::Value &data, Json::Value &errors);
 
 	/*
 	 * ALL API CALLS GO HERE:
@@ -61,6 +62,7 @@ private:
 	int api_delete(Json::Value &request, Json::Value &response, Json::Value &errors);
 	int api_update(Json::Value &request, Json::Value &response, Json::Value &errors);
 	int api_create(Json::Value &request, Json::Value &response, Json::Value &errors);
+	int api_link(Json::Value &request, Json::Value &response, Json::Value &errors);
 
 	APICALL(read_profile_list);
 	Json::Value read_profile_details(Json::Value &data, int user, Json::Value &errors);
@@ -91,8 +93,14 @@ private:
 	Json::Value delete_application(Json::Value &data, int user, Json::Value &errors);
 	Json::Value create_application(Json::Value &data, int user, Json::Value &errors);
 	APICALL(update_application);
-	// ETC, ETC
 
+	APICALL(execute_link);
+
+	APICALL(read_category_list);
+	APICALL(read_category_details);
+	APICALL(create_category);
+	APICALL(update_category);
+	APICALL(delete_category);
 
 private:
 	Database *_database;

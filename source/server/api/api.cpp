@@ -72,9 +72,13 @@ std::string API::handle_request(const char *json)
 			{
 				api_delete(root, response, errors);
 			}
+			else if (strcmp(action, "link") == 0)
+			{
+				api_link(root, response, errors);
+			}
 			else
 			{
-				errors.append("\"action\" was not null or a CRUD action");
+				errors.append("\"action\" was not null or a CRUD(l) action");
 				response["status"] = Json::Value(STATUS_STRUCTURE);
 
 				break;
