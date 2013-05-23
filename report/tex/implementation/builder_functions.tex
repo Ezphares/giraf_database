@@ -10,3 +10,8 @@ The API needs to extract data from Json objects in order to build the queries to
 \lstinputlisting[label=lst:extract_string, caption=Extract String, language=c++]{lst/extract_string.cpp}
 
 Each of the functions are similar in that they all validate that the given key is of the expected type (in \autoref{lst:extract_string} this would be string) and if not they return an error. Apart from validating the type, \lstinline|extract_string| also escapes the string using the database module, if a database is provided in the input. 
+
+\subsection{Builders}
+These functions create a data type from another - e.g. building an object from a row from the result of a database query, building an array from a query, or build a string to fit in an SQL statement. Some of these are quite trivial, such as 
+
+\subsection{Validators}

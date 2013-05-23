@@ -7,16 +7,16 @@ All read calls are first validated to contain the required data, i.e. type, view
 The delete calls are almost exact copies of the read details calls, only the SQL-statements differ.
 
 \subsubsection{List}
-All calls requesting list data utilize the views implemented in the database for each data type. As an example¸ the read call for \lstinline|profile| is shown below.
+All calls requesting list data utilize the views implemented in the database for each data type. As an example¸ the read call for \lstinline|profile| is shown in \autoref{lst:read_profile_list}.
 
 \lstinputlisting[label=lst:read_profile_list, caption=Read Profile List, language=c++]{lst/read_profile_list.cpp}
 
-As can be seen, the read list call for the \lstinline|profile| data type, like all the others, receive the data, a user id requesting the data and a pointer to the errors array. A query is created and sent via the database module. The response from the database is then placed in an array and returned to the caller. 
+As can be seen, the read list call for the \lstinline|profile| data type, like all the others, receive the data, a user id requesting the data and a pointer to the errors array. A query is created and sent via the database module. The response from the database is then placed in an array and returned to the caller. For other read calls, the SQL statement to be executed (and subsequently the data extracted) differs. A different view will of course also be used.
 
 \subsubsection{Details}
-If the call is for a detailed view, the caller has to provide an array of ids for which the details are needed. 
+If the call is for a detailed view, the caller has to provide an array of ids for which details are needed. 
 
-As an example of what the details calls look like, the call for the data type \lstinline|profile| is shown below:
+As an example of what the details calls look like, the call for the data type \lstinline|profile| is shown in \autoref{read_profile_details}
 
 \lstinputlisting[label=lst:read_profile_details, caption=Read Profile Details, language=c++]{lst/read_profile_details.cpp}
 
@@ -26,9 +26,31 @@ If all the requested ids are accessible the ids are turned into a comma separate
 
 Seeing as a call for profile details also requires info about which children a person is guardian of, this is fetched from the database and inserted into the \lstinline|call_data| object in lines 31-37. Finally the data is returned to the caller.
 
+For other data types, the verification will differ with respect to what views are used to compile accessible data, the SQL statement will of course also be different, with different data extracted, as well as the data returned to the caller.
+
 \subsection{Create and Update calls}
-These two actions are so similar that a single example will suffice to show the general idea of the. Like other API calls the data is first validated at top level, and the appropriate call for the data type is executed. Here, the create profile call is shown:
+These two actions are so similar that a single example will suffice to show the general idea. Like other API calls the data is first validated at top level, and the appropriate call for the data type is executed. In \autoref{lst:create_profile} the create profile call is shown.
 
-\lstinputlisting[label=lst:read_profile_details, caption=Read Profile Details, language=c++]{lst/create_profile.cpp}
+\lstinputlisting[label=lst:create_profile, caption=Create Profile, language=c++]{lst/create_profile.cpp}
 
-In lines 5 to 13 the accessible departments and children are selected from the database to ensure that a user does not try to assign the profile to a department, make it a guardian of a child he or she does not have access to or make a child a guardian of someone. This check is performed in lines 15-44. In lines 50-74 the data to be inserted in the database is extracted and escpaed with the \lstinline|extract_string| and \lstinline|extract_int| functions. The query is then formed and sent in lines 76-82, and the \lstinline|guardian_of| table is updated in the same manner in lines 84-95. In line 98 the list of ids created in the database is returned.
+In lines 5 to 13 the accessible departments and children are selected from the database to ensure that a user does not try to assign the profile to a department that they do not have the rights to add profiles to, make the profile a guardian of a child the creator does not have access to or make a child a guardian of someone. This check is performed in lines 15-44. In lines 50-74 the data to be inserted in the database is extracted and escaped with the \lstinline|extract_string| and \lstinline|extract_int| functions. The query is then formed and sent in lines 76-82, and the \lstinline|guardian_of| table is updated in the same manner in lines 84-95. In line 98 the list of ids created in the database is returned.
+
+For an update call  what differs is the creation of and the keywords in the SQL statement. Seeing as a user may want to update some, but not all, data on a given data type (e.g. profile), all value objects could possibly be left null. Due to this, the data is only appended to the update SQL statement if there is any provided, which is validated with a simple check to see, if the first character in the object is a capital N, indicating that the data is a null value.
+
+\subsection{Link}
+Link is an action used to link a profile or department with an application or a pictogram. Unlink is used to delete these links. 
+Like all other calls, the request is first validated with regards to syntax and authentication of the user. If these succeed, the cal proceeds to either link or unlink, depending on the action chosen. The code is shown in \autoref{lst:link}
+
+\lstinputlisting[label=lst:link, caption=Link and Unlink, language=c++]{lst/link.cpp}
+
+In lines 9-38 accessible profiles and departments are compiled into lists and the requested ids are checked against these lists. In line 40 an \lstinline|actor_id| is set - this is the id of either a profile or a department, and is computed as a simple addition of the two values \lstinline|profile| and \lstinline|department|, due to the fact that one of these values will be 0 by default (see line 3 and 4). 
+
+In line 41 an inline if-statement checkc whether the \lstinline|profile| integer is 0, and if it is not, it will set the \lstinline|actor| string to be ``profile''. If it is, it will set the string to be ``department''. 
+
+Lines 43-106 are executed if the action is set to \lstinline|link|, in which case it is first determined if the API is dealing with a request for linking of an application in line 53. If indeed it is an application, the data object is examined to determine if any settings need to be updated on a profile for this particular application. Should this be the case, these are escaped. This is done in line 55. A list of accessible applications for the caller is compiled in lines 57-60. The requested id is then validated against this list in lines 62.
+
+Should the request turn out to be for a pictogram, the ids are simply validated against a list of accessible ids in lines 71-80. 
+
+In lines 83-86 an SQL query for checking if a link already exists between a profile/department and application/pictogram. Should a link already exist, it is first determined if there are settings to update in line 90, and if so these are updated in lines 92-94. If a link does not already exist, it is created in lines 97-104.
+
+Lines 108-121 is executed if the action is set to \lstinline|unlink|. For each requested link to be deleted, an SQL statement is sent in lines 117-119.

@@ -39,8 +39,6 @@ inline std::vector<int> build_simple_int_vector_from_query(QueryResult *query, c
 
 std::map<int, int> build_simple_int_map_from_query(QueryResult *query, const char *key_key, const char *value_key);
 
-//TODO: escape strings
-//TODO: validate types on both string and int
 int extract_string(char *buffer, Json::Value &object, const char *key, bool null = false, Database *escape_db = NULL);
 int extract_int(int *buffer, Json::Value &object, const char *key, bool null = false);
 int extract_bool(bool *buffer, Json::Value &object, const char *key, bool null = false);

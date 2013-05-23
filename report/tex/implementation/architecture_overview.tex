@@ -1,0 +1,10 @@
+\section{Architectural overview}
+The API and the server is comprised of several modules with various responsibilities, all running on the central server. They are listed and described here:
+
+\begin{itemize}
+\item Connection module: Responsible for receiving and maintaining a connection to the server. Also handles cleanup when the connection is closed. 
+\item SQL wrapper module: This module handles the SQL functions needed to access the database, i.e. connect to the database, send a query, fetch a new row in a query result and of course escape a query to prevent SQL injections.
+\item API call implementations module: Implementation of all calls available in the API and helper functions for these. 
+\end{itemize}
+
+Each module's implementation is described in the following sections.
