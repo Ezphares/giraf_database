@@ -1,16 +1,44 @@
-\section{Entity-Relationship Diagram}
-The database has to store all information in our system, it has to keep that information in such a way that it is understandable for everyone who has to write an application that uses it. To get an overview of the entire database, we have made an Entity-Relationship (ER) diagram.
+\section{Database Design}
+The database has to store all the information in the GIRAF system, it has to keep that information in such a way that it is understandable for everyone who has to write an application that uses the database.
+To get an overview of the entire database, we have made an Entity-Relationship (ER) diagram. \autoref{fig:erdiagram} illustrates the ER-diagram for the database.
 
-The ER diagram uses a collection of basic objects called entities and their relationships to describe things in the real world and their individual relations. The group based the current diagram on last year's, re-using some attributes for entities, but cleaning up relations and adding new content needed by other groups (e.g. pictogram category). The central entities are the profile, the applications available to that profile and the pictograms linked to it.%TODO:ref earlier report here
-
-The profile holds information about the user, such as name, phone number, picture, e-mail, address and their role (e.g. parent or department employee). Roles are important in determining the privileges of the account. The pictograms available to the profile are selected by the guardians, in the case of a child.
-
-The settings of an application are saved in the link to the profile in order to allow different users to customize the look of the application.
-
-The fact that applications and pictograms can be linked to department signifies, that a department can allow all users affiliated with it to have access to specific applications and pictograms related to that department.
-
-\begin{figure}[h]
-\includegraphics[width=\textwidth]{img/ER_diagram.pdf}
+\begin{figure}[hptb]
+\begin{center}
+\includegraphics[width=\textwidth]{img/ER_diagram3.pdf}
 \label{fig:erdiagram}
 \caption{ER Diagram}
+\end{center}
 \end{figure}
+
+The ER diagram uses a collection of basic objects called entities and their relationships to describe things in the real world and their individual relations. The group based the current diagram on the 2012 version, re-using some attributes for entities, but cleaning up relations and adding new content needed by other groups (e.g. pictogram category). \todo{:ref earlier report here} The central entities are the profile, the applications available to that profile and the pictograms associated with it. 
+
+\subsection{Profile}
+The profile entity includes both children and guardians, it holds information such as name, phone number, picture, e-mail, address and role (i.e. parent or department employee). The roles are important in determining the privileges of the account. Parents can only administrate their own children, employees on the other hand can administrate several of the children in a given department. 
+
+The \emph{guardian\_of} relationship enables one profile to be guardian several other profiles. This is because the children do not have the authority to administrate their own pictograms and settings, they rely on a guardian to handle all of the customization in cooperation with them. 
+
+The settings of an application are saved in the relation to the profile in order to allow different users to customize the look of the application.
+
+\subsection{Application}
+The application entity holds information such as name, version, icon, package, activity and description. 
+The package signifies which Android package the application is included in and the activity is the main activity of the application. Applications can be associated to both departments and profiles. As previously mentioned the settings are not stored as a part of the actual application, but in the relation to the profiles. This makes it easier customize the application for each individual profile.
+ 
+\subsection{Department}
+The department entity contains information such as name, address, phone and email. Departments have a number of profiles assigned to it i.e. employees and children.
+
+The fact that applications and pictograms can be associated with departments signifies, that a department can allow all users affiliated with it to have access to specific applications and pictograms related to that department.
+
+\subsection{Pictograms}
+The pictogram entity contains name, public, image data, sound data and some inline text. 
+Pictograms can be a mixture of image, sound and text. The \emph{public} attribute signifies whether the pictogram is public or restricted to a specific profile or department. 
+
+\subsubsection{Categories}
+The pictograms can be arranged into categories each with it's own name, color and icon.
+An example could be pictograms of various food items being put in a category named food, which could have a subcategory called breakfast that could include items such as cereal and orange juice.
+
+\subsubsection{Tags}
+Each pictogram can have a series of tags. The tags can help categorize the pictograms.
+
+\subsection{User}
+In order to distinguish the various profiles in the system some kind of user authentication is needed. The user entity holds information such as username, password and certificate.
+The username and password will be used e.g. if an administrator needs to log into the system on a desktop computer. The certificate is a QR-Code that a guardian will scan with the tablet in order to log into the system. Each guardian will have their own personal QR-Code that they can use to administrate the children that they are responsible for.
