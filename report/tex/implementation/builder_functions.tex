@@ -5,13 +5,46 @@ The so-called builder functions are implemented to facilitate ease of reading an
 For all read calls to the API, some data from the database have to be altered to conform to the API standard either by renaming or fixing the type of the data. In order for this to happen, two functions are implemented,  \lstinline|fix_rename| and  \lstinline|fix_type|, which as their names imply rename and fix the type respectively. 
 
 \subsection{Extractors}
-The API needs to extract data from Json objects in order to build the queries to the database, and to prevent misuse of the queries some of these data need to be escaped and all need to be validated. This is done with three extractor functions: \lstinline|extract_string|, \lstinline|extract_int| and \lstinline|extract_bool|. In \autoref{lst:extract_string} is the \lstinline|extract_string| function.
+The API needs to extract data from Json objects in order to build the queries to the database, and to prevent misuse of the queries some of these data need to be escaped and all need to be validated. This is done with three extractor functions: 
+\begin{itemize}
+\item \lstinline|extract_string| 
+\item \lstinline|extract_int| 
+\item \lstinline|extract_bool|. 
+\end{itemize}
+In \autoref{lst:extract_string} is the \lstinline|extract_string| function.
 
 \lstinputlisting[label=lst:extract_string, caption=Extract String, language=c++]{lst/extract_string.cpp}
 
-Each of the functions are similar in that they all validate that the given key is of the expected type (in \autoref{lst:extract_string} this would be string) and if not they return an error. Apart from validating the type, \lstinline|extract_string| also escapes the string using the database module, if a database is provided in the input. 
+Each of the functions are similar in that they all validate that the given key is of the expected type (in \autoref{lst:extract_string} this would be string) and if not they return an error. Apart from validating the type, \lstinline|extract_string| also escapes the string using the database module, if a database is provided in the input.
 
 \subsection{Builders}
-These functions create a data type from another - e.g. building an object from a row from the result of a database query, building an array from a query, or build a string to fit in an SQL statement. Some of these are quite trivial, such as 
+These functions create a data type from another - e.g. building an object from a row from the result of a database query, building an array from a query, or build a string to fit in an SQL statement. The builder functions are:
+\begin{itemize}
+\item \lstinline|build_object_from_row|
+\item \lstinline|build_array_from_query|
+\item \lstinline|build_simple_array_from_query|
+\item \lstinline|build_in_string|
+\item \lstinline|build_simple_int_vector_from_query|
+\item \lstinline|build_simple_ind_map_from_query|
+\end{itemize}
+
+In \autoref{lst:build_object_from_row} the code for the \lstinline|build_object_from_row| function is shown. 
+
+\lstinputlisting[label=lst:build_object_from_row, caption=Build Object from Row, language=c++]{lst/extract_string.cpp}
+
+This function is called when one wants to create a Json object from the result of a query. It takes a row (the result of a query) and a fixture, which is a function pointer to one of the fixes. 
+
+The function loops through the row and directly translates it to a Json object.
+
+\lstinputlisting[label=lst:build_array_from_query, caption=Build Array from Query, language=c++]{lst/extract_string.cpp}
+
+\autoref{lst:build_array_from_query} utilizes the database module to fetch a row from the result, and  while there are more rows, calls the \lstinline|build_object_from_row| and appends the Json objects to a Json array.
 
 \subsection{Validators}
+As the name implies, these functions validate that a given value (or set of values) exist in an array or a vector. The validator functions are:
+\begin{itemize}
+\item \lstinline|validate_array_vector|
+\item \lstinline|validate_value_in_vector|
+\end{itemize}
+
+They take either an array and a vector or a vector and a value and loop through to see if the value exists. They return a boolean value of either true or false depending on whether the value is indeed there.
