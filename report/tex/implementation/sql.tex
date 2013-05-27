@@ -1,0 +1,23 @@
+\section{SQL}
+The database is implemented in SQL in accordance with the ER diagram.
+
+On top of the database different views have been implemented to simplify the SQL needed to access data in the \ac{api} calls. 
+There are 8 views in total:
+\begin{itemize}
+\item \lstinline|profile_list|, which returns a list of the profile connected to the calling user, children this user is assigned guardian of, parents of these children, profiles the user is administrator of and created profiles. 
+\item \lstinline|user_list| which returns a list of the caller's own user and users the caller is administrator of.
+\item \lstinline|department_list| which returns a list of the department the user is connected to, departments the user is administrator of and sub-departments of the departments the user is administrator of.
+\item \lstinline|pictogram_list| returns a list of pictograms connected to the calling user's profile, the department of the calling user, and the user's own created pictograms.
+\item \lstinline|application_list| returns all applications connected to the calling user's profile, the calling user's department and created applications.
+\item \lstinline|application_details| returns the settings as well as all the info about all applications connected to the calling user and the calling user's department.
+\item \lstinline|pictogram_extras| returns the category and tags for all pictograms connected to the calling user.
+\item \lstinline|category_list| returns all categories connected to the calling user's profile.
+\end{itemize}
+
+As an example of the views implemented \autoref{lst:application_list_view} shows the view for \lstinline|application_list|.
+
+\lstinputlisting[label=lst:application_list_view, caption=Application List View, language=SQL]{lst/application_list_view.sql}
+
+As can be seen, the view consists of the union of three different selects - on for the profile, one for department and one for created applications. To obtain the info about what applications are connected to a given profile and department, a series of joins are performed.
+
+The structure is the same for all the views, albeit with differences in what is selected, the unions and what is joined.
