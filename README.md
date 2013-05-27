@@ -34,12 +34,12 @@ Building the program:<br />
 cd to `source/server`<br />
 run `make all`<br />
 run `./serverapp`<br />
-At the moment this should just exit gracefully.
+Now the server is running. Type `stop` to exit.
 
 Running the unit tests:<br />
 cd to `source/server`<br />
 run `make test`<br />
-run `./test_connection` or `./test_database`<br />
+run `./test_connection`, `./test_api` or `./test_database`<br />
 Database unit test requires a database called `giraf` accessible by user `giraf`@`localhost` identified by `123456`.<br />
 Connection unit test requires right to open listening sockets and ports `1238` and `1239` to be free.
 
