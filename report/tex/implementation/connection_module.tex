@@ -49,8 +49,27 @@ pieces of information that is useful for the framework to operate the server, an
 As this is being set up, a thread is started, with the \lstinline|server_runner| as entry point and the \lstinline|ServerInfo| instance as parameter at line 12. After this the function uses a mutex
 to block the calling thread, until the new thread has attempted to start the listener and has the \lstinline|ServerInfo| instance contains information about whether it was successful.
 This is done so the calling thread can check for errors immediately after \lstinline|run_server| returns.
+
 \lstinputlisting[label=lst:framework_run_server,caption=Framework - run\_server,language=c++]{lst/framework_run_server.cpp}
 
 \subsubsection{Server Runner}
-%TODO
+The \lstinline|server_runner| is, as mentioned, the entry point of the thread that the server will run on. The code for this function can be seen in \autoref{lst:server:runner}.
+The first thing happening in this function is the creation and starting of a \lstinline|Listener| instance, saving the results of this to the associated \lstinline|ServerInfo|.
+After this is done, the mutex blocking the calling thread is released at line 11, allowing the main application to continue while the server is running.
 
+If any errors has happened at this point, the thread will exit. If not, it will enter a loop, where it will attempt to accept clients until it is asked to stop by a call to \lstinline|stop_server|.
+When looking at the code at line 24-29, between accepting the client and handling it, there is an additional check for whether the server has been asked to stop, that will break the loop
+if this is the case. The reason for this seemingly strange check is the blocking nature of \lstinline|accept_client|. This block creates the necessity for \lstinline|stop_server| to initiate
+a connection to the server, to ensure that it stops immediately. This check makes sure that connection is just discarded.
+
+At this point, by line 33, the client will be handled. This is done by setting up a \lstinline|ClientInfo|, a simple structure containing the desired callback,
+as well as a pointer to the \lstinline|Connection| instance for communicating with the client.
+Then a thread is started with \lstinline|client_runner| as entry point and the \lstinline|ClientInfo| as parameter.
+
+After the accept loop is broken, the function stops the \lstinline|Listener|, and exits the thread.
+
+\lstinputlisting[label=lst:server_runner,caption=Framework - server\_runner,language=c++]{lst/framework_server_runner.cpp}
+
+\subsubsection{Client Runner}
+The \lstinline|client_runner| function is very simple. It reads the callback from the \lstinline|ClientInfo| instance and calls it with the \lstinline|Connection| as parameter.
+After the callback returns, it cleans up and exits the thread.
