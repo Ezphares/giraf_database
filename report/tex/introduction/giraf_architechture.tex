@@ -1,7 +1,7 @@
-\section{Giraf Architecture}
-In this section the overall architecture of the entire Giraf application will be presented. First the top level architecture will be described subsequently the architecture on the tablet will be presented.
+\section{GIRAF Architecture}
+In this section the overall architecture of the entire GIRAF application will be presented. First the top level architecture will be described subsequently the architecture on the tablet will be presented.
 
-As mentioned in the common chapter \todo{insert reference to common chapter} the Giraf project is divided into several subprojects. Each subproject is responsible for a specific part of Giraf. The itemized list below is a reminder of what the various projects are responsible for.
+As mentioned in the common chapter \todo{insert reference to common chapter} the GIRAF project is divided into several subprojects. Each subproject is responsible for a specific part of GIRAF. The itemized list below is a reminder of what the various projects are responsible for.
 
 \begin{itemize}
 	\item Admin - Administration interface for the entire Giraf project
@@ -14,18 +14,20 @@ As mentioned in the common chapter \todo{insert reference to common chapter} the
 	\item Zebra - Sequence of pictograms
 \end{itemize}
 
-The top level architecture for Giraf is depicted in \autoref{fig:top_level}. The Admin group's desktop interface is connected via Internet to the central database. This enables guardians to manage the various children in the database. The Local database is installed on the tablet along with the various applications. The applications save their settings on the local database, this enables efficient use of the tablet without an Internet connection. If the tablet has a wireless Internet connection it is able to synchronize the local database with the central database thus saving the settings across the entire Giraf application. 
+The top level architecture for GIRAF is depicted in \autoref{fig:top_level}. The Admin group's desktop interface is connected via Internet to the central database. This enables guardians to manage the various children in the database. The Local database is installed on the tablet along with the various applications. The applications save their settings on the local database, this enables efficient use of the tablet without an Internet connection. If the tablet has a wireless Internet connection it is able to synchronize the local database with the central database thus saving the settings across the entire GIRAF application. 
 
 \begin{figure}[htpb]
 \includegraphics[width=\textwidth]{img/top_level.pdf}
+\caption{Top level view of GIRAF}
 \label{fig:top_level}
-\caption{Top level view of Giraf}
 \end{figure}
 
-The applications installed on the tablet are divided into two categories namely games and tools, respectively. The tools provide Giraf with core functionality such as allowing guardians to take pictures with the tablet's onboard camera and add the new picture to one or several children's personal image galleries. They also provide the ability to use pictograms across all applications on the tablet. The games provide some fun learning aids e.g. where the children can learn to control their voice within a game. 
+The applications installed on the tablet are divided into two categories namely games and tools, respectively. The tools provide GIRAF with core functionality such as allowing guardians to take pictures with the tablet's onboard camera and add the new picture to one or several children's personal image galleries. They also provide the ability to use pictograms across all applications on the tablet. The games provide some fun learning aids e.g. where the children can learn to control their voice within a game. 
 
 \begin{figure}[htpb]
-\includegraphics[width=0.8\textwidth]{img/tablet_level.pdf}
+\begin{center}
+\includegraphics[width=0.5\textwidth]{img/tablet_level.pdf}
+\caption{Tablet level view of GIRAF}
 \label{fig:tablet_level}
-\caption{Tablet level view of Giraf}
+\end{center}
 \end{figure}

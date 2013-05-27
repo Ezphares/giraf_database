@@ -1,1 +1,24 @@
-\section{Synchronization}
+\section{Synchronization Design}
+The purpose of the synchronization is to create a local database on an Android device that can be kept in synchronization with the central database. The idea behind the synchronization is that many different Android devices should be able to access information about the same users. For this to work correctly, the data on different Android devices should be the same, otherwise the concept of a central database that stores all data will be moot. This means that the database on the Android device will include the same exact data that the central database includes, and as such the two databases must have the same tables. In addition to downloading data from the central database, an Android device will be able to create data itself. This data can then be uploaded to the central database to be kept in synchronization with many different devices.
+
+The application that will synchronize the data between Android devices and the central database will run on the Android devices, and will thus be written in Java.
+
+\subsection{Creating a Local Database}
+Before it is possible to save to a local database on an Android device, it must first be created. Android has built-in support for SQLite, which we will use.
+The local database is not created until it is needed. This means that the local database will not be created until the synchronization with the central database is started. The local database is not deleted, however, unless it is actively requested. On subsequent synchronizations there is no need to create the local database again.
+
+\subsection{Uploading \& Downloading Changes}
+Changes made on an Android device should not be deleted when the two databases are synchronized. To avoid it, the changes are first uploaded to the central database, before new data from the central database is downloaded to the Android device. This has the unfortunate side effect that changes made to the central database will be lost. We have decided that changes made on Android devices will always supersede changes made to the central database.
+
+Before we can upload changes made on the Android device, we must first know what changes have been made. To find these changes, a table has been added to the local database that does not exist in the central database. This table contains a timestamp with the time of the most recent synchronization with the central database. An additional attribute is added to all rows in the local database. This attribute also contains a timestamp, but this timestamp is updated when the row is inserted or changed. Every row that has a newer timestamp than the last synchronization, has been changed or added after the last synchronization. These will be uploaded to the central database at the next synchronization. If there are no changes, this step will be skipped.
+
+When synchronizing with the central database, everything will be downloaded to the local database. To do this, each table in the central database will be queried, downloaded and inserted into the corresponding table in the local database with a timestamp added. Every time the databases are synchronized, the entire central database is downloaded and overwrites the local database.
+
+\subsection{Design Limitations}
+Due to design choices in both the central and local database there are multiple limitations of the current design of the synchronization.
+
+One of these limitations is that an update to the central database will be overwritten by an update from an Android device, even if the update to the local database is newer than the update on the Android device. This is a direct consequence of timestamps only being added on the local database. As we do not know when a row has been added or updated in the central database, we have chosen that changes from Android devices supersede changes made to the local database.
+
+Another limitation is that the entire database is downloaded to each individual Android device. In a real world scenario, it would be smarter to limit the download to users and profiles associated with the device and download data for new users as needed. The current solution does not scale very well, and would cause the local database to grow unnecessarily large if the system were to be widely used.
+
+A third limitation is that the local SQLite is unencrypted, and can be accessed by anyone who wishes to. This is of course a security risk if the system were to be used in a production environment, because anyone can get access to sensitive user data and more.

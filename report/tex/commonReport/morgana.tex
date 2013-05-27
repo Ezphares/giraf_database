@@ -1,0 +1,9 @@
+\subsection{Morgana}
+\label{sub:morgana:intro}
+Development on the Morgana library started very late in the project, about a week before final code freeze.
+
+Initially the goal of Morgana was to make it possible for all the \ac{giraf} applications to use both the Wasteland database (see \secref{sub:wasteland}) and the local Oasis database seamlessly, however this turned out to be a bigger project than was possible to finish in a week, so the focus was shifted to making it parse and write \ac{json} objects for use in calls to the Wasteland database.
+
+The library implements a Java class for each value object documented in the Wasteland \ac{api}, each class parses a \ac{json} object and turns it into an object which can be used by \ac{giraf} applications, it is also able to create \ac{json} objects from the stored Java object.
+
+Since the Wasteland database was not done for the final deadline of the code the Morgana library never made it into any of the \ac{giraf} applications of the 2013 semester, but extending the applications developed in the past with Morgana support should be as easy as writing the \ac{json} objects needed for the correct calls to the database.

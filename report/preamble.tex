@@ -125,3 +125,11 @@
 
 %Ingen indentering
 \setlength{\parindent}{0mm}
+
+%checkmark
+\usepackage{amssymb}% http://ctan.org/pkg/amssymb
+\usepackage{pifont}% http://ctan.org/pkg/pifont
+\newcommand{\cmark}{\ding{51}}%
+\newcommand{\xmark}{\ding{55}}%
+
+\newcommand{\secref}[1]{Section \ref{#1}}

@@ -1,1 +1,25 @@
 \section{Future Work}
+
+\subsection{Known Bugs}
+\begin{itemize}
+\item On some update calls the server returns an OK, but no SQL is executed.
+\item If a user can access several profiles there is no way to see which settings belong to which profile for any given application.
+\item SQL errors can crash the server.
+\item There is no way to make a user department administrator without directly accessing the database.
+\item There are no SQL transactions in the \ac{api} which means race conditions are a risk. 
+\end{itemize}
+
+\subsection{New Functionality}
+\begin{itemize}
+\item The buffer sizes should be increased to handle larger files.
+\item Encryption and hashing should be added to the database and the connections.
+\item It should be possible to create a copy of a pictogram if an update is made to one that has multiple links.
+\item The public setting on pictograms should actually do something useful.
+\item The synchronization should be updated to have support for selective download from the database.
+\item A library for Android applications should be made to allow them to access the local database.
+\item The local database should not be allowed to exceed a certain size.
+\item Synchronization should be automatic instead of manual.
+\item A thread pool should be implemented to prevent thread overflow on the central server.
+\item Database information should not be hardcoded.
+\item Sessions should be implemented.
+\end{itemize}
