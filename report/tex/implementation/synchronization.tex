@@ -1,0 +1,32 @@
+\section{Synchronization}
+The synchronization between the central database and a local database on an Android device is handled by the Puddle application. This application runs on the Android device, and is programmed in Java.
+
+\subsection{Connection}
+The connection from Puddle to the central database is handled by MySQL Connector/J. Connector/J will given an IP address, user name and password connect to a remote MySQL database. From there it is possible to send SQL queries to manipulate the MySQL database.
+
+\subsection{SQLite Database}
+The local database in Puddle is handled by the Database class. The Database class includes functions for creating the database, inserting and retrieving updated rows.
+
+Creation of the SQLite is done by the DbHelper class seen in \autoref{lst:dbhelper}, an extension of the SQLiteOpenHelper, which is an Android helper class designed to manage database creation and version management. Line 2 specifies the name of the final database file and line 3 specifies the version number of the database.
+onCreate functions in Android run when the class activity is first started. Lines 11-23 run when the database is first accessed. The createUser string on line 13 creates an SQL statement that is executed on line 23. The example in \autoref{lst:dbhelper} creates the user table in the database, each individual table has an SQL statement created by the DbHelper.
+
+\lstinputlisting[label=lst:dbhelper, caption=Creating the SQLite database, language=java]{lst/DbHelper.java}
+
+\subsection{Downloading the central database}
+When pressing the synchronize button in Puddle, two things happen, the classes UploadTask and DownloadTask are called. DownloadTask connects to the central database, gets all data and inserts it into the local database. The DownloadTask is an extension of the Android class AsyncTask. AsyncTask creates a separate thread for DownloadTask because access to network and databases is not allowed on the UI thread in Android.
+\autoref{lst:downloadtask} shows the download from the central database. Line 1 and 2 sets up a new connection to the database. Line 4 inserts a timestamp to the table last\_sync in the database, this timestamp is also added to every row inserted from the central database, to be able to upload new rows when the databases are synchronized again. Line 6 selects all rows from the user table in the central database. The while loop on lines 8-14 selects a single row and passes it to the corresponding insert function in the Database class.
+
+\lstinputlisting[label=lst:downloadtask, caption=Connecting to and downloading from the central database, language=java]{lst/DownloadTask.java}
+
+\autoref{lst:insert} shows the insertion of data into the local database. Line 4 requests write access to the database, line 6 creates an SQL statement that is executed on line 9.
+
+\lstinputlisting[label=lst:insert, caption=Inserting in the database, language=java]{lst/insert.java}
+
+\subsection{Uploading updates to the central database}
+As with the DownloadTask, the UploadTask in \autoref{lst:uploadtask} begins by connecting to the central database on line 1 and 2. Line 6 gets updated rows from the getUpdatedUser function shown in \autoref{lst:update.java}. The while loop on lines 7-19 prepares each updated row by creating an SQL query. Every SQL query is executed on line 21, when all updates have been found.
+
+\lstinputlisting[label=lst:uploadtask, caption=Uploading changes to the central database, language=java]{lst/UploadTask.java}
+
+getUpdatedUser in \autoref{lst:update} first requests read access to the database on line 2. it then selects the timestamp of the last synchronization from the table last\_sync on line 4-11. On line 15 every row that has a newer timestamp than the last synchronization is selected and is returned to the UploadTask on line 17. As with most functionality in Puddle, each table in the database has its own getUpdated function.
+
+\lstinputlisting[label=lst:update, caption=Retrieving updated rows, language=java]{lst/update.java}

@@ -33,7 +33,7 @@ int Listener::start(unsigned int port)
 	_server_address.sin_addr.s_addr = INADDR_ANY;
 
 	// Start listening. NOTE: This may fail if another listener was recently closed
-	// on this socket, as TCP sockets may be kept alive for up to 4 minutes.
+	// on this socket, as TCP sockets may be kept alive for a few minutes.
 	if (bind(_socket_fd, (struct sockaddr *)&_server_address, sizeof(_server_address)) < 0)
 	{
 		fprintf(stderr, "ERROR: Unable to bind port\n");

@@ -1,0 +1,14 @@
+\section{Acceptance Test}
+For acceptance testing we employed the other groups in the multiproject, specifically the group working on the admin tool. They used the API and reported back with errors and functionality that they either had trouble understanding or that didn't do what it was supposed to do. 
+
+Throughout their use they reported back through e-mail, phone and written notes, and here is a list of some of the bugs and improvements suggested by them:
+
+\begin{itemize}
+\item In the documentation, it should be clarified that files should be base 64 encoded to prevent escaping errors.
+\item The current file-size limit of 2048 bytes is too small to handle 400x400 pixel JPEG-files, as expected. They compiled the source code tested it on a local machine with a 2MB file-size limit, which worked. 
+\item There were problems with large files, but files of size 12.5kB and under worked.
+\item There is currently no way to see a child's guardians without logging in.
+\item Currently some create calls return a profile object error where other errors should be returned.
+\end{itemize}
+
+Overall, the API in its current non-production form, fulfilled their basic needs and expectations after reviewing the design and documentation.

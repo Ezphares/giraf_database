@@ -1,0 +1,46 @@
+\section{Installation Instructions}
+This should be installed on a machine running a Linux OS.
+
+\subsection{Prerequisites for the installation}
+\begin{itemize}
+\item MySQL Connector/C
+\begin{itemize}
+	\item Download from \cite{mysqlconnector}
+	\item Place headers in usr/local/include
+	\item Place libs (libmysql.so etc) in usr/local/lib
+\end{itemize}
+\item JsonCPP
+\begin{itemize}
+	\item Install instructions found at \citep{jsoncppinstall}
+	\item Place headers in usr/local/include
+	\item Place libs (renamed to libjson.so, libjson.a) in usr/local/include
+\end{itemize}
+\item Add line /usr/local/lib to etc/ld.so.conf and run \lstinline|sudo ldconfig|
+\item Unit tests require BOOST to be installed.\citep{boostinstall}
+\end{itemize}
+
+\subsection{Building the Program}
+\begin{itemize}
+\item cd to \lstinline|source/server|
+\item run \lstinline|make all|
+\item run \lstinline|./serverapp|
+\end{itemize}
+The server is now running. Type \lstinline|stop| to exit.
+
+\subsection{Running Unit Tests}
+\begin{itemize}
+\item cd to \lstinline|source/server|
+\item run \lstinline|make test|
+\item run \lstinline|./test_connection|, \lstinline|./test_database| or 
+\lstinline|./test_api|.
+\end{itemize}
+Database unit test requires a database called \lstinline|giraf| accessible by user \lstinline|giraf@localhost| identified by \lstinline|123456|.
+
+Connection unit test requires right to open listening sockets and ports \lstinline|1238| and \lstinline|1239| to be free.
+
+\subsection{License}
+The report content is freely available, but publication (with source), only after agreement with the authors.
+
+GIRAF Database's source code is released under the GPLv3 \cite{GNUlicense} open source license. This means that you are free to inspect the source code at any time or contribute to the project yourself.
+
+\subsection*{Online Availability} The installation guide can also be found online \cite{install}.
