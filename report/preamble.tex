@@ -124,3 +124,22 @@
 
 %Ingen indentering
 \setlength{\parindent}{0mm}
+
+%checkmark
+\usepackage{amssymb}% http://ctan.org/pkg/amssymb
+\usepackage{pifont}% http://ctan.org/pkg/pifont
+\newcommand{\cmark}{\ding{51}}%
+\newcommand{\xmark}{\ding{55}}%
+
+%common report acronyms
+\acrodef{api}[API]{Application Programming Interface}
+\acrodef{cat}[CAT]{Category Administration Tool}
+\acrodef{lamp}[LAMP]{Linux, Apache2, MySql and PHP}
+\acrodef{giraf}[GIRAF]{Graphical Interface Resources for Autistic Folk}
+\acrodef{oha}[OHA]{Open Handset Alliance}
+\acrodef{gui}[GUI]{Graphical User Interface}
+\acrodef{json}[JSON]{JavaScript Object Notation}
+\acrodef{foss}[FOSS]{Free and Open-Source Software}
+
+\newcommand{\secref}[1]{Section \ref{#1}}
+
