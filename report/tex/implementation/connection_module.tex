@@ -1,3 +1,56 @@
 \section{Connection Module}
-The connection module is implemented with two structs, \lstinline|ServerInfo| and \lstinline|ClientInfo|, which handle information about the server and client and are used for thread parameters, and two public functions \lstinline|run_server| and \lstinline|stop_server| which handle starting and stopping the server.
+
+The connection module is implemented using the linux sockets and POSIX thread libraries. The two classes in the module, Connection and Listener, are mostly wrappers around socket functions,
+with various error handling and other convenience added. The framework deal with setting up threads. Some of this functionality will be described in this section.
+
+\subsection{The Connection Class}
+
+The Connection class, as mentioned in \autoref{cha:design} represents a TCP connection, either outgoing or incoming. As such it is implemented with two constructors,
+one taking no arguments which will initialize the instance so that it is ready to connect to a given host, as well as a constructor used by the Listener class that initializes the instance
+with the information needed to communicate with a client accepted by the Listener.
+
+The class exposes three functions which are just wrappers around the linux socket code, but includes error handling, namely \lstinline|connect_to_host|, \lstinline|send| and \lstinline|disconnect|. The function for receiving,
+as seen in \autoref{lst:connection_receive} is a bit more involved.
+
+After the initial setup, it blocks at line 14 with a call to poll until data is available. When data becomes available,
+it will enter a loop which reads from the socket into a buffer, and places the contents of this buffer in a stringstream, a standard c++ class for building strings a section at a time.
+After reading it will check if more data is available from the socket, this time with a 100 millisecond time out, at line 31. It will continue reading until this poll times out. The reason
+that it is necessary to read the data this way, is the use of TCP. TCP is a stream socket, which means that it guarantees the arrival of data, but not that all data arrives at the same time.
+For this application, however, it is useless to have only part of a message, since a partial \ac{json} object can not be decoded, so the function reads until it is reasonably sure all data
+has been received. In a production environment, the timeout may need to be increased.
+
+\lstinputlisting[label=lst:connection_receive,caption=Connection::Receive,language=c++]{lst/connection_receive.cpp}
+
+\subsection{The Listener Class}
+
+The Listener class is used to wait for clients and make sure that said clients can be handled by the application. It exposes three functions \lstinline|start|, \lstinline|stop| and \lstinline|accept_client|.
+Each of these functions are direct wrappers of linux sockets, except for the fact that \lstinline|accept_client| automatically creates an instance of the Connection class to communicate with
+the client.
+
+\subsection{The Framework Functions}
+
+The main functionality of the framework is found in the public function \lstinline|run_server|, as well as two functions that are not callable from outside the module:
+\lstinline|server_runner| and \lstinline|client_runner|, which serve as entry points for the different threads that will be started during execution.
+It is important to distinguish between the functions \lstinline|run_server| and \lstinline|server_runner|, and the similar names are a minor problem,
+considering that only \lstinline|run_server| is visible at all outside the module.
+
+\subsubsection{Run Server}
+The \lstinline|run_server| function, seen in \autoref{lst:framework_run_server} starts by setting up a \lstinline|ServerInfo| structure for the server. This structure contains several
+pieces of information that is useful for the framework to operate the server, and obtained at different points:
+\begin{itemize}
+\item The port the \lstinline|Listener| should use. Provided as parameter to \lstinline|run_server|.
+\item The callback to run when a client connects. Provided as a parameter to \lstinline|run_server|.
+\item The thread the listener is allowed to block. Created in \lstinline|run_server| on line 12.
+\item A mutex for controlling when \lstinline|run_server| returns to the caller. Created in \lstinline|run_server| on line 4.
+\item A pointer to the \lstinline|Listener| instance for the server. Created in \lstinline|server_runner|, explained later in the section.
+\item The error or success code for starting the \lstinline|Listener|. Set in \lstinline|server_runner|. explained later in the section.
+\item A flag for when to stop the server. Set when \lstinline|stop_server| is called.
+\end{itemize}
+As this is being set up, a thread is started, with the \lstinline|server_runner| as entry point and the \lstinline|ServerInfo| instance as parameter at line 12. After this the function uses a mutex
+to block the calling thread, until the new thread has attempted to start the listener and has the \lstinline|ServerInfo| instance contains information about whether it was successful.
+This is done so the calling thread can check for errors immediately after \lstinline|run_server| returns.
+\lstinputlisting[label=lst:framework_run_server,caption=Framework - run\_server,language=c++]{lst/framework_run_server.cpp}
+
+\subsubsection{Server Runner}
+%TODO
 
