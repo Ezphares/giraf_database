@@ -5,17 +5,17 @@ The synchronization between the central database and a local database on an Andr
 The main activity in Android is the activity that is started when the application is launched. The main activity in Puddle includes the user interface for the application as well as a reference to the database in PuddleApplication.
 
 \subsection{Connection}
-The connection from Puddle to the central database is handled by MySQL Connector/J. Connector/J will given an IP address, user name and password connect to a remote MySQL database. From there it is possible to send SQL queries to manipulate the MySQL database.
+The connection from Puddle to the central database is handled by MySQL Connector/J \cite{mysqlconnectorj}. Connector/J will given an IP address, user name and password connect to a remote MySQL database. From there it is possible to send SQL queries to manipulate the MySQL database.
 
 \subsection{SQLite Database}
 The local database in Puddle is handled by the Database class. The Database class includes functions for creating the database, inserting and retrieving updated rows.
 
-Creation of the SQLite is done by the DbHelper class seen in \autoref{lst:dbhelper}, an extension of the SQLiteOpenHelper, which is an Android helper class designed to manage database creation and version management. Line 2 specifies the name of the final database file and line 3 specifies the version number of the database.
+Creation of the SQLite is done by the DbHelper class seen in \autoref{lst:dbhelper}, an extension of the SQLiteOpenHelper \cite{sqliteopenhelper}, which is an Android helper class designed to manage database creation and version management. Line 2 specifies the name of the final database file and line 3 specifies the version number of the database.
 onCreate functions in Android run when the class activity is first started. Lines 11-23 run when the database is first accessed. The createUser string on line 13 creates an SQL statement that is executed on line 23. The example in \autoref{lst:dbhelper} creates the user table in the database, each individual table has an SQL statement created by the DbHelper.
 
 \lstinputlisting[label=lst:dbhelper, caption=Creating the SQLite database, language=java]{lst/DbHelper.java}
 
-An activity in Android is only running when it is active. This means that the handling of the database cannot be done by an activity, as the database calls are made from an AsyncTask and not an activity. To be able to access the database from any class in the program, an application must be created. The class PuddleApplication extends the Android class Application. An Application in Android is running the entire time the Android application is active. PuddleApplication seen in \autoref{lst:puddleapplication} handles the creation and references to the database class.
+An activity in Android is only running when it is active. This means that the handling of the database cannot be done by an activity, as the database calls are made from an AsyncTask \cite{asynctask} and not an activity. To be able to access the database from any class in the program, an application must be created. The class PuddleApplication extends the Android class Application. An Application in Android is running the entire time the Android application is active. PuddleApplication seen in \autoref{lst:puddleapplication} handles the creation and references to the database class.
 
 \lstinputlisting[label=lst:puddleapplication, caption=Creation of Database in PuddleApplication, language=java]{lst/PuddleApplication.java}
 
@@ -30,7 +30,7 @@ When pressing the synchronize button in Puddle, two things happen, the classes U
 \lstinputlisting[label=lst:insert, caption=Inserting in the database, language=java]{lst/insert.java}
 
 \subsection{Uploading Updates to the Central Database}
-As with the DownloadTask, the UploadTask in \autoref{lst:uploadtask} begins by connecting to the central database on line 1 and 2. Line 6 gets updated rows from the getUpdatedUser function shown in \autoref{lst:update.java}. The while loop on lines 7-19 prepares each updated row by creating an SQL query. Every SQL query is executed on line 21, when all updates have been found.
+As with the DownloadTask, the UploadTask in \autoref{lst:uploadtask} begins by connecting to the central database on line 1 and 2. Line 6 gets updated rows from the getUpdatedUser function shown in \autoref{lst:update}. The while loop on lines 7-19 prepares each updated row by creating an SQL query. Every SQL query is executed on line 21, when all updates have been found.
 
 \lstinputlisting[label=lst:uploadtask, caption=Uploading changes to the central database, language=java]{lst/UploadTask.java}
 
