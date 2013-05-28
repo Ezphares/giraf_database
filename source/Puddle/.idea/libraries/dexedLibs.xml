@@ -1,0 +1,29 @@
+<component name="libraryTable">
+  <library name="dexedLibs">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/bin/dexedLibs/qc_dbsync-53039d038d9c307b1ff44d2c54a54c6b.jar!/" />
+      <root url="jar://$PROJECT_DIR$/bin/dexedLibs/mysql-connector-java-aeb04cbd1179da271edda5d8cf815db2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/bin/dexedLibs/qc_dbsync-bb743f170bf40adf06ae1d32cbd4644f.jar!/" />
+      <root url="jar://$PROJECT_DIR$/bin/dexedLibs/android-support-v4-2a3eb82b11ef02159a17d5e11c20bf7d.jar!/" />
+      <root url="jar://$PROJECT_DIR$/bin/dexedLibs/qcdbaccess-870a07f380ad0c7d3ddc35f76bf4f86c.jar!/" />
+      <root url="jar://$PROJECT_DIR$/bin/dexedLibs/qc_json-27a6ba4a16414706e3b0bd31bb07e724.jar!/" />
+      <root url="jar://$PROJECT_DIR$/bin/dexedLibs/android-support-v4-51c6deaf2161104ae5651297f2559974.jar!/" />
+      <root url="jar://$PROJECT_DIR$/bin/dexedLibs/qcdbaccess-ab4042aafe911fb68762b47db5e1fab5.jar!/" />
+      <root url="jar://$PROJECT_DIR$/bin/dexedLibs/qc_json-44341a8e898fd55acfdd5aee29276a76.jar!/" />
+      <root url="jar://$PROJECT_DIR$/bin/dexedLibs/qcdbsync-8dc6ef1272c64950a9b2b601a81bbfcf.jar!/" />
+      <root url="jar://$PROJECT_DIR$/bin/dexedLibs/mysql-connector-java-3.0.17-ga-bin-8f46012779c90ccb1b062f1ca4c8d76e.jar!/" />
+      <root url="jar://$PROJECT_DIR$/bin/dexedLibs/qcjson-279aba74b38d5f8191995ef0b2f8036c.jar!/" />
+      <root url="jar://$PROJECT_DIR$/bin/dexedLibs/qcdbsync-88535745e3aead198e5d1317dbd8cf88.jar!/" />
+      <root url="jar://$PROJECT_DIR$/bin/dexedLibs/qc-6eda0ae7d8b0383603379f6fea9ecc78.jar!/" />
+      <root url="jar://$PROJECT_DIR$/bin/dexedLibs/qcjson-a6c6813c1d1127cdfeb84280bd64528e.jar!/" />
+      <root url="jar://$PROJECT_DIR$/bin/dexedLibs/qc_dbaccess-a0e366697d3014e5ca8c23322006187b.jar!/" />
+      <root url="jar://$PROJECT_DIR$/bin/dexedLibs/android-support-v4-48a60fff4a35d4aa054c9d3c3f1cc552.jar!/" />
+      <root url="jar://$PROJECT_DIR$/bin/dexedLibs/qc_dbaccess-7a501a31c3f76333218adef2a1615d5a.jar!/" />
+      <root url="jar://$PROJECT_DIR$/bin/dexedLibs/mysql-connector-java-3.0.17-ga-bin-68f70839ae1ce378cee6dff8d1e47bd6.jar!/" />
+      <root url="jar://$PROJECT_DIR$/bin/dexedLibs/android-support-v4-56aaad67e5a0373b943f4ad4c30eef98.jar!/" />
+      <root url="jar://$PROJECT_DIR$/bin/dexedLibs/android-support-v4-5df2932dfd5984268492bf853b3ed24f.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
