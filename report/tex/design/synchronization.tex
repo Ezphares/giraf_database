@@ -17,7 +17,7 @@ When synchronizing with the central database, everything will be downloaded to t
 \subsection{Design Limitations}
 Due to design choices in both the central and local database there are multiple limitations of the current design of the synchronization.
 
-One of these limitations is that an update to the central database will be overwritten by an update from an Android device, even if the update to the local database is newer than the update on the Android device. This is a direct consequence of timestamps only being added on the local database. As we do not know when a row has been added or updated in the central database, we have chosen that changes from Android devices supersede changes made to the local database.
+One of these limitations is that an update to the central database will be overwritten by an update from an Android device, even if the update to the central database is newer than the update on the Android device. This is a direct consequence of timestamps only being added on the local database. As we do not know when a row has been added or updated in the central database, we have chosen that changes from Android devices supersede changes made to the local database.
 
 Another limitation is that the entire database is downloaded to each individual Android device. In a real world scenario, it would be smarter to limit the download to users and profiles associated with the device and download data for new users as needed. The current solution does not scale very well, and would cause the local database to grow unnecessarily large if the system were to be widely used.
 
