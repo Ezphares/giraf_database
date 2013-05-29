@@ -3,7 +3,10 @@ package dk.aau.cs.giraf.puddle;
 import android.app.Application;
 import android.util.Log;
 
+<<<<<<< HEAD
 /** Application makes sure that the database is accessible the entire time the application is running. */
+=======
+>>>>>>> dev
 public class PuddleApplication extends Application{
 	
 	private static final String TAG = "PuddleApplication";

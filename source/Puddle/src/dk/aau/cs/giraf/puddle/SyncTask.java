@@ -12,6 +12,11 @@ public class SyncTask extends AsyncTask{
 
         new UploadTask().execute();
         new DownloadTask().execute();
+<<<<<<< HEAD
+=======
+
+        // TODO Auto-generated method stub
+>>>>>>> dev
         return null;
     }
 
