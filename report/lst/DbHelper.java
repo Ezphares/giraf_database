@@ -16,7 +16,7 @@ private class DbHelper extends SQLiteOpenHelper {
                 "username       VARCHAR(64)     NOT NULL    UNIQUE," +
                 "password       VARCHAR(256)    NULL," +
                 "certificate    VARCHAR(512)    NULL        UNIQUE," +
-                "last_sync  INT(14)," +
+                "timestamp  INT(14)," +
                 "PRIMARY KEY (id)" +
                 ");");
 
