@@ -22,178 +22,178 @@ public class Database {
     }
 
     /** Insert functions inserts data into the tables in the local database */
-    public void insertUser(String id, String username, String password, String certificate, String lastSync){
-        Log.i(TAG, "Inserting user " + id + " " + username + " " + password + " " + certificate + " " + lastSync);
+    public void insertUser(String id, String username, String password, String certificate, String timestamp){
+        Log.i(TAG, "Inserting user " + id + " " + username + " " + password + " " + certificate + " " + timestamp);
 
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
-        String sql = "INSERT OR REPLACE INTO user (id, username, password, certificate, modified) " +
-                "VALUES ('" + id + "', '" + username + "', '" + password + "', '" + certificate + "', '" + lastSync + "')";
+        String sql = "INSERT OR REPLACE INTO user (id, username, password, certificate, timestamp) " +
+                "VALUES ('" + id + "', '" + username + "', '" + password + "', '" + certificate + "', '" + timestamp + "')";
 
         db.execSQL(sql);
     }
 
-    public void insertDepartment(String id, String name, String address, String phone, String email, String superDepartmentId, String author, String lastSync){
-        Log.i(TAG, "Inserting department " + id + " " + name + " " + address + " " + phone + " " + email + " " + superDepartmentId + " " + author + " " + lastSync);
+    public void insertDepartment(String id, String name, String address, String phone, String email, String superDepartmentId, String author, String timestamp){
+        Log.i(TAG, "Inserting department " + id + " " + name + " " + address + " " + phone + " " + email + " " + superDepartmentId + " " + author + " " + timestamp);
 
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
-        String sql = "INSERT OR REPLACE INTO department (id, name, address, phone, email, super_department_id, author, modified) " +
-                "VALUES ('" + id + "', '" + name + "', '" + address + "', '" + phone + "', '" + email + "', '" + superDepartmentId + "', '" + author + "', '" + lastSync + "')";
+        String sql = "INSERT OR REPLACE INTO department (id, name, address, phone, email, super_department_id, author, timestamp) " +
+                "VALUES ('" + id + "', '" + name + "', '" + address + "', '" + phone + "', '" + email + "', '" + superDepartmentId + "', '" + author + "', '" + timestamp + "')";
 
         db.execSQL(sql);
     }
 
-    public void insertProfile(String id, String name, String phone, String picture, String email, String role, String address, String settings, String userId, String departmentId, String author, String lastSync){
-        Log.i(TAG, "Inserting profile " + id + " " + name + " " + phone + " " + picture + " " + email + " " + role + " " + address + " " + settings + " " + userId + " " + departmentId + " " + author + " " + lastSync);
+    public void insertProfile(String id, String name, String phone, String picture, String email, String role, String address, String settings, String userId, String departmentId, String author, String timestamp){
+        Log.i(TAG, "Inserting profile " + id + " " + name + " " + phone + " " + picture + " " + email + " " + role + " " + address + " " + settings + " " + userId + " " + departmentId + " " + author + " " + timestamp);
 
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
-        String sql = "INSERT OR REPLACE INTO profile (id, name, address, phone, email, super_department_id, author, modified) " +
-                "VALUES ('" + id + "', '" + name + "', '" + phone + "', '" + picture + "', '" + email + "', '" + role + "', '" + address + "', '" + settings + "', '" + userId + "', '" + departmentId + "', '" + author + "', '" + lastSync + "')";
+        String sql = "INSERT OR REPLACE INTO profile (id, name, phone, picture, email, role, address, settings, user_id, department_id, author, timestamp) " +
+                "VALUES ('" + id + "', '" + name + "', '" + phone + "', '" + picture + "', '" + email + "', '" + role + "', '" + address + "', '" + settings + "', '" + userId + "', '" + departmentId + "', '" + author + "', '" + timestamp + "')";
 
         db.execSQL(sql);
     }
 
-    public void insertPictogram(String id, String name, String _public, String imageData, String soundData, String inlineText, String author, String lastSync){
-        Log.i(TAG, "Inserting pictogram " + id + " " + name + " " + imageData + " " + soundData + " " + inlineText + " " + author + " " + lastSync);
+    public void insertPictogram(String id, String name, String _public, String imageData, String soundData, String inlineText, String author, String timestamp){
+        Log.i(TAG, "Inserting pictogram " + id + " " + name + " " + imageData + " " + soundData + " " + inlineText + " " + author + " " + timestamp);
 
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
-        String sql = "INSERT OR REPLACE INTO pictogram (id, name, public, phone, email, super_department_id, author, modified) " +
-                "VALUES ('" + id + "', '" + name + "', '" + _public + "', '" + imageData + "', '" + soundData + "', '" + inlineText + "', '" + author + "', '" + lastSync + "')";
+        String sql = "INSERT OR REPLACE INTO pictogram (id, name, public, image_data, sound_data, inline_text, author, timestamp) " +
+                "VALUES ('" + id + "', '" + name + "', '" + _public + "', '" + imageData + "', '" + soundData + "', '" + inlineText + "', '" + author + "', '" + timestamp + "')";
 
         db.execSQL(sql);
     }
 
-    public void insertTag(String id, String name, String lastSync){
-        Log.i(TAG, "Inserting tag " + id + " " + name + " " + lastSync);
+    public void insertTag(String id, String name, String timestamp){
+        Log.i(TAG, "Inserting tag " + id + " " + name + " " + timestamp);
 
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
-        String sql = "INSERT OR REPLACE INTO tag (id, name, modified) " +
-                "VALUES ('" + id + "', '" + name + "', '" + lastSync + "')";
+        String sql = "INSERT OR REPLACE INTO tag (id, name, timestamp) " +
+                "VALUES ('" + id + "', '" + name + "', '" + timestamp + "')";
 
         db.execSQL(sql);
     }
 
-    public void insertCategory(String id, String name, String colour, String icon, String superCategoryId, String lastSync){
-        Log.i(TAG, "Inserting category " + id + " " + name + " " + icon + " " + superCategoryId + " " + lastSync);
+    public void insertCategory(String id, String name, String colour, String icon, String superCategoryId, String timestamp){
+        Log.i(TAG, "Inserting category " + id + " " + name + " " + icon + " " + superCategoryId + " " + timestamp);
 
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
-        String sql = "INSERT OR REPLACE INTO category (id, name, colour, icon, super_category_id, modified) " +
-                "VALUES ('" + id + "', '" + name + "', '" + colour + "', '" + icon + "', '" + superCategoryId + "', '" + lastSync + "')";
+        String sql = "INSERT OR REPLACE INTO category (id, name, colour, icon, super_category_id, timestamp) " +
+                "VALUES ('" + id + "', '" + name + "', '" + colour + "', '" + icon + "', '" + superCategoryId + "', '" + timestamp + "')";
 
             db.execSQL(sql);
     }
 
-    public void insertApplication(String id, String name, String version, String icon, String _package, String activity, String description, String author, String lastSync){
-        Log.i(TAG, "Inserting departments " + id + " " + name + " " + version + " " + icon + " " + _package + " " + activity + " " + description + " " + author + " " + lastSync);
+    public void insertApplication(String id, String name, String version, String icon, String _package, String activity, String description, String author, String timestamp){
+        Log.i(TAG, "Inserting departments " + id + " " + name + " " + version + " " + icon + " " + _package + " " + activity + " " + description + " " + author + " " + timestamp);
 
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
-        String sql = "INSERT OR REPLACE INTO application (id, name, version, icon, package, activity, description, author, modified) " +
-                "VALUES ('" + id + "', '" + name + "', '" + version + "', '" + icon + "', '" + _package + "', '" + activity + "', '" + description + "', '" + author + "', '" + lastSync + "')";
+        String sql = "INSERT OR REPLACE INTO application (id, name, version, icon, package, activity, description, author, timestamp) " +
+                "VALUES ('" + id + "', '" + name + "', '" + version + "', '" + icon + "', '" + _package + "', '" + activity + "', '" + description + "', '" + author + "', '" + timestamp + "')";
 
         db.execSQL(sql);
     }
 
-    public void insertAdminOf(String userId, String departmentId, String lastSync){
-        Log.i(TAG, "Inserting admin_of " + userId + " " + departmentId + " " + lastSync);
+    public void insertAdminOf(String userId, String departmentId, String timestamp){
+        Log.i(TAG, "Inserting admin_of " + userId + " " + departmentId + " " + timestamp);
 
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
-        String sql = "INSERT OR REPLACE INTO admin_of (user_id, department_id, modified) " +
-                "VALUES ('" + userId + "', '" + departmentId + "', '" + lastSync + "')";
+        String sql = "INSERT OR REPLACE INTO admin_of (user_id, department_id, timestamp) " +
+                "VALUES ('" + userId + "', '" + departmentId + "', '" + timestamp + "')";
 
         db.execSQL(sql);
     }
 
-    public void insertDepartmentPictogram(String departmentId, String pictogramId, String lastSync){
-        Log.i(TAG, "Inserting department_pictogram " + departmentId + " " + pictogramId + " " + lastSync);
+    public void insertDepartmentPictogram(String departmentId, String pictogramId, String timestamp){
+        Log.i(TAG, "Inserting department_pictogram " + departmentId + " " + pictogramId + " " + timestamp);
 
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
-        String sql = "INSERT OR REPLACE INTO department_pictogram (department_id, pictogram_id, modified) " +
-                "VALUES ('" + departmentId + "', '" + pictogramId + "', '" + lastSync + "')";
+        String sql = "INSERT OR REPLACE INTO department_pictogram (department_id, pictogram_id, timestamp) " +
+                "VALUES ('" + departmentId + "', '" + pictogramId + "', '" + timestamp + "')";
 
         db.execSQL(sql);
     }
 
-    public void insertProfilePictogram(String profileId, String pictogramId, String lastSync){
-        Log.i(TAG, "Inserting profile_pictogram " + profileId + " " + pictogramId + " " + lastSync);
+    public void insertProfilePictogram(String profileId, String pictogramId, String timestamp){
+        Log.i(TAG, "Inserting profile_pictogram " + profileId + " " + pictogramId + " " + timestamp);
 
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
-        String sql = "INSERT OR REPLACE INTO profile_pictogram (profile_id, pictogram_id, modified) " +
-                "VALUES ('" + profileId + "', '" + pictogramId + "', '" + lastSync + "')";
+        String sql = "INSERT OR REPLACE INTO profile_pictogram (profile_id, pictogram_id, timestamp) " +
+                "VALUES ('" + profileId + "', '" + pictogramId + "', '" + timestamp + "')";
 
         db.execSQL(sql);
     }
 
-    public void insertDepartmentApplication(String departmentId, String applicationId, String lastSync){
-        Log.i(TAG, "Inserting department_application " + departmentId + " " + applicationId + " " + lastSync);
+    public void insertDepartmentApplication(String departmentId, String applicationId, String timestamp){
+        Log.i(TAG, "Inserting department_application " + departmentId + " " + applicationId + " " + timestamp);
 
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
-        String sql = "INSERT OR REPLACE INTO department_application (department_id, application_id, modified) " +
-                "VALUES ('" + departmentId + "', '" + applicationId + "', '" + lastSync + "')";
+        String sql = "INSERT OR REPLACE INTO department_application (department_id, application_id, timestamp) " +
+                "VALUES ('" + departmentId + "', '" + applicationId + "', '" + timestamp + "')";
 
         db.execSQL(sql);
     }
 
-    public void insertProfileApplication(String profileId, String applicationId, String settings, String lastSync){
-        Log.i(TAG, "Inserting profile_application " + profileId + " " + applicationId + " " + settings + " " + lastSync);
+    public void insertProfileApplication(String profileId, String applicationId, String settings, String timestamp){
+        Log.i(TAG, "Inserting profile_application " + profileId + " " + applicationId + " " + settings + " " + timestamp);
 
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
-        String sql = "INSERT OR REPLACE INTO profile_application (department_id, application_id, settings, modified) " +
-                "VALUES ('" + profileId + "', '" + applicationId + "', '" + settings + "', '" + lastSync + "')";
+        String sql = "INSERT OR REPLACE INTO profile_application (department_id, application_id, settings, timestamp) " +
+                "VALUES ('" + profileId + "', '" + applicationId + "', '" + settings + "', '" + timestamp + "')";
 
         db.execSQL(sql);
     }
 
-    public void insertPictogramTag(String pictogramId, String tagId, String lastSync){
-        Log.i(TAG, "Inserting pictogram_tag " + pictogramId + " " + tagId + " " + lastSync);
+    public void insertPictogramTag(String pictogramId, String tagId, String timestamp){
+        Log.i(TAG, "Inserting pictogram_tag " + pictogramId + " " + tagId + " " + timestamp);
 
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
-        String sql = "INSERT OR REPLACE INTO pictogram_tag (pictogram_id, tag_id, modified) " +
-                "VALUES ('" + pictogramId + "', '" + tagId + "', '" + lastSync + "')";
+        String sql = "INSERT OR REPLACE INTO pictogram_tag (pictogram_id, tag_id, timestamp) " +
+                "VALUES ('" + pictogramId + "', '" + tagId + "', '" + timestamp + "')";
 
         db.execSQL(sql);
     }
 
-    public void insertPictogramCategory(String pictogramId, String categoryId, String lastSync){
-        Log.i(TAG, "Inserting pictogram_category " + pictogramId + " " + categoryId + " " + lastSync);
+    public void insertPictogramCategory(String pictogramId, String categoryId, String timestamp){
+        Log.i(TAG, "Inserting pictogram_category " + pictogramId + " " + categoryId + " " + timestamp);
 
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
-        String sql = "INSERT OR REPLACE INTO pictogram_category (pictogram_id, category_id, modified) " +
-                "VALUES ('" + pictogramId + "', '" + categoryId + "', '" + lastSync + "')";
+        String sql = "INSERT OR REPLACE INTO pictogram_category (pictogram_id, category_id, timestamp) " +
+                "VALUES ('" + pictogramId + "', '" + categoryId + "', '" + timestamp + "')";
 
         db.execSQL(sql);
     }
 
-    public void insertProfileCategory(String profileId, String categoryId, String lastSync){
-        Log.i(TAG, "Inserting profile_category " + profileId + " " + categoryId + " " + lastSync);
+    public void insertProfileCategory(String profileId, String categoryId, String timestamp){
+        Log.i(TAG, "Inserting profile_category " + profileId + " " + categoryId + " " + timestamp);
 
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
-        String sql = "INSERT OR REPLACE INTO profile_category (profile_id, category_id, modified) " +
-                "VALUES ('" + profileId + "', '" + categoryId + "', '" + lastSync + "')";
+        String sql = "INSERT OR REPLACE INTO profile_category (profile_id, category_id, timestamp) " +
+                "VALUES ('" + profileId + "', '" + categoryId + "', '" + timestamp + "')";
 
         db.execSQL(sql);
     }
 
-    public void insertGuardianOf(String guardianId, String childId, String lastSync){
-        Log.i(TAG, "Inserting guardian_of " + guardianId + " " + childId + " " + lastSync);
+    public void insertGuardianOf(String guardianId, String childId, String timestamp){
+        Log.i(TAG, "Inserting guardian_of " + guardianId + " " + childId + " " + timestamp);
 
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
-        String sql = "INSERT OR REPLACE INTO guardian_of (guardian_id, child_id, modified) " +
-                "VALUES ('" + guardianId + "', '" + childId + "', '" + lastSync + "')";
+        String sql = "INSERT OR REPLACE INTO guardian_of (guardian_id, child_id, timestamp) " +
+                "VALUES ('" + guardianId + "', '" + childId + "', '" + timestamp + "')";
 
         db.execSQL(sql);
     }
@@ -222,9 +222,9 @@ public class Database {
             last_sync = cursor.getString(1);
         }
 
-        Log.i("Get Updated User", "Last sync = " + last_sync);
+        Log.i("Get Updated", "Last sync = " + last_sync);
 
-        String sql = "SELECT * FROM " + table + " WHERE modified > " + last_sync + ";";
+        String sql = "SELECT * FROM " + table + " WHERE timestamp > " + last_sync + ";";
 
         return db.rawQuery(sql, null);
     }
@@ -248,7 +248,7 @@ public class Database {
                     "username		VARCHAR(64)		NOT NULL	UNIQUE," +
                     "password		VARCHAR(256)	NULL," +
                     "certificate	VARCHAR(512)	NULL		UNIQUE," +
-                    "modified	    INT(14)," +
+                    "timestamp	    INT(14)," +
                     "PRIMARY KEY (id)" +
                     ");");
 
@@ -261,7 +261,7 @@ public class Database {
                     "email				VARCHAR(64)		NOT NULL," +
                     "super_department_id	INT(11)			NULL," +
                     "author				INT(11)			NULL," +
-                    "modified			INT(14)," +
+                    "timestamp			INT(14)," +
                     "PRIMARY KEY (id)," +
                     "FOREIGN KEY (super_department_id) REFERENCES department (id) ON DELETE SET NULL," +
                     "FOREIGN KEY (author) REFERENCES user (id) ON DELETE SET NULL" +
@@ -280,11 +280,11 @@ public class Database {
                     "user_id			INT(11)			NULL		UNIQUE," +
                     "department_id	INT(11)			NOT NULL," +
                     "author           INT(11)         NULL," +
-                    "modified		INT(14)," +
+                    "timestamp		INT(14)," +
                     "PRIMARY KEY (id)," +
-                    "FOREIGN KEY (user_id) REFERENCES `user` (`id`) ON DELETE SET NULL," +
-                    "FOREIGN KEY (`department_id`) REFERENCES `department` (`id`) ON DELETE CASCADE," +
-                    "FOREIGN KEY (`author`) REFERENCES `profile` (`id`) ON DELETE SET NULL" +
+                    "FOREIGN KEY (user_id) REFERENCES user (id) ON DELETE SET NULL," +
+                    "FOREIGN KEY (department_id) REFERENCES department (id) ON DELETE CASCADE," +
+                    "FOREIGN KEY (author) REFERENCES profile (id) ON DELETE SET NULL" +
                     ");");
 
             String createPictogram = String.format("CREATE TABLE IF NOT EXISTS " +
@@ -296,7 +296,7 @@ public class Database {
                     "sound_data	BLOB			NULL," +
                     "inline_text	VARCHAR(64)		NULL," +
                     "author		INT(11)			NULL," +
-                    "modified	INT(14)," +
+                    "timestamp	INT(14)," +
                     "PRIMARY KEY (id)," +
                     "FOREIGN KEY (author) REFERENCES user (id) ON DELETE SET NULL" +
                     ");");
@@ -305,7 +305,7 @@ public class Database {
                     "tag" +
                     " (id			INT(11)			NOT NULL," +
                     "name			VARCHAR(64)		NOT NULL," +
-                    "modified   	INT(14)," +
+                    "timestamp   	INT(14)," +
                     "PRIMARY KEY (id)" +
                     ");");
 
@@ -316,7 +316,7 @@ public class Database {
                     "colour				VARCHAR(11)		NOT NULL," +
                     "icon					BLOB			NULL," +
                     "super_category_id	INT(11)			NULL," +
-                    "modified			INT(14)," +
+                    "timestamp			INT(14)," +
                     "PRIMARY KEY (id)," +
                     "FOREIGN KEY (super_category_id) REFERENCES category (id)	ON DELETE SET NULL" +
                     ");");
@@ -331,7 +331,7 @@ public class Database {
                     "activity     VARCHAR(64)     NOT NULL," +
                     "description  VARCHAR(1024)   NOT NULL," +
                     "author       INT(11)         NULL," +
-                    "modified    INT(14)," +
+                    "timestamp    INT(14)," +
                     "PRIMARY KEY (id)," +
                     "FOREIGN KEY (author) REFERENCES user (id) ON DELETE SET NULL" +
                     ");");
@@ -340,7 +340,7 @@ public class Database {
                     "admin_of" +
                     " (user_id            INT(11)     NOT NULL," +
                     "department_id        INT(11)     NOT NULL," +
-                    "modified             INT(14)," +
+                    "timestamp             INT(14)," +
                     "PRIMARY KEY (user_id, department_id)," +
                     "FOREIGN KEY (user_id) REFERENCES user (id) ON DELETE CASCADE," +
                     "FOREIGN KEY (department_id) REFERENCES department (id) ON DELETE CASCADE" +
@@ -350,7 +350,7 @@ public class Database {
                     "department_pictogram" +
                     " (department_id      INT(11)     NOT NULL," +
                     "pictogram_id         INT(11)     NOT NULL," +
-                    "modified            INT(14)," +
+                    "timestamp            INT(14)," +
                     "FOREIGN KEY (department_id) REFERENCES department (id) ON DELETE CASCADE," +
                     "FOREIGN KEY (pictogram_id) REFERENCES pictogram (id) ON DELETE CASCADE" +
                     ");");
@@ -359,7 +359,7 @@ public class Database {
                     "profile_pictogram" +
                     " (profile_id     INT(11)     NOT NULL," +
                     "pictogram_id     INT(11)     NOT NULL," +
-                    "modified        INT(14)," +
+                    "timestamp        INT(14)," +
                     "FOREIGN KEY (profile_id) REFERENCES profile (id) ON DELETE CASCADE," +
                     "FOREIGN KEY (pictogram_id) REFERENCES pictogram (id) ON DELETE CASCADE" +
                     ");");
@@ -368,7 +368,7 @@ public class Database {
                     "department_application" +
                     " (department_id      INT(11)     NOT NULL," +
                     "application_id       INT(11)     NOT NULL," +
-                    "modified            INT(14)," +
+                    "timestamp            INT(14)," +
                     "FOREIGN KEY (department_id) REFERENCES department (id) ON DELETE CASCADE," +
                     "FOREIGN KEY (application_id) REFERENCES application (id) ON DELETE CASCADE" +
                     ");");
@@ -378,7 +378,7 @@ public class Database {
                     " (profile_id     INT(11)     NOT NULL," +
                     "application_id   INT(11)     NOT NULL," +
                     "settings         BLOB        NULL," +
-                    "modified        INT(14)," +
+                    "timestamp        INT(14)," +
                     "FOREIGN KEY (profile_id) REFERENCES profile (id) ON DELETE CASCADE," +
                     "FOREIGN KEY (application_id) REFERENCES application (id) ON DELETE CASCADE" +
                     ");");
@@ -387,7 +387,7 @@ public class Database {
                     "pictogram_tag" +
                     " (pictogram_id       INT(11)     NOT NULL," +
                     "tag_id               INT(11)     NOT NULL," +
-                    "modified            INT(14)," +
+                    "timestamp            INT(14)," +
                     "FOREIGN KEY (pictogram_id) REFERENCES pictogram (id) ON DELETE CASCADE," +
                     "FOREIGN KEY (tag_id) REFERENCES tag (id) ON DELETE CASCADE" +
                     ");");
@@ -396,7 +396,7 @@ public class Database {
                     "pictogram_category" +
                     " (pictogram_id      INT(11)     NOT NULL," +
                     "category_id          INT(11)     NOT NULL," +
-                    "modified            INT(14)," +
+                    "timestamp            INT(14)," +
                     "FOREIGN KEY (pictogram_id) REFERENCES pictogram (id) ON DELETE CASCADE," +
                     "FOREIGN KEY (category_id) REFERENCES category (id) ON DELETE CASCADE" +
                     ");");
@@ -405,7 +405,7 @@ public class Database {
                     "profile_category" +
                     " (profile_id     INT(11)     NOT NULL," +
                     "category_id      INT(11)     NOT NULL," +
-                    "modified        INT(14)," +
+                    "timestamp        INT(14)," +
                     "FOREIGN KEY (profile_id) REFERENCES profile (id) ON DELETE CASCADE," +
                     "FOREIGN KEY (category_id) REFERENCES category (id) ON DELETE CASCADE" +
                     ");");
@@ -414,7 +414,7 @@ public class Database {
                     "guardian_of" +
                     " (guardian_id    INT(11)     NOT NULL," +
                     "child_id         INT(11)     NOT NULL," +
-                    "modified        INT(14)," +
+                    "timestamp        INT(14)," +
                     "FOREIGN KEY (guardian_id) REFERENCES profile (id) ON DELETE CASCADE," +
                     "FOREIGN KEY (child_id) REFERENCES profile (id) ON DELETE CASCADE" +
                     ");");

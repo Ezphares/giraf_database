@@ -7,16 +7,14 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 
-import java.sql.PreparedStatement;
-
 public class MainActivity extends Activity {
 
     static Database db = null;
 
     /** URL, username and password for MySQL database. */
-    static String url = "jdbc:mysql://10.0.0.10:3306/giraf";
-    static String user = "admin";
-    static String password = "1234";
+    static String DB_URL = "jdbc:mysql://10.0.0.12:3306/giraf";
+    static String DB_USER = "root";
+    static String DB_PASS = "1234";
 
     /** Called when the activity is first created. */
     @Override
@@ -50,9 +48,13 @@ public class MainActivity extends Activity {
             public void onClick(View v) {
                 Log.i("Insert button", "Hello from insert button");
 
-                String currentTime = String.valueOf(System.currentTimeMillis());
-
-                db.insertUser("2", "Replacing Entry", "APassword", "ACertificate", currentTime);
+                String timestamp = String.valueOf(System.currentTimeMillis());
+                
+                db.insertUser("3", "Tom K", "newpass", "certified yes 1", timestamp);
+                db.insertUser("4", "John N", "password", "cerified yes 2", timestamp);
+                db.insertProfile("4", "Tom K", "78376", null, "anEmail", "1", "AnAddress", null, "4", "1", "1", timestamp);
+                db.insertDepartment("5", "New Department", "Street 3", "636", "test@emailprovider", "1", "1", timestamp);
+                db.insertTag("4", "Test Tags", timestamp);
             }
         };
 

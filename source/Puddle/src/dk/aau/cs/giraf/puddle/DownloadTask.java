@@ -25,7 +25,7 @@ public class DownloadTask extends AsyncTask{
         try {
             Log.i(TAG, "Trying connection");
             Class.forName("com.mysql.jdbc.Driver").newInstance();
-            Connection con = DriverManager.getConnection(MainActivity.url, MainActivity.user, MainActivity.password);
+            Connection con = DriverManager.getConnection(MainActivity.DB_URL, MainActivity.DB_USER, MainActivity.DB_PASS);
             Statement st = con.createStatement();
             db.insertSync(currentTime);
             Log.i(TAG, "Starting download");
