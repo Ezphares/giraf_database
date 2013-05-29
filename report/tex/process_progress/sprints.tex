@@ -1,45 +1,44 @@
 \section{Sprint 1 (Week 10 \& 11)}
-For this sprint our goal was to create a connection library, a database library, a method of authentication and a database schema.
+For this sprint the goal was to create a connection library, a database library, a method of authentication and a database schema. At the end of the sprint the following was achieved:
 
-\textbf{Connection Library} - The connection library is able to receive and send requests between two different computers. We have also written unit tests for this task. The connection library is finished and should compile on Linux.
+\textbf{Connection Library} - The connection library was able to receive and send requests between two different computers. Unit tests were also written for this library. The connection library was finished and compiled on Linux.
 
-\textbf{Database Library} - The basic database library functionality has been completed, and unit tests have been written for this functionality.
+\textbf{Database Library} - The basic database library functionality was completed, and unit tests were written for this functionality.
 
-\textbf{Authentication} - Authentication has been pushed to a later sprint as neither we or the admin group had time to look it over.
+\textbf{Authentication} - Authentication was postponed to a later sprint. 
 
-\textbf{Database Schema} - We have designed a database schema with attributes. It is mostly done, but might have to be extended depending on what features are needed.
-
+\textbf{Database Schema} - A database schema was designed with attributes and constraints. At this point in time the group expected the schema to evolve further as new data needed in the database might be discovered.
 
 \section{Sprint 2 (Week 12 \& 13)}
-The goals for this sprint was to design a database API, set up basic communication between this project and the admin group, and to make a problem statement.
+The goals for this sprint was to design a database \ac{api}, set up basic communication between this project and the Admin group, and to make a problem statement.
 
-This sprint was very short due to a lot of courses and Easter holidays. Because of this, we started to design the database API and wrote a problem statement. Communication has been delayed to a later sprint.
+This sprint was very short due to a lot of courses and Easter holidays. Because of this, communication was postponed to a later sprint. The first draft of an \ac{api} was created.
 
 \section{Sprint 3 (Week 14, 15 \& 16)}
-Goals for this sprint include creating a JSON encoder and decoder, creating an OasisLib dummy, making the database build script and creating API-calls for all reads.
+Goals for this sprint included creating a \ac{json} encoder and decoder, creating an OasisLib dummy, making the database build script and creating \ac{api}-calls for all reads.
 
-\textbf{JSON encoder/decoder} - The JsonCPP library was chosen for this task. It will make it possible for us to receive JSON API-calls and translate them to the C++ that we are using for the database.
+\textbf{\ac{json} encoder/decoder} - The JsonCPP library was chosen for this task. It made it possible for to receive \ac{json} \ac{api}-calls and translate them to C++ data structures used by the server application.
 
-\textbf{OasisLib dummy} - Will make it possible for other groups to bypass the local database (which as of now cannot communicate with the central database), and connect directly to the live central database when making calls to the local database. The idea is that when a local database is functional, other groups can make use of it without changing their programs.
+\textbf{OasisLib dummy} - Made it possible for other groups to bypass the local database (which could not communicate with the central database), and connect directly to the central database when making calls using the \ac{api}. The idea was that when a local database was functional, other groups could make use of it without changing their applications.
 
-During this sprint JSON encoder/decoder, OasisLib dummy and database build script were finished. The API-calls, however, were delayed to sprint 4.
+During this sprint \ac{json} encoder/decoder, OasisLib dummy and database build script were finished. The \ac{api}-calls, however, were delayed to sprint 4.
 
 \section{Sprint 4 (Week 17 \& 18)}
-The goal for this sprint was to finish the API-calls in order to complete the work on the central database. And to set up communication with the Admin group. Work on synchronization was started.
+The goal for this sprint was to finish the \ac{api}-calls in order to complete the work on the central database. And to set up communication with the Admin group. Work on synchronization was started.
 
-Most of the API-calls were not completed in the previous sprint. Apart from some of the read-calls, all the calls still needed to be implemented and tested. 
+Most of the \ac{api}-calls were not completed in the previous sprint. Apart from some of the read-calls, all the calls still needed to be implemented and tested. 
 
-We managed to implement and unit test most of the calls. There were some complications with the Admin group, they crashed the server due to a bug in the code. The synchronization was not done at the end of this sprint, so that and the rest of the calls was postponed to sprint 5.  
+Most of the calls were implemented and unit tested during this sprint. The central server crashed due to bugs in the code and required restarting a few times. The synchronization was not done at the end of this sprint so that, and the rest of the \ac{api}-calls, was postponed to sprint 5.  
 
 \section{Sprint 5 (Week 19)}
-This sprint was intended for debug. We implemented the last API calls and tested them, and got the server running after the crash mentioned in sprint 4. We also encouraged the Admin group to build a local version of our server to ensure that they could continue working if the server crashed.
+This sprint was intended for debug, but due to delays in earlier sprints, the group had to implement the last \ac{api}-calls and test them, and kept the server up and running. The group encouraged the Admin group to build the server on a local machine to ensure that they could continue working if the server crashed.
 
-We finished one-way synchronization between the databases, but work on the testing and the two-way synchronization spilled over into the next sprint.
+One-way synchronization between the central database and a local database was finished during this sprint, but work on the testing and the two-way synchronization spilled over into the next sprint.
 
 \section{Sprint 6 (Week 20, 21 \& 22)}
-The goal for final sprint of the semester was to complete the documentation of the work we had done in the form of a report and to finish up the synchronization.
+The goal for the final sprint of the semester was to complete the documentation of the work done in the form of a report and to finish up the synchronization.
 
-Some of the documentation was written as we went along but most of the report was still not done. 
+Some of the documentation was written along the way but most of the report was still not done. 
 
-In this sprint we managed to complete the documentation and proofread the report and we implemented the final version of our basic two-way synchronization.
+In this sprint the documentation was completed and proofread and the final version of basic two-way synchronization was implemented and tested.
 
