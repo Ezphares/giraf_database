@@ -15,7 +15,7 @@ onCreate functions in Android run when the class activity is first started. Line
 
 \lstinputlisting[label=lst:dbhelper, caption=Creating the SQLite database, language=java]{lst/DbHelper.java}
 
-An activity in Android is only running when it is active. This means that the handling of the database cannot be done by an activity, as the database calls are made from an AsyncTask \cite{asynctask} and not an activity. To be able to access the database from any class in the program, an application must be created. The class PuddleApplication extends the Android class Application. An Application in Android is running the entire time the Android application is active. PuddleApplication seen in \autoref{lst:puddleapplication} handles the creation and references to the database class.
+Android applications consist of activities that run when they are active. These activities can for example be the main screen started when the application or the settings menu. Because database and network calls cannot be made on the UI thread in Android, they need to be made from an AsyncTask \citep{asynctask} and not an activity. The class PuddleApplication extends the Android class Application an will, unlike activities, run the entire time that Puddle is running. PuddleApplication \autoref{lst:puddleapplication} contains an instance of the database created in the Database class, and makes it possible to access the local database from AsyncTasks. To instantiate PuddleApplication, the class has been added to the AndroidManifest.xml <application> tag.
 
 \lstinputlisting[label=lst:puddleapplication, caption=Creation of Database in PuddleApplication, language=java]{lst/PuddleApplication.java}
 
