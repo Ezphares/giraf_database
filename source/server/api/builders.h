@@ -6,7 +6,7 @@
 #include "../database/database.h"
 
 #pragma once
-#define EXTRACT_SIZE 2048
+#define EXTRACT_SIZE 51200
 enum value_type { V_STRING, V_INT, V_BOOL };
 
 typedef void(*fixture)(Json::Value&);
