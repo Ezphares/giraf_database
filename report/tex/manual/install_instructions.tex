@@ -1,7 +1,7 @@
 \section{Installation Instructions}
 
 \subsection{Hardcoded Information}
-It should be noted, that the IP, port and name of the database is hardcoded into the database in the constructor for the \ac{api} class in the serverside code. In the OasisLib dummy the IP and port of the server is hardcoded.
+It should be noted, that the IP, port and name of the database is hardcoded into the database in the constructor for the \ac{api} class in the serverside code. In the OasisLib dummy the IP and port of the server is hardcoded. In Puddle the IP, name of the central database, username and password for the central database, as well as insertion of information when pressing the Insert button are hardcoded. These are all found in the MainActivity.
 
 \subsection{Prerequisites for the serverapp installation}
 The system running the serverside application is expected to run on a Linux system with MySQL installed.
@@ -41,6 +41,16 @@ The server is now running. Type \lstinline|stop| to exit.
 Database unit test requires a database called \lstinline|giraf| accessible by user \lstinline|giraf@localhost| identified by \lstinline|123456|.
 
 Connection unit test requires right to open listening sockets and ports \lstinline|1238| and \lstinline|1239| to be free.
+
+\subsection{Prerequisites for the Puddle Android application}
+\begin{itemize}
+\item Android SDK.
+\item Development IDE. Eclipse has been used, but IntelliJ IDEA and Android Studio should work.
+\item Java Development Kit.
+\end{itemize}
+
+\subsection{Building Puddle Android application}
+Import the project into your IDE, and build it. Importing in Eclipse can be done by pressing File -> Import -> Existing Projects into Workspace -> Select root directory and navigate to the Puddle folder.
 
 \subsection{License}
 The report content is freely available, but publication (with source), only after agreement with the authors.
