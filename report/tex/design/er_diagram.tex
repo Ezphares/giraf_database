@@ -38,6 +38,8 @@ The fact that applications and pictograms can be associated with departments sig
 The pictogram entity contains name, public, image data, sound data and some inline text. 
 Pictograms can be a mixture of image, sound and text. The \emph{public} attribute signifies whether the pictogram is public or restricted to a specific profile or department. 
 
+As of now, the image and sound data are supposed to be stored as blobs in the database, however in a production environment these data should be stored in files on the server and a system for uploading and downloading these should be implemented. This, however, is out of scope for the current project. 
+
 \subsubsection{Categories}
 The pictograms can be arranged into categories each with it's own name, color and icon.
 An example could be pictograms of various food items being put in a category named food, which could have a subcategory called breakfast that could include items such as cereal and orange juice.

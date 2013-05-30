@@ -38,8 +38,8 @@ In lines 5 to 13 the accessible departments and children are selected from the d
 For an update call  what differs is the creation of and the keywords in the SQL statement. Seeing as a user may want to update some, but not all, data on a given data type (e.g. profile), all value objects could possibly be left null. Due to this, the data is only appended to the update SQL statement if there is any provided, which is validated with a simple check to see, if the first character in the object is a capital N, indicating that the data is a null value.
 
 \subsection{Link}
-Link is an action used to link a profile or department with an application or a pictogram. Unlink is used to delete these links. 
-Like all other calls, the request is first validated with regards to syntax and authentication of the user. If these succeed, the cal proceeds to either link or unlink, depending on the action chosen. The code is shown in \autoref{lst:link}
+Link is an action used to link and/or unlink profiles or departments with an application or a pictogram.
+Like all other calls, the request is first validated with regards to syntax and authentication of the user. If these succeed, the call proceeds to either link or unlink, depending on the action chosen. The code is shown in \autoref{lst:link}
 
 \lstinputlisting[label=lst:link, caption=Link and Unlink, language=c++]{lst/link.cpp}
 

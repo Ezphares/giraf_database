@@ -1,6 +1,7 @@
 \section{Future Work}
+This section is divided into two lists, one containing known bugs in the project, which should be fixed when the project is further developed. The second list is suggested new functionality to add to the project.
 
-\subsection{Known Bugs}
+\subsection{Known Bugs}\label{subs:known_bugs}
 \begin{itemize}
 \item On some update calls the server returns an OK, but no SQL is executed.
 \item If a user can access several profiles there is no way to see which settings belong to which profile for any given application.
@@ -14,12 +15,12 @@
 \item The buffer sizes should be increased to handle larger files.
 \item Encryption and hashing should be added to the database and the connections.
 \item It should be possible to create a copy of a pictogram if an update is made to one that has multiple links.
-\item The public setting on pictograms should actually do something useful.
+\item A search function should be implemented to allow the public setting on pictograms to let the pictogram show up in searches.
 \item The synchronization should be updated to have support for selective download from the database.
 \item A library for Android applications should be made to allow them to access the local database.
 \item The local database should not be allowed to exceed a certain size.
 \item Synchronization should be automatic instead of manual.
 \item A thread pool should be implemented to prevent thread overflow on the central server.
 \item Database information should not be hardcoded.
-\item Sessions should be implemented.
+\item Sessions should be implemented. Currently the sessions are not used for authentication, which was part of their intended purpose.
 \end{itemize}
