@@ -1,8 +1,8 @@
 \section{API Calls}
-The API calls are very similar in structure, regardless of the data type and action they implement. They all start out by verifying that the data they have received is in accordance with what is expected and needed for the call to be performed, create the SQL statement to be executed, send it and prepare whatever return data is expected for the given call. 
+The \ac{api} calls are very similar in structure, regardless of the data type and action they implement. They all start out by verifying that the data they have received is in accordance with what is expected and needed for the call to be performed, create the SQL statement to be executed, send it and prepare whatever return data is expected for the given call. 
 
 \subsection{Read and delete calls}
-All read calls are first validated to contain the required data, i.e. type, view and ids, and that the types are correct (e.g. ids must always be either null or an array). Afterwards it is determined that the read call is of the list or details variety, and which data type is requested, and the call is performed.
+All read calls are first validated to ensure that they contain the required data, i.e. type, view and ids, and that the types are correct (e.g. ids must always be either null or an array). Afterwards it is determined whether the read call is of the list or details variety, and which data type is requested, and the call is performed.
 
 The delete calls are almost exact copies of the read details calls, only the SQL-statements differ.
 
@@ -20,16 +20,16 @@ As an example of what the details calls look like, the call for the data type \l
 
 \lstinputlisting[label=lst:read_profile_details, caption=Read Profile Details, language=c++]{lst/read_profile_details.cpp}
 
-In lines 14-17 a list of profiles accessible to the calling user is compiled, and saved in a linked list. Each id requested is then checked again this list in line 19, and if the requested id is not in the list an error is added to the errors array, and the function returns.
+In lines 14-17 a list of profiles accessible to the calling user is compiled, and saved in a linked list. Each id requested is then checked against this list in line 19, and if the requested id is not in the list an error is added to the errors array, and the function returns.
 
 If all the requested ids are accessible the ids are turned into a comma separated string in line 24, which is then inserted into the query in line 25. The query is sent to the database, and the response is added to the \lstinline|call_data| object in lines 26 and 27.
 
 Seeing as a call for profile details also requires info about which children a person is guardian of, this is fetched from the database and inserted into the \lstinline|call_data| object in lines 31-37. Finally the data is returned to the caller.
 
-For other data types, the verification will differ with respect to what views are used to compile accessible data, the SQL statement will of course also be different, with different data extracted, as well as the data returned to the caller.
+For other data types, the verification will differ with respect to what views are used to compile accessible data, the SQL statement will of course also be different, with different data extracted, as well as different data returned to the caller.
 
 \subsection{Create and Update calls}
-These two actions are so similar that a single example will suffice to show the general idea. Like other API calls the data is first validated at top level, and the appropriate call for the data type is executed. In \autoref{lst:create_profile} the create profile call is shown.
+These two actions are so similar that a single example will suffice to show the general idea. Like other \ac{api} calls the data is first validated at top level, and the appropriate call for the data type is executed. In \autoref{lst:create_profile} the create profile call is shown.
 
 \lstinputlisting[label=lst:create_profile, caption=Create Profile, language=c++]{lst/create_profile.cpp}
 
@@ -39,18 +39,18 @@ For an update call  what differs is the creation of and the keywords in the SQL 
 
 \subsection{Link}
 Link is an action used to link and/or unlink profiles or departments with an application or a pictogram.
-Like all other calls, the request is first validated with regards to syntax and authentication of the user. If these succeed, the call proceeds to either link or unlink, depending on the action chosen. The code is shown in \autoref{lst:link}
+Like all other calls, the request is first validated with regards to syntax and authentication of the user. If these succeed, the call proceeds to link and unlink as requested. The code is shown in \autoref{lst:link}
 
 \lstinputlisting[label=lst:link, caption=Link and Unlink, language=c++]{lst/link.cpp}
 
 In lines 9-38 accessible profiles and departments are compiled into lists and the requested ids are checked against these lists. In line 40 an \lstinline|actor_id| is set - this is the id of either a profile or a department, and is computed as a simple addition of the two values \lstinline|profile| and \lstinline|department|, due to the fact that one of these values will be 0 by default (see line 3 and 4). 
 
-In line 41 an inline if-statement checkc whether the \lstinline|profile| integer is 0, and if it is not, it will set the \lstinline|actor| string to be ``profile''. If it is, it will set the string to be ``department''. 
+In line 41 an inline if-statement checks whether the \lstinline|profile| integer is 0, and if it is not, it will set the \lstinline|actor| string to be ``profile''. If it is, it will set the string to be ``department''. 
 
-Lines 43-106 are executed if the action is set to \lstinline|link|, in which case it is first determined if the API is dealing with a request for linking of an application in line 53. If indeed it is an application, the data object is examined to determine if any settings need to be updated on a profile for this particular application. Should this be the case, these are escaped. This is done in line 55. A list of accessible applications for the caller is compiled in lines 57-60. The requested id is then validated against this list in lines 62.
+Lines 43-106 are executed if one or more links are to be created, in which case it is first determined if the \ac{api} is dealing with a request for linking of an application in line 53. If indeed it is an application, the data object is examined to determine if any settings need to be updated on a profile for this particular application. Should this be the case, these are escaped. This is done in line 55. A list of accessible applications for the caller is compiled in lines 57-60. The requested id is then validated against this list in line 62.
 
 Should the request turn out to be for a pictogram, the ids are simply validated against a list of accessible ids in lines 71-80. 
 
-In lines 83-86 an SQL query for checking if a link already exists between a profile/department and application/pictogram. Should a link already exist, it is first determined if there are settings to update in line 90, and if so these are updated in lines 92-94. If a link does not already exist, it is created in lines 97-104.
+In lines 83-86 an SQL query for checking if a link already exists between a profile or department and application or pictogram. Should a link already exist, it is first determined if there are settings to update in line 90, and if so these are updated in lines 92-94. If a link does not already exist, it is created in lines 97-104.
 
-Lines 108-121 is executed if the action is set to \lstinline|unlink|. For each requested link to be deleted, an SQL statement is sent in lines 117-119.
+Lines 108-121 is executed if there is a request for unlinking applications or pictograms. For each requested link to be deleted, an SQL statement is sent in lines 117-119.

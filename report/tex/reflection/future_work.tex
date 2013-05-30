@@ -1,18 +1,17 @@
 \section{Future Work}
-This section is divided into two lists, one containing known bugs in the project, which should be fixed when the project is further developed. The second list is suggested new functionality to add to the project.
+This section is divided into two lists, one containing known issues in the project, which should be fixed when the project is further developed and one suggesting new functionality to add to the project.
 
-\subsection{Known Bugs}\label{subs:known_bugs}
+\subsection{Known Issues}\label{subs:known_bugs}
 \begin{itemize}
 \item On some update calls the server returns an OK, but no SQL is executed.
 \item If a user can access several profiles there is no way to see which settings belong to which profile for any given application.
-\item SQL errors can crash the server.
+\item SQL errors can crash the server because null-errors in some query results go unhandled.
 \item There is no way to make a user department administrator without directly accessing the database.
 \item There are no SQL transactions in the \ac{api} which means race conditions are a risk. 
 \end{itemize}
 
 \subsection{New Functionality}
 \begin{itemize}
-\item The buffer sizes should be increased to handle larger files.
 \item Encryption and hashing should be added to the database and the connections.
 \item It should be possible to create a copy of a pictogram if an update is made to one that has multiple links.
 \item A search function should be implemented to allow the public setting on pictograms to let the pictogram show up in searches.
@@ -23,4 +22,5 @@ This section is divided into two lists, one containing known bugs in the project
 \item A thread pool should be implemented to prevent thread overflow on the central server.
 \item Database information should not be hardcoded.
 \item Sessions should be implemented. Currently the sessions are not used for authentication, which was part of their intended purpose.
+\item Currently the views only accommodate selecting by user id, not by profile id. This means that when a guardian is logged in, even if the tablet is switched to the child's profile (which is a projected functionality of the \ac{giraf} system), all pictograms, applications etc. that the guardian can access will also be accessible to the child. This should be fixed by adding a profile id column to the different views where users need it.
 \end{itemize}

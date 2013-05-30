@@ -68,7 +68,7 @@ Json::Value API::execute_link(Json::Value &data, int user, Json::Value &errors)
 			}
 			else
 			{
-				snprintf(query, API_BUFFER_SIZE, "SELECT `id` FROM `pictogram` WHERE `id`=%d", object_id); //TODO Limit this to visible and public pics
+				snprintf(query, API_BUFFER_SIZE, "SELECT `id` FROM `pictogram` WHERE `id`=%d", object_id); 
 				result = _database->send_query(query);
 				r = result->next_row();
 				delete result;

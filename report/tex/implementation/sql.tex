@@ -1,192 +1,5 @@
 \section{SQL}
-The database is implemented in SQL in accordance with the ER diagram, below is a database schema showing the implementation. A $ \rightarrow $ signifies a foreign key, and the underlined attribute signifies a primary key.
-
-\begin{tabular}{|l|l|c|}
-\hline
-\multicolumn{3}{|c|}{profile} \\
-\hline
-\underline{id} & INT(11) & \\
-name & VARCHAR(64) & \\
-phone & VARCHAR(11) & NULL \\
-picture & BLOB & NULL \\
-email & VARCHAR(64) & NULL \\ 
-role & SMALLINT & \\
-address & VARCHAR(256) & \\
-settings & BLOB & NULL \\
-user\_id $ \rightarrow $ & INT(11) & \\
-department\_id $ \rightarrow $ & INT(11) & \\
-author $ \rightarrow $ & INT(11) & NULL \\
-\hline
-\end{tabular}
-
-\vspace{10px}
-
-\begin{tabular}{|l|l|c|}
-\hline
-\multicolumn{3}{|c|}{user} \\
-\hline
-\underline{id} & INT(11) & \\
-username & VARCHAR(64) & \\
-password & VARCHAR(256) & NULL \\
-certificate & VARCHAR(512) & NULL \\
-\hline
-\end{tabular}
-
-\vspace{10pt}
-
-\begin{tabular}{|l|l|c|}
-\hline
-\multicolumn{3}{|c|}{department} \\
-\hline
-\underline{id} & INT(11) & \\
-name & VARCHAR(64) & \\
-phone & VARCHAR(11) & \\
-picture & BLOB & NULL \\
-email & VARCHAR(64) & \\ 
-role & SMALLINT & \\
-address & VARCHAR(256) & \\
-super\_department\_id $ \rightarrow $& INT(11) & NULL \\
-author $ \rightarrow $& INT(11) & NULL \\
-\hline
-\end{tabular}
-
-\vspace{10pt}
-
-\begin{tabular}{|l|l|c|}
-\hline
-\multicolumn{3}{|c|}{pictogram} \\
-\hline
-\underline{id} & INT(11) & \\
-name & VARCHAR(64) & \\
-public & TINYINT & \\
-image\_data & BLOB & NULL \\
-sound\_ & BLOB & NULL \\
-inline\_text & VARCHAR(64) & \\
-author $ \rightarrow $ & INT(11) & NULL \\
-\hline
-\end{tabular}
-
-\vspace{10pt}
-
-\begin{tabular}{|l|l|c|}
-\hline
-\multicolumn{3}{|c|}{tag} \\
-\hline
-\underline{id} & INT(11) & \\
-name & VARCHAR(64) & \\
-\hline
-\end{tabular}
-
-\vspace{10pt}
-
-\begin{tabular}{|l|l|c|}
-\hline
-\multicolumn{3}{|c|}{category} \\
-\hline
-\underline{id} & INT(11) & \\
-name & VARCHAR(64) & \\
-colour & VARCHAR(11) & \\
-icon & BLOB & NULL \\
-super\_category\_id $ \rightarrow $ & INT(11) & NULL\\
-\hline
-\end{tabular}
-
-\vspace{10pt}
-
-\begin{tabular}{|l|l|c|}
-\hline
-\multicolumn{3}{|c|}{application} \\
-\hline
-\underline{id} & INT(11) & \\
-name & VARCHAR(64) & \\
-version & VARCHAR(32) & \\
-icon & BLOB & \\
-package & VARCHAR(256) & \\
-activity & VARCHAR(64) & \\ 
-description & VARCHAR(1024) & \\
-author $ \rightarrow $ & INT(11) & NULL \\
-\hline
-\end{tabular}
-
-\vspace{10pt}
-
-\begin{tabular}{|l|l|c|}
-\hline
-\multicolumn{3}{|c|}{admin\_of} \\
-\hline
-\underline{user\_id} $ \rightarrow $ & INT(11) & \\
-\underline{department\_id} $ \rightarrow $ & INT(11) & \\
-\hline
-\end{tabular}
-
-\vspace{10pt}
-
-\begin{tabular}{|l|l|c|}
-\hline
-\multicolumn{3}{|c|}{profile\_pictogram} \\
-\hline
-\underline{profile\_id} $ \rightarrow $ & INT(11) & \\
-\underline{pictogram\_id} $ \rightarrow $ & INT(11) & \\
-\hline
-\end{tabular}
-
-\vspace{10pt}
-
-\begin{tabular}{|l|l|c|}
-\hline
-\multicolumn{3}{|c|}{department\_application} \\
-\hline
-\underline{department\_id} $ \rightarrow $ & INT(11) & \\
-\underline{application\_id} $ \rightarrow $ & INT(11) & \\
-\hline
-\end{tabular}
-
-\vspace{10pt}
-
-\begin{tabular}{|l|l|c|}
-\hline
-\multicolumn{3}{|c|}{profile\_application} \\
-\hline
-\underline{profile\_id} $ \rightarrow $ & INT(11) & \\
-\underline{pictogram\_id} $ \rightarrow $ & INT(11) & \\
-settings & BLOB & NULL \\
-\hline
-\end{tabular}
-
-\vspace{10pt}
-
-\begin{tabular}{|l|l|c|}
-\hline
-\multicolumn{3}{|c|}{pictogram\_tag} \\
-\hline
-\underline{pictogram\_id} $ \rightarrow $ & INT(11) & \\
-\underline{tag\_id} $ \rightarrow $ & INT(11) & \\
-\hline
-\end{tabular}
-
-\vspace{10pt}
-
-\begin{tabular}{|l|l|c|}
-\hline
-\multicolumn{3}{|c|}{pictogram\_category} \\
-\hline
-\underline{pictogram\_id} $ \rightarrow $ & INT(11) & \\
-\underline{category\_id} $ \rightarrow $ & INT(11) & \\
-\hline
-\end{tabular}
-
-\vspace{10pt}
-
-\begin{tabular}{|l|l|c|}
-\hline
-\multicolumn{3}{|c|}{guardian\_of} \\
-\hline
-\underline{guardian\_id} $ \rightarrow $ & INT(11) & \\
-\underline{child\_id} $ \rightarrow $ & INT(11) & \\
-\hline
-\end{tabular}
-
-\vspace{10pt}
+The database is implemented in MySQL in accordance with the ER diagram. In Appendix \ref{app:database} is a database schema showing the implementation.
 
 On top of the database different views have been implemented to simplify the SQL needed to access data in the \ac{api} calls. 
 There are 8 views in total:
@@ -194,8 +7,8 @@ There are 8 views in total:
 \item \lstinline|profile_list|, which computes a list of ids of the profile connected to the calling user, children this user is assigned guardian of, parents of these children, profiles the user is administrator of and created profiles. 
 \item \lstinline|user_list| which computes a list of ids and usernames of the caller's own user and users the caller is administrator of.
 \item \lstinline|department_list| which computes a list of the ids and names of the department the user is connected to, departments the user is administrator of and sub-departments of the departments the user is administrator of.
-\item \lstinline|pictogram_list| computes a list of ids, names, author and whether there is a direct link (a link not through department) of pictograms connected to the calling user's profile, the department of the calling user, and the user's own created pictograms.
-\item \lstinline|application_list| computes id, name and author of all applications connected to the calling user's profile, the calling user's department and created applications.
+\item \lstinline|pictogram_list| computes a list of ids, names, whether the calling user is the author and whether there is a direct link (a link not through department) of pictograms connected to the calling user's profile. The list includes the same info about pictograms linked to the department of the calling user, and the user's own created pictograms.
+\item \lstinline|application_list| computes id, name and whether the calling user is the author of all applications connected to the calling user's profile, the calling user's department and created applications.
 \item \lstinline|application_details| computes the settings as well as all the attributes on all applications connected to the calling user and the calling user's department.
 \item \lstinline|pictogram_extras| computes the category and tags for all pictograms.
 \item \lstinline|category_list| computes all ids, names and super category ids of categories connected to the calling user's profile.
@@ -205,7 +18,7 @@ As an example of the views implemented \autoref{lst:application_list_view} shows
 
 \lstinputlisting[label=lst:application_list_view, caption=Application List View, language=SQL]{lst/application_list_view.sql}
 
-As can be seen, the view consists of the union of three different selects - on for the profile, one for department and one for created applications. To obtain the info about what applications are connected to a given profile and department, a series of joins are performed.
+As can be seen, the view consists of the union of three different selects - one for the profile, one for department and one for created applications. To obtain the info about what applications are connected to a given profile and department, a series of joins are performed.
 
 The structure is the same for all the views, albeit with differences in what is selected, the unions and what is joined.
 

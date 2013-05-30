@@ -4,14 +4,14 @@ In this section the overall architecture of the entire \ac{giraf} application wi
 As mentioned in \autoref{cha:common} the \ac{giraf} project is divided into several subprojects. Each subproject is responsible for a specific part of the system. The itemized list below is a reminder of what the various projects are responsible for.
 
 \begin{itemize}
-	\item Admin - Administration interface for the entire \ac{giraf} project
+	\item Admin - Tool for administration interface for the entire \ac{giraf} project
 	\item Cars - Game developed with sound input
-	\item Croc - Creation of pictograms
-	\item Parrot - Pictogram categorization and child to guardian communication
-	\item Tortoise - Create a life story for the child
+	\item Croc - Tool for creation of pictograms
+	\item Parrot - Tool for pictogram categorization and child to guardian communication
+	\item Tortoise - Tool for creating a life story for the child
 	\item Train - Games with visual focus
-	\item Wasteland - Database synchronization
-	\item Zebra - Sequence of pictograms
+	\item Wasteland - Tool for database synchronization
+	\item Zebra - Tool for sequencing of pictograms
 \end{itemize}
 
 The top level architecture for \ac{giraf} is depicted in \autoref{fig:top_level}. The Admin group's desktop interface is connected via Internet to the central database. This enables guardians to manage the various children in the database. The Local database is installed on the tablet along with the applications. The applications save their settings on the local database, this enables efficient use of the tablet without an Internet connection. If the tablet has a wireless Internet connection it is able to synchronize the local database with the central database thus saving the settings across the entire \ac{giraf} system. 

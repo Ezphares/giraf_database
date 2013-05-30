@@ -1,11 +1,11 @@
 \section{Database Module}
-The database module is a wrapper for functions from the MySQL ConnectorC library and consists of two classes: a \lstinline|Database| class responsible for connecting to the database, escaping queries and sending them to the database, and a \lstinline|QueryResult|, responsible for storing the result from the query and fetching rows, a type definition signifying a map of strings to strings.
+The database module is a wrapper for functions from the MySQL Connector/C library and consists of two classes: a \lstinline|Database| class responsible for connecting to the database, escaping queries and sending them to the database, and a \lstinline|QueryResult|, responsible for storing the result from the query and fetching rows, a type definition signifying a map of strings to strings.
 
 \subsection{Database Class}
-The Database class consists of a constructor for a database connection, which contains all the info needed to connect to a database and four public functions:
+The \lstinline|Database| class consists of a constructor for a database connection, which contains all the info needed to connect to a database and four public functions:
 \begin{itemize}
 \item \lstinline|send_query|: Wraps the \lstinline|mysql_query| function, which takes a connection pointer and a query and sends it to the database.
-\item \lstinline|connect_database|: Wraps the \lstinline|mysql_real_connect| functions, which takes the data given in the instantiation of the Database object and establishes a connection to the database.
+\item \lstinline|connect_database|: Wraps the \lstinline|mysql_real_connect| functions, which uses the data given in the instantiation of the \lstinline|Database| object and establishes a connection to the database.
 \item \lstinline|disconnect_database|: Wraps the \lstinline|mysql_close| function, which closes the connection.
 \item \lstinline|escape|: Wraps \lstinline|mysql_real_escape_string|, which escapes a string to prevent SQL injections.
 \end{itemize} 
@@ -13,4 +13,4 @@ The Database class consists of a constructor for a database connection, which co
 The data given in the database constructor are saved, no matter how many times one may connect and disconnect with the same \lstinline|Database| instance.
 
 \subsection{QueryResult Class}
-The Queryresult wraps the \lstinline|MYSQL_RES| data type, which is what is returned from the database as the result of a query. The class has one public function, \lstinline|next_row|, which fetches the next row in a result. It returns a row as an \lstinline|std::map|.
+The \lstinline|QueryResult| wraps the \lstinline|MYSQL_RES| data type, which is what is returned from the database as the result of a query. The class has one public function, \lstinline|next_row|, which fetches the next row in a result. It returns a row as an \lstinline|std::map|.

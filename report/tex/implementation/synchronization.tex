@@ -2,38 +2,50 @@
 The synchronization between the central database and a local database on an Android device is handled by the Puddle application. This application runs on the Android device, and is programmed in Java.
 
 \subsection{Main Activity}
-The main activity in Android is the activity that is started when the application is launched. The main activity in Puddle includes the user interface for the application as well as a reference to the database in PuddleApplication.
+The main activity in Android is the activity that is started when the application is launched. The main activity in Puddle includes the user interface for the application as well as a reference to the database in the class \lstinline|PuddleApplication|. \lstinline|MainActivity| also defines the buttons for inserting data into the local database and triggering synchronization.
 
 \subsection{Connection}
-The connection from Puddle to the central database is handled by MySQL Connector/J \citep{mysqlconnectorj}. Connector/J will given an IP address, user name and password connect to a remote MySQL database. From there it is possible to send SQL queries to manipulate the central MySQL database.
+The connection from Puddle to the central database is handled by MySQL Connector/J \citep{mysqlconnectorj}. Connector/J will given an IP address, username and password to connect to a remote MySQL database. From there it is possible to send SQL queries to manipulate the central MySQL database.
 
 \subsection{SQLite Database}
-The local database in Puddle is handled by the Database class. The Database class includes functions for creating the database, inserting and retrieving updated rows.
+The local database in Puddle is handled by the \lstinline|Database| class. The \lstinline|Database| class includes functions for creating the database, inserting and retrieving updated rows.
 
-Creation of the SQLite is done by the DbHelper class seen in \autoref{lst:dbhelper}, an extension of the SQLiteOpenHelper \citep{sqliteopenhelper}, which is an Android helper class designed to manage database creation and version management. Line 2 specifies the name of the final database file and line 3 specifies the version number of the database.
-onCreate functions in Android run when the class activity is first started. Lines 11-23 run when the database is first accessed. The createUser string on line 13 creates an SQL statement that is executed on line 23. The example in \autoref{lst:dbhelper} creates the user table in the database, each individual table has an SQL statement created by the DbHelper.
+Creation of the SQLite is done by the \lstinline|DbHelper| class seen in \autoref{lst:dbhelper}, an extension of the \lstinline|SQLiteOpenHelper| \citep{sqliteopenhelper}, which is an Android helper class designed to manage database creation and version management. Line 2 specifies the name of the final database file and line 3 specifies the version number of the database.
+\lstinline|onCreate| functions in Android run when the class activity is first started. Lines 11-23 run when the database is first accessed. The \lstinline|createUser| string on line 13 creates an SQL statement that is executed on line 23. The example in \autoref{lst:dbhelper} creates the user table in the database. Each individual table has an SQL statement created by the \lstinline|DbHelper|.
 
 \lstinputlisting[label=lst:dbhelper, caption=Creating the SQLite database, language=java]{lst/DbHelper.java}
 
-Android applications consist of activities that run when they are active. These activities can for example be the main screen started when the application or the settings menu. Because database and network calls cannot be made on the UI thread in Android, they need to be made from an AsyncTask \citep{asynctask} and not an activity. The class PuddleApplication extends the Android class Application an will, unlike activities, run the entire time that Puddle is running. PuddleApplication \autoref{lst:puddleapplication} contains an instance of the database created in the Database class, and makes it possible to access the local database from AsyncTasks. To instantiate PuddleApplication, the class has been added to the AndroidManifest.xml <application> tag.
+Android applications consist of activities that run when they are active. These activities can for example be the main screen started when the application is started or the settings menu. Because database and network calls cannot be made on the \ac{ui} thread in Android, they need to be made from an \lstinline|AsyncTask| \citep{asynctask} and not an activity. The class \lstinline|PuddleApplication| extends the Android class \lstinline|Application| and will, unlike activities, run the entire time that Puddle is running. \lstinline|PuddleApplication| (\autoref{lst:puddleapplication}) contains an instance of the database created in the \lstinline|Database| class, and makes it possible to access the local database from \lstinline|AsyncTask|s. To instantiate \lstinline|PuddleApplication|, the class has been added to the <application> tag in the file AndroidManifest.xml. The Manifest is the file that tells the Android device how to run the application.
 
 \lstinputlisting[label=lst:puddleapplication, caption=Creation of Database in PuddleApplication, language=java]{lst/PuddleApplication.java}
 
 \subsection{Downloading From the Central Database}
-When pressing the synchronize button in Puddle, two things happen, the classes UploadTask and DownloadTask are called. DownloadTask connects to the central database, downloads all data and inserts it into the local database. The DownloadTask is an extension of the Android class AsyncTask. AsyncTask creates a separate thread for DownloadTask because access to network and databases is not allowed on the UI thread in Android.
-\autoref{lst:downloadtask} shows the download from the central database. Line 1 and 2 sets up a new connection to the database. Line 4 inserts a timestamp to the table last\_sync in the database, this timestamp is also added to every row inserted from the central database. This is done to be able to upload new rows when the databases are synchronized again. Line 6 selects all rows from the user table in the central database. The while loop on lines 9-16 selects a single row and passes it to the corresponding insert function in the Database class.
+When pressing the synchronize button in Puddle, two things happen, the classes \lstinline|UploadTask| and \lstinline|DownloadTask| are called. \lstinline|DownloadTask| connects to the central database, downloads all data and inserts it into the local database. The \lstinline|DownloadTask| is an extension of the Android class \lstinline|AsyncTask|. \lstinline|AsyncTask| creates a separate thread for \lstinline|DownloadTask| because as mentioned access to network and databases is not allowed on the \ac{ui} thread in Android.
+\autoref{lst:downloadtask} shows the download from the central database for the \lstinline|user| table. Line 1 and 2 sets up a new connection to the database. Line 4 inserts a timestamp to the table \lstinline|last_sync| in the database, this timestamp is also added to every row inserted from the central database. This is done to be able to upload new rows when the databases are synchronized again. Line 6 selects all rows from the user table in the central database. The while loop on lines 9-16 selects a single row and passes it to the corresponding insert function in the \lstinline|Database| class. The other tables are handled in a similar manner.
 
 \lstinputlisting[label=lst:downloadtask, caption=Connecting to and downloading from the central database, language=java]{lst/DownloadTask.java}
 
-\autoref{lst:insert} shows the insertion of data into the local database. Line 4 requests write access to the database, line 6 and 7 creates an SQL statement that is executed on line 9.
+\autoref{lst:insert} shows the insertion of data into the local database. Line 4 requests write access to the database, line 6 and 7 creates an SQL statement that is executed on line 9. 
 
 \lstinputlisting[label=lst:insert, caption=Inserting in the database, language=java]{lst/insert.java}
 
 \subsection{Uploading Updates to the Central Database}
-As with the DownloadTask, the UploadTask in \autoref{lst:uploadtask} begins by connecting to the central database on line 1 and 2. Line 4 gets updated rows from the getUpdated function shown in \autoref{lst:update}. The while loop on lines 6-21 prepares each updated row by creating an SQL query, and executes the query on line 20.
+As with the \lstinline|DownloadTask|, the \lstinline|UploadTask| in \autoref{lst:uploadtask} begins by connecting to the central database on line 1 and 2. Line 4 gets updated rows from the \lstinline|getUpdated| function shown in \autoref{lst:update}. The while loop on lines 6-21 prepares each updated row by creating an SQL query, and executes the query on line 20.
 
 \lstinputlisting[label=lst:uploadtask, caption=Uploading changes to the central database, language=java]{lst/UploadTask.java}
 
-getUpdated() in \autoref{lst:update} first requests read access to the database on line 2. it then selects the timestamp of the last synchronization from the table last\_sync on line 4-11. On line 15 every row that has a newer timestamp than the last synchronization is selected and is returned to the UploadTask on line 17. The getUpdated() function returns updated rows from one table at a time, the table needs to be specified when the function is called.
+\lstinline|getUpdated()| in \autoref{lst:update} first requests read access to the database on line 2. it then selects the timestamp of the last synchronization from the table \lstinline|last_sync| on line 4-11. On line 15 every row that has a newer timestamp than the last synchronization is selected and is returned to the \lstinline|UploadTask| on line 17. The \lstinline|getUpdated()| function returns updated rows from one table at a time, the table needs to be specified when the function is called.
 
 \lstinputlisting[label=lst:update, caption=Retrieving updated rows, language=java]{lst/update.java}
+
+\subsection{Known Limitations of the Current Version}
+One limitation is that an update to the central database will be overwritten 
+by an update from an Android device, even if the update to the central database is newer 
+than the update on the Android device. This is a direct consequence of timestamps only 
+being added on the local database. If timestamps were to be added to the central database 
+as well, it would be possible to compare timestamps before inserting updates into the central
+database. This would make it possible to always keep the most recent change.
+
+Another limitation is that the entire database is downloaded to each individual Android device. In a real world scenario, it would be smarter to limit the download to users and profiles associated with the device and download data for new users as needed. The current solution does not scale very well, and would cause the local database to grow unnecessarily large if the system were to be widely used. This problem could be avoided in several ways, e.g. if the central databases included timestamps on all additions and updates. This way, Puddle could synchronize only the changes newer than last synchronization.
+
+A third limitation is that the local SQLite is unencrypted, and can be accessed by anyone who wishes to. This is of course a security risk if the system were to be used in a production environment, because anyone can get access to sensitive user data.

@@ -29,7 +29,7 @@ void *server_runner(void *param)
 		}
 
 		// Attempt to start a thread for the client
-		// TODO: Implement a "threadpool" to prevent overflow?
+
 		ClientInfo *client = new ClientInfo(connection, info->_callback);
 		pthread_t client_thread;
 		if (pthread_create(&client_thread, NULL, client_runner, (void *)client) != 0)

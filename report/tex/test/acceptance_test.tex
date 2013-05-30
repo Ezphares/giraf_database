@@ -1,14 +1,15 @@
 \section{Acceptance Test}
-For acceptance testing we employed the Admin group in the multiproject. They used the API and reported back with errors and functionality that they either had trouble understanding or that didn't do what it was supposed to do. 
+For acceptance testing we relied on the Admin group in the multiproject. They used the \ac{api} and reported back with errors and functionality that they either had trouble understanding or that did not do what it was supposed to do. 
 
 Throughout their use they reported back through e-mail, phone and written notes, and here is a list of some of the bugs and improvements suggested by them:
 
 \begin{itemize}
 \item In the documentation, it should be clarified that files should be base 64 encoded to prevent escaping errors. This was fixed.
-\item The current file-size limit of 2048 bytes is too small to handle 400x400 pixel JPEG-files, as expected. They compiled the source code tested it on a local machine with a 2MB file-size limit, which worked. This was subsequently changed.
-\item There were problems with large files, but files of size 12.5kB and under worked. This was not clarified by the test group and thus could not be fixed.
-\item There is currently no way to see a child's guardians without logging in.
-\item Currently some create calls return a profile object error where other errors should be returned. The group was unable to replicate this error, and thus unable to fix it within the deadline. The problem was added to the list of known bugs found in \autoref{subs:known_bugs}.
+\item The initial file-size limit of 2048 bytes, an arbitrary number set during implementation for testing purposes, was too small to handle 400x400 pixel JPEG-files. The Admin group compiled the source code and empirically tested various limits on a local machine. They reported back, that a 2MB file-size limit worked. This limit was subsequently changed in the code to adhere to their results.
+\item There were problems with large files, but files of size 12.5kB and under worked. This was not clarified further by the test group and thus could not be fixed.
+\item There is currently no way to see a child's guardians without logging in. This was discussed with the group, and it was determined that this was indeed what should happen.
+\item Currently some create calls return a profile object error where other errors should be returned. This should of course be fixed, but was reported too late in the process for the group to be able to implement the fix for this.
+\item Some update calls return with success, but nothing in the database is updated. The group was unable to reproduce this error, and thus unable to fix it within the deadline. The problem was added to the list of known bugs found in \autoref{subs:known_bugs}.
 \end{itemize}
 
-Overall, the API in its current non-production form, fulfilled their basic needs and expectations after reviewing the design and documentation.
+Overall, the \ac{api} in its current non-production form, fulfilled their basic needs and expectations after reviewing the design and documentation.

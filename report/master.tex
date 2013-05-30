@@ -11,7 +11,6 @@
 \input{tex/titlepage}
 \cleardoublepage
 
-\listoftodos
 \input{tex/preface}
 
 \cleardoublepage
@@ -21,7 +20,9 @@
 \pagestyle{plain}
 
 %input main content here
+\part{Common Report}
 \input{tex/commonReport/commonReport}
+\part{Wasteland Contribution}
 \input{tex/introduction/chapter}
 \input{tex/process_progress/chapter}
 \input{tex/analysis/chapter}
@@ -42,6 +43,8 @@
   \includepdf[pages={3}]{img/appendix_api}
   \includepdf[pages={4}]{img/appendix_api}
   \includepdf[pages={5}]{img/appendix_api}
+\chapter{Database Schema}\label{app:database}
+  \input{tex/database_schema}
 \chapter{Unit Test Example}\label{app:unit_test}
   \lstinputlisting[language=c++]{lst/unit_test_example.cpp}
 \end{appendices}
