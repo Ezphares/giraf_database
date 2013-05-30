@@ -1,6 +1,6 @@
 \section{Database Design}
-The database has to store all the information in the GIRAF system, it has to keep that information in such a way that it is understandable for everyone who has to write an application that uses the database.
-To get an overview of the entire database, we have made an Entity-Relationship (ER) diagram. \autoref{fig:erdiagram} illustrates the ER-diagram for the database.
+The database has to store all the information in the \ac{giraf} system.
+To get an overview of the entire database, an entity-relationship diagram (ER diagram) has been constructed. \autoref{fig:erdiagram} illustrates the ER diagram for the database.
 
 \begin{figure}[hptb]
 \begin{center}
@@ -10,10 +10,10 @@ To get an overview of the entire database, we have made an Entity-Relationship (
 \end{center}
 \end{figure}
 
-The ER diagram uses a collection of basic objects called entities and their relationships to describe things in the real world and their individual relations. The group based the current diagram on the 2012 version, re-using some attributes for entities, but cleaning up relations and adding new content needed by other groups (e.g. pictogram category). \todo{:ref earlier report here} The central entities are the profile, the applications available to that profile and the pictograms associated with it. 
+The ER diagram uses a collection of basic objects called entities and their relationships to describe concepts in the real world and their individual relations. The group based the current diagram on the 2012 version, re-using some attributes for entities, but cleaning up relations and adding new content needed by other groups (e.g. pictogram category). 
 
 \subsection{Profile}
-The profile entity includes both children and guardians, it holds information such as name, phone number, picture, e-mail, address and role (i.e. parent or department employee). The roles are important in determining the privileges of the account. Parents can only administrate their own children, employees on the other hand can administrate several of the children in a given department. 
+The profile entity includes both children and guardians, it holds information such as name, phone number, picture, e-mail, address and role (i.e. child, parent or employee). The roles are important in determining the privileges of the account. Parents can only administrate their own children, employees on the other hand can administrate the profiles of the parents as well. 
 
 The settings are saved in a blob because the data type is faster to use and because the data will not have to be manipulated through the database.
 
@@ -21,7 +21,7 @@ The phone number is saved as a varchar to allow users to save country codes (suc
 
 It is assumed that no address is longer than 256 characters.
 
-The \emph{guardian\_of} relationship enables one profile to be guardian of several other profiles. This is because the children do not have the authority to administrate their own pictograms and settings, they rely on a guardian to handle all of the customization in cooperation with them. 
+The \emph{guardian\_of} relationship enables one profile to be guardian of several other profiles. This is because the children should not have the authority to administrate their own pictograms and settings, they rely on a guardian to handle all of the customization in cooperation with them. 
 
 The settings of an application are saved in the relation to the profile in order to allow different users to customize the look of the application.
 
@@ -41,7 +41,7 @@ Pictograms can be a mixture of image, sound and text. The \emph{public} attribut
 As of now, the image and sound data are supposed to be stored as blobs in the database, however in a production environment these data should be stored in files on the server and a system for uploading and downloading these should be implemented. This, however, is out of scope for the current project. 
 
 \subsubsection{Categories}
-The pictograms can be arranged into categories each with it's own name, color and icon.
+The pictograms can be arranged into categories each with its own name, colour and icon.
 An example could be pictograms of various food items being put in a category named food, which could have a subcategory called breakfast that could include items such as cereal and orange juice.
 
 \subsubsection{Tags}

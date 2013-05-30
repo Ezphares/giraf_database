@@ -1,4 +1,4 @@
-public Cursor getUpdatedUser() {
+public Cursor getUpdated(String table) {
     SQLiteDatabase db = dbHelper.getReadableDatabase();
 
     String getLastSync = "SELECT * FROM last_sync;";
@@ -10,9 +10,9 @@ public Cursor getUpdatedUser() {
         last_sync = cursor.getString(1);
     }
 
-    Log.i("Get Updated User", "Last sync = " + last_sync);
+    Log.i("Get Updated", "Last sync = " + last_sync);
 
-    String sql = "SELECT * FROM user WHERE modified > " + last_sync + ";";
+    String sql = "SELECT * FROM " + table + " WHERE timestamp > " + last_sync + ";";
 
     return db.rawQuery(sql, null);
 }

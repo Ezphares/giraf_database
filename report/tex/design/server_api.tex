@@ -1,36 +1,36 @@
 \section{Server API}
 
-When several different applications needs access to data from the database, it is important to have a flexible \ac{api}, especially when 
-the applications needs access for very different reasons, e.g. administration, games and pictures. Considering that several people have to
+When several different applications need access to data from the database, it is important to have a flexible \ac{api}, especially when 
+the applications need access for very different reasons, e.g. administration, games and pictures. Considering that several people have to
 work with it, and that new groups will be using the \ac{api} later, simplicity is also a primary concern. Several decisions were made, all of
-which is to support the simplicity and flexibility of the \ac{api}.
+which meant to support the simplicity and flexibility of the \ac{api}.
 
 \subsection{Philosophy}
 
-Considering that the \ac{api} should allow for all the necessary operations on a persistent storage system, it was decided that is should
+Considering that the \ac{api} should allow for all the necessary operations on a persistent storage system, it was decided that it should
 implement the \ac{crud} actions, as these provide the minimal number of operations that allow for complete data manipulation. \citep{crud13}
 As such, the \ac{crud} actions comply with both demands of simplicity and flexibility. It was decided however, that the action for linking pictograms
-and applications to profiles and departments would be cleaner if it was placed in a separate action, in this case called ``link''.\p
+and applications to profiles and departments would be easier to use if it was placed in a separate action, in this case called ``link''.\p
 Another decision was made to keep the \ac{api} design free of authorization elements. It is, for example, completely valid, for a normal user
 to request deletion of every profile in the database, and then it is up to the server to determine that they do not have the right to do this.
 This, again, keeps things simple, as it means that the same actions are available, whether the request comes from an administrative or
 user context.
 
 Additionally, it does not create additional authentication work for the server implementations, since checking whether a user has a given right
-should be checked each time in any case.
+should be done each time in any case.
 
 \subsubsection*{All or nothing}
 
 To keep things simple, calls should be kept all or nothing, that is, if it is not possible to complete the request fully, nothing should be done.
-An example of this could be a read call trying to retrieve details of several profile, one of which is inaccessible to the authenticated user. In this case, the
-user receives no information, but an error message stating the error. This is more important when updating or creating data in bulk, in which case
+An example of this could be a read call trying to retrieve details of several profiles, one of which is inaccessible to the authenticated user. In this case, the
+user receives no information, but an error message stating this. This is more important when updating or creating data in bulk, in which case
 it could be difficult for the client to know which parts of the request were completed, and which were not.
 
 \subsection{Data Serialization Format}
 
 When communicating on a network, it is important that the data can be serialized, that is, represented as a series of symbols. Two of the most
 well-known standards for serializing data between different platforms were considered, namely \ac{json} and \ac{xml}. The main difference, from
-an overall system point of view, between these, is that \ac{json} is more light-weight, and arguably easier for humans to read, but has less 
+an overall system point of view between these is that \ac{json} is more light-weight, and arguably easier for humans to read, but has less 
 ways of expressing data than \ac{xml}.\p
 This choice was discussed with multiple groups and in the end, \ac{json} was selected. The readability of the format was valued highly, and it
 was argued that \ac{json} would have enough power of expression for what this \ac{api} would need. The fact that it is less verbose, and as such
@@ -38,22 +38,22 @@ transferred faster over networks is also welcome.
 
 \subsection{Request Structure}
 
-For simplicity, the decision was made that requests of every type should have the same structure. That is, the request should be in the form of
-a \ac{json} object with three keys: \texttt{auth}, \texttt{action} and \texttt{data}. The \texttt{auth} key should contain another object, which
+For simplicity, the decision was made that requests of every type should have the same structure. The request should be in the form of
+a \ac{json} object with three keys: \lstinline|auth|, \lstinline|action| and \lstinline|data|. The \lstinline|auth| key should contain another object, which
 contains the authentication information of the following request, whether logging in with a username and password, or using a QR certificate. The
-\texttt{action} key refers to a string, naming one of the \ac{crud} (or link) actions. Finally, the \texttt{data} key, refers to an object which contents
+\lstinline|action| key refers to a string, naming one of the \ac{crud} (or link) actions. Finally, the \lstinline|data| key, refers to an object where contents
 will differ depending on the action named. An example of requesting each profile that a user can access, can be seen in \autoref{lst:request.sample}.
 
 \lstinputlisting[label=lst:request.sample,caption=Sample Request]{lst/request.sample.json}
 
 \subsection{Response Structure}
 
-As with the requests, responses should have a single structure. The response is a \ac{json} object containing four keys, in this
-case \texttt{status}, \texttt{errors}, \texttt{session} and \texttt{data}. The \texttt{status} key should contain a single string, describing what happened during the
-processing of the request, this could for example be ``OK'', ``SYNTAXERROR'', or ``AUTHFAILED''. The \texttt{errors} key refers to an array of error
-messages, typically an empty array if everything went fine. The \texttt{session} key is only present if authentication was successful, and contains information
-about the authenticated user, like the ids of the user and profile if applicable, as well as a session key for easy subsequent authentication.  The \texttt{data} key
-can either refer to null, if an update or delete request was issued, or if there was errors in the request, a list of new ids if it was a create request, and finally
+As with the requests, all responses should have the same structure. The response is a \ac{json} object containing four keys, in this
+case \lstinline|status|, \lstinline|errors|, \lstinline|session| and \lstinline|data|. The \lstinline|status| key should contain a single string, describing what happened during the
+processing of the request, this could for example be ``OK'', ``SYNTAXERROR'', or ``AUTHFAILED''. The \lstinline|errors| key refers to an array of error
+messages, typically an empty array if everything went fine. The \lstinline|session| key is only present if authentication was successful, and contains information
+about the authenticated user, like the ids of the user and profile if applicable, as well as a session key for easy subsequent authentication.  The \lstinline|data| key
+can either refer to null, if an update or delete request was issued, or if there were errors in the request, a list of new ids if it was a create request, and finally
 the requested data for a read request. An example of a possible response to the request seen in \autoref{lst:request.sample} can be seen in \autoref{lst:response.sample}
 
 \lstinputlisting[label=lst:response.sample,caption=Sample Response]{lst/response.sample.json}

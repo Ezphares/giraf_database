@@ -1,20 +1,20 @@
 \section{GIRAF Architecture}
-In this section the overall architecture of the entire GIRAF application will be presented. First the top level architecture will be described subsequently the architecture on the tablet will be presented.
+In this section the overall architecture of the entire \ac{giraf} application will be presented. First the top level architecture will be described and subsequently the architecture on the tablet will be presented.
 
-As mentioned in the common chapter \todo{insert reference to common chapter} the GIRAF project is divided into several subprojects. Each subproject is responsible for a specific part of GIRAF. The itemized list below is a reminder of what the various projects are responsible for.
+As mentioned in \autoref{cha:common} the \ac{giraf} project is divided into several subprojects. Each subproject is responsible for a specific part of the system. The itemized list below is a reminder of what the various projects are responsible for.
 
 \begin{itemize}
-	\item Admin - Administration interface for the entire Giraf project
-	\item Cars - Game developed for sound
+	\item Admin - Administration interface for the entire \ac{giraf} project
+	\item Cars - Game developed with sound input
 	\item Croc - Creation of pictograms
-	\item Parrot - Child to guardian interaction
+	\item Parrot - Pictogram categorization and child to guardian communication
 	\item Tortoise - Create a life story for the child
-	\item Train - Game without sound
+	\item Train - Games with visual focus
 	\item Wasteland - Database synchronization
 	\item Zebra - Sequence of pictograms
 \end{itemize}
 
-The top level architecture for GIRAF is depicted in \autoref{fig:top_level}. The Admin group's desktop interface is connected via Internet to the central database. This enables guardians to manage the various children in the database. The Local database is installed on the tablet along with the various applications. The applications save their settings on the local database, this enables efficient use of the tablet without an Internet connection. If the tablet has a wireless Internet connection it is able to synchronize the local database with the central database thus saving the settings across the entire GIRAF application. 
+The top level architecture for \ac{giraf} is depicted in \autoref{fig:top_level}. The Admin group's desktop interface is connected via Internet to the central database. This enables guardians to manage the various children in the database. The Local database is installed on the tablet along with the applications. The applications save their settings on the local database, this enables efficient use of the tablet without an Internet connection. If the tablet has a wireless Internet connection it is able to synchronize the local database with the central database thus saving the settings across the entire \ac{giraf} system. 
 
 \begin{figure}[htpb]
 \includegraphics[width=\textwidth]{img/top_level.pdf}
@@ -22,12 +22,4 @@ The top level architecture for GIRAF is depicted in \autoref{fig:top_level}. The
 \label{fig:top_level}
 \end{figure}
 
-The applications installed on the tablet are divided into two categories namely games and tools, respectively. The tools provide GIRAF with core functionality such as allowing guardians to take pictures with the tablet's onboard camera and add the new picture to one or several children's personal image galleries. They also provide the ability to use pictograms across all applications on the tablet. The games provide some fun learning aids e.g. where the children can learn to control their voice within a game. 
-
-\begin{figure}[htpb]
-\begin{center}
-\includegraphics[width=0.5\textwidth]{img/tablet_level.pdf}
-\caption{Tablet level view of GIRAF}
-\label{fig:tablet_level}
-\end{center}
-\end{figure}
+The applications installed on the tablet are divided into two categories namely games and tools, respectively. The tools provide \ac{giraf} with core functionality such as allowing guardians to take pictures with the tablet's onboard camera and add the new picture to one or several children's personal image galleries. They also provide the ability to use pictograms across all applications on the tablet. The games provide some fun learning aids e.g. where the children can learn to control pitch and volume of their voices through a game. 

@@ -28,7 +28,7 @@ The agile development method has the ability to adapt to changing requirements t
 \label{subsub:stories}
 %An agile develop method and a team structure with many team and few members with high interaction between team requires a high level of management.
 %To ensure cooperation between teams and reaching deadlines with shippable products are many SCRUM method tools implemented.
-User stories is one of the tools that helps streamline the work process, keeps focus on a shippable product and is the main component for management of the project. First of all the product story works as a common problem statement for all work groups. A product story is the agreement on what is necessary for the product to be finished. From product story each group can extract what is required of them to complete the story.
+User stories is one of the tools that helps streamline the work process, it keeps focus on a shippable product and is the main component for management of the project. First of all the product story works as a common problem statement for all work groups. A product story is the agreement on what is necessary for the product to be finished. From the product story each group can extract what is required of them to complete the story.
 
 \subsubsection{Management}
 \label{subsub:management}
@@ -41,8 +41,8 @@ To help fit the product to the needs of guardians, for which the product is inte
 
 %SCRUM uses a product manager and SCRUM masters to ensure all requirements are met and any conflicts are resolved. %To extract one person for a team of four to function as SCRUM master is an inefficient solution.
 %The SCRUM master uses most of his resources on gathering and transferring information leaving little to develop.
-To keep as many work hours in development and to keep a good overall management, common meetings were held weekly.
-The common meetings had focus on sprints and team cooperation. Problems that needed further discussion and/or development were discussed by a committee consisting of a few representatives from each group.
+To keep as many work hours in development and to keep a good overall management, common meetings are held weekly.
+The common meetings focus on sprints and team cooperation. Problems that need further discussion and/or development are discussed by a committee consisting of a few representatives from each group.
 
 %The story committee is the main committee to make the SCRUM work.
 %The story committee had a meeting at the end of each sprint, often 3-5 days before common meeting, where the next sprint story is discussed so each group is firm on their assignment for the sprint. Before the meeting is there feature freeze so the committee can discuss the former sprint without further development.
@@ -52,7 +52,7 @@ The common meeting and committee meeting are further specified in sections \secr
 
 \subsection{Development Tools}
 \label{sub:devtools}
-A number of tools were used in order to optimize team collaboration and to make the projects more accessible. These tools will be further explained in the following sections.
+A number of tools were used in order to optimize team collaboration and to make the projects more accessible. These tools are further explained in the following sections.
 
 A dedicated Linux server was commissioned for the entire \ac{giraf} project and several services installed to facilitate collaboration and agile development. Common to all current services are their free, open-source nature and support of LDAP authentication, allowing all students and supervisors to log in using their AAU credentials.
 %A number of tools are used to ensure a shippable product and a well documented work progress.
@@ -61,7 +61,7 @@ A dedicated Linux server was commissioned for the entire \ac{giraf} project and 
 
 \subsubsection{Redmine}
 \label{subsub:redmine}
-Several tools were audited for use in the project management aspect of development, including Trac, PivotalTracker and Github. Redmine, a Ruby-On-Rails web application, was selected owing primarily to its support of multiple projects and support features such as wikis, forums, milestones and various charts. The features most broadly used will briefly be described here.
+Several tools were audited for use in the project management aspect of development, including Trac, PivotalTracker and Github. Redmine, a Ruby-On-Rails web application, was selected primarily due to its support of multiple projects and support features such as wikis, forums, milestones and various charts. The features most broadly used are:
 % of the project was Redmine. Redmine includes many functions but only the ones used in the multi-project will be described.
 %Redmine was chosen because of the ability to divide form to bottom.
 \begin{description}
@@ -72,7 +72,7 @@ Several tools were audited for use in the project management aspect of developme
 	\item[Wiki] A per-project wiki module exists in Redmine. The basic wiki markup has been expanded to allow referencing of almost any other element in the project hierarchy, such as projects, issues, files and VCS revision.
 \end{description}
 
-Redmine has many more features not directly applied during this project period. However, many could be applied to create a more centralised and structured development experience in future projects. Examples include file and document hosting, advanced issue workflows, permission management and VCS integration. Future multiprojects may consider expanding into these fields if they feel proficient in Redmine's basic usage.
+Redmine has many more features not directly applied during this project period. However, many could be applied to create a more centralized and structured development experience in future projects. Examples include file and document hosting, advanced issue workflows, permission management and VCS integration. Future multiprojects may consider expanding into these fields if they feel proficient in Redmine's basic usage.
 
 % Redmine arranges the multi-project in a hierarchy, ordered in terms of teams, sprints, and issues.
 %The multi-project is levelled from the main project to teams, sprints and lastly issues.
@@ -87,7 +87,7 @@ Redmine has many more features not directly applied during this project period. 
 \subsubsection{Version Control System}
 \label{subsub:git}
 \label{subsub:vcs}
-The university's IT services offers only a single version control system, Subversion. Although centrally supported and backed up regularly, Subversion's shortcomings were challenged before main development had begun. Most notably, the system's centralised workflow and high operation cost. Many of SVN's actions require access to the central server. Two alternatives without these issues were suggested: Git and Mercurial (Hg). The former was chosen as a general question of broad platform support and popularity. A primary strength of these systems is their support of separate branches of development without the constant need to connect to a central server. This allows developers of each project to synchronize with a main branch while maintaining several development branches on their own workstation.
+The university's IT services offers only a single version control system, Subversion. Although centrally supported and backed up regularly, Subversion's shortcomings were challenged before main development had begun. Most notably, the system's centralized workflow and high operation cost. Many of SVN's actions require access to the central server. Two alternatives without these issues were suggested: Git and Mercurial (Hg). The former was chosen as a general question of broad platform support and popularity. A primary strength of these systems is their support of separate branches of development without the constant need to connect to a central server. This allows developers of each project to synchronize with a main branch while maintaining several development branches on their own workstation.
 
 Most groups used Github as hosting solution for development of their projects, as a git hosting solution was not immediately forthcoming (contrary to Subversion and Mercurial, Git does not have a default server implementation). At the conclusion of the project period, a solution was configured using Apache-based LDAP authentication, deferring authorisation and repository management to Gitolite, a low-footprint open-source offering.
 

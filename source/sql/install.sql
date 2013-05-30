@@ -15,7 +15,7 @@ CREATE TABLE `department` (
 	`id`					INT(11)			NOT NULL	AUTO_INCREMENT,
 	`name`					VARCHAR(64)		NOT NULL,
 	`address`				VARCHAR(256)	NOT NULL,
-	`phone`					INT(11)			NOT NULL,	
+	`phone`					VARCHAR(12)			NOT NULL,	
 	`email`					VARCHAR(64)		NOT NULL,
 	`super_department_id`	INT(11)		NULL,
 	`author`				INT(11)		NULL,
@@ -31,7 +31,7 @@ CREATE TABLE `department` (
 CREATE TABLE `profile` (
 	`id`				INT(11)			NOT NULL	AUTO_INCREMENT,
 	`name`				VARCHAR(64)		NOT NULL,
-	`phone`				VARCHAR(11)		NULL,
+	`phone`				VARCHAR(12)		NULL,
 	`picture`			BLOB			NULL,
 	`email`				VARCHAR(64)		NULL,
 	`role`				SMALLINT		NOT NULL,
