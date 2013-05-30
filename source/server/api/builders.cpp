@@ -68,7 +68,10 @@ Json::Value build_simple_array_from_query(QueryResult *query, const char *key, v
 std::string build_in_string(Json::Value &array)
 {
 	std::stringstream str;
-	for (unsigned int i = 0; i < array.size(); i++)
+
+	if (!array.isArray() || array.size() == 0) str << "0";
+
+	else for (unsigned int i = 0; i < array.size(); i++)
 	{
 		if (i > 0) str << ",";
 		str << array[i].asInt();
@@ -113,12 +116,18 @@ std::map<int, int> build_simple_int_map_from_query(QueryResult *query, const cha
 
 }
 
-int extract_string(char *buffer, Json::Value &object, const char *key, bool null)
+int extract_string(char *buffer, Json::Value &object, const char *key, bool null, Database *escape_db)
 {
 	if (object.isMember(key))
 	{
 		if (!object[key].isString()) return -1;
-		const char *value = object[key].asCString();
+		const char *raw_value = object[key].asCString();
+		char value[EXTRACT_SIZE];
+		memset(value, 0, EXTRACT_SIZE);
+
+		if (escape_db != NULL) escape_db->escape(value, raw_value);
+		else std::strncpy(value, raw_value, EXTRACT_SIZE - 1);
+
 		unsigned int length = std::min(EXTRACT_SIZE - 3u, (unsigned int)strlen(value));
 		std::strncpy(buffer + 1, value, length);
 		buffer[0] = '\'';

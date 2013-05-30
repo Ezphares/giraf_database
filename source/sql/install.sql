@@ -15,7 +15,7 @@ CREATE TABLE `department` (
 	`id`					INT(11)			NOT NULL	AUTO_INCREMENT,
 	`name`					VARCHAR(64)		NOT NULL,
 	`address`				VARCHAR(256)	NOT NULL,
-	`phone`					INT(11)			NOT NULL,	
+	`phone`					VARCHAR(12)			NOT NULL,	
 	`email`					VARCHAR(64)		NOT NULL,
 	`super_department_id`	INT(11)		NULL,
 	`author`				INT(11)		NULL,
@@ -31,7 +31,7 @@ CREATE TABLE `department` (
 CREATE TABLE `profile` (
 	`id`				INT(11)			NOT NULL	AUTO_INCREMENT,
 	`name`				VARCHAR(64)		NOT NULL,
-	`phone`				VARCHAR(11)		NULL,
+	`phone`				VARCHAR(12)		NULL,
 	`picture`			BLOB			NULL,
 	`email`				VARCHAR(64)		NULL,
 	`role`				SMALLINT		NOT NULL,
@@ -114,6 +114,7 @@ CREATE TABLE `admin_of`(
 CREATE TABLE `department_pictogram` (
 	`department_id`		INT(11)		NOT NULL,	
 	`pictogram_id`		INT(11)		NOT NULL,
+    PRIMARY KEY (`department_id`, `pictogram_id`),
 	FOREIGN KEY (`department_id`)
 		REFERENCES `department` (`id`)
 		ON DELETE CASCADE,
@@ -125,6 +126,7 @@ CREATE TABLE `department_pictogram` (
 CREATE TABLE `profile_pictogram` (
 	`profile_id`		INT(11)		NOT NULL,	
 	`pictogram_id`		INT(11)		NOT NULL,
+    PRIMARY KEY (`profile_id`, `pictogram_id`),
 	FOREIGN KEY (`profile_id`)
 		REFERENCES `profile` (`id`)
 		ON DELETE CASCADE,
@@ -135,7 +137,8 @@ CREATE TABLE `profile_pictogram` (
 
 CREATE TABLE `department_application` (
 	`department_id`		INT(11)		NOT NULL,
-	`application_id`	INT(11)		NOT NULL,	
+	`application_id`	INT(11)		NOT NULL,
+    PRIMARY KEY (`department_id`, `application_id`),	
 	FOREIGN KEY (`department_id`)
 		REFERENCES `department` (`id`)
 		ON DELETE CASCADE,
@@ -148,6 +151,7 @@ CREATE TABLE `profile_application`(
 	`profile_id`		INT(11)		NOT NULL,
 	`application_id`	INT(11)		NOT NULL,	
 	`settings`			BLOB		NULL,
+    PRIMARY KEY (`profile_id`, `application_id`),
 	FOREIGN KEY (`profile_id`)
 		REFERENCES `profile` (`id`)
 		ON DELETE CASCADE,
@@ -159,6 +163,7 @@ CREATE TABLE `profile_application`(
 CREATE TABLE `pictogram_tag` (
 	`pictogram_id`		INT(11)		NOT NULL,
 	`tag_id`			INT(11)		NOT NULL,	
+    PRIMARY KEY (`tag_id`, `pictogram_id`),
 	FOREIGN KEY (`pictogram_id`)
 		REFERENCES `pictogram` (`id`)
 		ON DELETE CASCADE,
@@ -170,6 +175,7 @@ CREATE TABLE `pictogram_tag` (
 CREATE TABLE `pictogram_category` (
 	`pictogram_id`		INT(11)		NOT NULL,
 	`category_id`	INT(11)		NOT NULL,	
+    PRIMARY KEY (`category_id`, `pictogram_id`),
 	FOREIGN KEY (`pictogram_id`)
 		REFERENCES `pictogram` (`id`)
 		ON DELETE CASCADE,
@@ -180,7 +186,8 @@ CREATE TABLE `pictogram_category` (
 
 CREATE TABLE `profile_category` (
 	`profile_id`		INT(11)		NOT NULL,
-	`category_id`		INT(11)		NOT NULL,	
+	`category_id`		INT(11)		NOT NULL,
+    PRIMARY KEY (`profile_id`, `category_id`),
 	FOREIGN KEY (`profile_id`)
 		REFERENCES `profile` (`id`)
 		ON DELETE CASCADE,
@@ -192,6 +199,7 @@ CREATE TABLE `profile_category` (
 CREATE TABLE `guardian_of` (
 	`guardian_id`	INT(11)		NOT NULL,
 	`child_id`		INT(11)		NOT NULL,
+    PRIMARY KEY (`guardian_id`, `child_id`),
 	FOREIGN KEY (`guardian_id`)
 		REFERENCES `profile` (`id`)
 		ON DELETE CASCADE,
@@ -397,12 +405,12 @@ CREATE VIEW `pictogram_extras` AS
         JOIN
         `tag` ON `pictogram_tag`.`tag_id`=`tag`.`id`;
 
-
-
-
-
-
-
-
-
-
+CREATE VIEW `category_list` AS
+    SELECT `user`.`id` AS `user_id`, `category`.`id`, `category`.`name`, `category`.`super_category_id` FROM
+        `user`
+        JOIN
+        `profile` ON `user`.`id`=`profile`.`user_id`
+        JOIN
+        `profile_category` ON `profile`.`id` = `profile_category`.`profile_id`
+        JOIN
+        `category` ON `profile_category`.`category_id` = `category`.`id`;

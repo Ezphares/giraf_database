@@ -4,6 +4,7 @@
  * TODO This file contains...
  */
 #include "api.h"
+#include <iostream>
 
 int API::validate_delete(Json::Value &data, Json::Value &errors)
 {
@@ -58,6 +59,7 @@ int API::api_delete(Json::Value &request, Json::Value &response, Json::Value &er
 	else if (strcmp(request["data"]["type"].asCString(), "user") == 0) 			call_data = delete_user(request["data"], user, errors);
 	else if (strcmp(request["data"]["type"].asCString(), "pictogram") == 0) 	call_data = delete_pictogram(request["data"], user, errors);
 	else if (strcmp(request["data"]["type"].asCString(), "application") == 0) 	call_data = delete_application(request["data"], user, errors);
+	else if (strcmp(request["data"]["type"].asCString(), "category") == 0) 		call_data = delete_category(request["data"], user, errors);
 	else
 	{
 		response["status"] = STATUS_STRUCTURE;
@@ -165,7 +167,7 @@ Json::Value API::delete_pictogram(Json::Value &data, int user, Json::Value &erro
 		return Json::Value(Json::nullValue);
 	}
 	const std::string &st = build_in_string(data["ids"]);
-	snprintf(query, API_BUFFER_SIZE, "UPDATE `pictogram` SET `public`=0, `author`=NULL WHERE `id` IN %s;", st.c_str());
+	snprintf(query, API_BUFFER_SIZE, "UPDATE `pictogram` SET `public`=0, `author`=NULL WHERE `id` IN (%s);", st.c_str());
 
 	result = _database->send_query(query);
 	delete result;
@@ -179,4 +181,26 @@ Json::Value API::delete_application(Json::Value &data, int user, Json::Value &er
 	return Json::Value(Json::nullValue);
 }
 
+Json::Value API::delete_category(Json::Value &data, int user, Json::Value &errors)
+{
+	char query[API_BUFFER_SIZE];
 
+	snprintf(query, API_BUFFER_SIZE, "SELECT DISTINCT `id` FROM `category_list` WHERE `user_id`=%d;", user);
+	QueryResult *result = _database->send_query(query);
+	std::vector<int> accessible = build_simple_int_vector_from_query(result, "id");
+	delete result;
+
+	if (validate_array_vector(data["ids"], accessible) == false)
+	{
+		errors.append(Json::Value("Invalid ID access"));
+		return Json::Value(Json::nullValue);
+	}
+
+	const std::string &st = build_in_string(data["ids"]);
+	snprintf(query, API_BUFFER_SIZE, "DELETE FROM `category` WHERE `id` IN (%s);", st.c_str());
+	result = _database->send_query(query);
+	delete result;
+
+	return Json::Value(Json::nullValue);
+
+}

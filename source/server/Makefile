@@ -27,13 +27,14 @@ CONNECTION_SOURCES=connection/connection.cpp \
 DATABASE_OBJECTS=queryresult.o database.o
 DATABASE_SOURCES=database/queryresult.cpp \
                  database/database.cpp
-API_OBJECTS=api.o api_read.o api_create.o api_delete.o api_update.o builders.o
+API_OBJECTS=api.o api_read.o api_create.o api_delete.o api_update.o api_link.o builders.o
 API_SOURCES=api/api.cpp \
 	    api/api_read.cpp \
 	    api/api_create.cpp \
 	    api/api_delete.cpp \
 	    api/api_update.cpp \
-	    api/builders.cpp
+	    api/api_link.cpp \
+	    api/builders.cpp  
 	    
 MODULES=program.o m_database m_connection m_api
 TESTS=t_connection t_database t_api
