@@ -6,6 +6,7 @@
 #include "database.h"
 #include <cstring>
 
+//Database constructor with info needed by MySQL
 Database::Database(const char *address, unsigned int port,
 		const char *database, const char *username,
 		const char *password) :
@@ -22,6 +23,7 @@ Database::~Database()
 		disconnect_database();
 }
 
+//sends query to the database (wraps mysql_query)
 QueryResult *Database::send_query(const char *query)
 {
 	if(mysql_query(_conn, query))
@@ -34,12 +36,14 @@ QueryResult *Database::send_query(const char *query)
 	return r;
 }
 
+//wraps mysql_close
 void Database::disconnect_database()
 {
 	mysql_close(_conn);
 	_conn = NULL;
 }
 
+//establish connection and error check
 int Database::connect_database()
 {
 	_conn = mysql_init(NULL);
@@ -58,11 +62,13 @@ int Database::connect_database()
 	return 0;
 }
 
+// wraps mysql_real_escape_string, used for escaping queries
 void Database::escape(char *buffer, const char *input)
 {
 	mysql_real_escape_string(_conn, buffer, input, strlen(input));
 }
 
+//wraps mysql_insert_id
 unsigned int Database::insert_id()
 {
 	unsigned int id = mysql_insert_id(_conn);
