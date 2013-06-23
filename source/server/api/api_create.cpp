@@ -1,11 +1,11 @@
 /*
  * api_write.cpp
  *
- * TODO This file contains...
+ * This file contains calls and functions related to creation of data in the database
+ * The calls are very similar in structure
  */
 
 #include "api.h"
-#include <iostream>
 
 int API::validate_create(Json::Value &data, Json::Value &errors)
 {
@@ -81,17 +81,19 @@ int API::api_create (Json::Value &request, Json::Value &response, Json::Value &e
 Json::Value API::create_profile(Json::Value &data, int user, Json::Value &errors)
 {
 	char query[API_BUFFER_SIZE];
-
+	
+	//Compile list of accessible departments
 	snprintf(query, API_BUFFER_SIZE, "SELECT DISTINCT `id` FROM `department_list` WHERE `user_id`=%d;", user);
 	QueryResult *result = _database->send_query(query);
 	std::vector<int> departments = build_simple_int_vector_from_query(result, "id");
 	delete result;
-
+	//Compile list of accessible profiles of children
 	snprintf(query, API_BUFFER_SIZE, "SELECT DISTINCT `id` FROM `profile_list` WHERE `user_id`=%d AND `role`=2;", user);
 	result = _database->send_query(query);
 	std::vector<int> children = build_simple_int_vector_from_query(result, "id");
 	delete result;
-
+	
+	//Check that no illegal assignments are requested
 	for(unsigned int i = 0; i < data["values"].size(); i++)
 	{
 		Json::Value &object = data["values"][i];
@@ -138,6 +140,7 @@ Json::Value API::create_profile(Json::Value &data, int user, Json::Value &errors
 		int department;
 		int role;
 
+		//Extract information from object. Refer to builders for code. Returns errors if they occur.
 		int err = 0;
 		err += extract_string(name, object, "name", false, _database);
 		err += extract_string(email, object, "email", true, _database);
@@ -161,6 +164,7 @@ Json::Value API::create_profile(Json::Value &data, int user, Json::Value &errors
 		call_data.append(Json::Value(added_ids.back()));
 		delete result;
 
+		//Add to guardian_of table if needed
 		if(data.isMember("guardian_of"))
 		{
 			for (unsigned int i = 0; i < data["guardian_of"].size(); i++)
@@ -182,11 +186,13 @@ Json::Value API::create_department(Json::Value &data, int user, Json::Value &err
 {
 	char query[API_BUFFER_SIZE];
 
+	//Find accessible departments
 	snprintf(query, API_BUFFER_SIZE, "SELECT DISTINCT `id` FROM `department_list` WHERE `user_id`=%d;", user);
 	QueryResult *result = _database->send_query(query);
 	std::vector<int> departments = build_simple_int_vector_from_query(result, "id");
 	delete result;
-
+	
+	//Check that no illegal assignments to topdepartment is made
 	for(unsigned int i = 0; i < data["values"].size(); i++)
 	{
 		Json::Value &object = data["values"][i];
@@ -361,7 +367,8 @@ Json::Value API::create_pictogram(Json::Value &data, int user, Json::Value &erro
 			errors.append("Value error(s) in profile data object");
 			return Json::Value(Json::nullValue);
 		}
-
+		
+		//inline if-else clause to set the "public" variable
 		int public_int = is_public ? 1 : 0;
 		snprintf(query, API_BUFFER_SIZE, "INSERT INTO `pictogram` (`name`, `image_data`, `inline_text`, `sound_data`, `public`, `author`)"
 											"VALUES (%s, %s, %s, %s, %d, %d);", name, image, text, sound, public_int, user);
@@ -382,6 +389,7 @@ Json::Value API::create_pictogram(Json::Value &data, int user, Json::Value &erro
 			delete result;
 		}
 
+		//create or add tags if any are given
 		if(object.isMember("tags"))
 		{
 			if(!object["tags"].isArray())
