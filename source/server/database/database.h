@@ -1,8 +1,5 @@
 /*
- * database.h
- *
- *  Created on: 11 Mar 2013
- *      Author: vixen
+ * database.h 
  */
 #pragma once
 #include <cstdio>
