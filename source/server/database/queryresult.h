@@ -1,8 +1,5 @@
 /*
  * queryresult.h
- *
- *  Created on: 13 Mar 2013
- *      Author: vixen
  */
 
 #pragma once
