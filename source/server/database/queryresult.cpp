@@ -1,8 +1,6 @@
 /*
  * queryresult.cpp
  *
- *  Created on: 13 Mar 2013
- *      Author: vixen
  */
 
 #include "queryresult.h"
@@ -14,6 +12,7 @@ QueryResult::~QueryResult()
 	mysql_free_result(_result);
 }
 
+//This returns the next row in a result if one is available
 row_t QueryResult::next_row()
 {
 	MYSQL_ROW row;
