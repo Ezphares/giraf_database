@@ -30,13 +30,13 @@ These functions create a data type from another - e.g. building a \ac{json} obje
 
 In \autoref{lst:build_object_from_row} the code for the \lstinline|build_object_from_row| function is shown. 
 
-\lstinputlisting[label=lst:build_object_from_row, caption=Build Object from Row, language=c++]{lst/extract_string.cpp}
+\lstinputlisting[label=lst:build_object_from_row, caption=Build Object from Row, language=c++]{lst/build_object_from_row.cpp}
 
 This function is called when one wants to create a \ac{json} object from the result of a query. It takes a row (the result of a query) and a fixture, which is a function pointer to a function which applies one or more of the fixes mentioned earlier. 
 
 The function loops through the row and directly translates it to a \ac{json} object.
 
-\lstinputlisting[label=lst:build_array_from_query, caption=Build Array from Query, language=c++]{lst/extract_string.cpp}
+\lstinputlisting[label=lst:build_array_from_query, caption=Build Array from Query, language=c++]{lst/build_array_from_query.cpp}
 
 \autoref{lst:build_array_from_query} utilizes the database module to fetch a row from the result, and  while there are more rows, calls the \lstinline|build_object_from_row| and appends the \ac{json} objects to a \ac{json} array.
 
